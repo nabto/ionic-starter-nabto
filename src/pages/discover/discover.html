@@ -6,8 +6,21 @@
 
 <ion-content padding>
   <h2>Discover</h2>
- <button ion-button block (click)="refresh()">
-   Refresh
- </button>
+  <ion-list>
+    <p>
+      Count: {{count}}
+    </p>
+    <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device)">
+      <ion-icon name="{{device.icon}}" item-left></ion-icon>
+      {{device.name}}
+      <div class="item-note" item-right>
+        {{device.id}}
+      </div>
+    </ion-item>
+  </ion-list>
+  
+  <button ion-button block (click)="refresh()">
+    Refresh
+  </button>
   
 </ion-content>
