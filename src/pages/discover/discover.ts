@@ -61,10 +61,8 @@ export class DiscoverPage {
 
       console.log("discover got devices: " + JSON.stringify(devices));
 
-      //      this.deviceSrc = [];
-      //      this.devices = Observable.of(this.deviceSrc);
-
       this.zone.run(() => {
+        this.deviceSrc.splice(0, this.deviceSrc.length);
         for(let i = 0; i < devices.length; i++) {
           console.log("adding device " + i + " to list: " + devices[i]);
           this.deviceSrc.push(new Device(`Device ${i}`, devices[i], 'wifi'));
@@ -80,7 +78,7 @@ export class DiscoverPage {
     console.log("refresh tapped");
     this.discover();
   }
-  
+
   itemTapped(event, device) {
     this.navCtrl.push(PairingPage, {
       device_id: device.id
