@@ -9,11 +9,19 @@ import { Platform } from 'ionic-angular';
 export class Device {
   name: string;
   id: string;
-  icon: string;
-  constructor(name: string, id: string, icon: string) {
+  product: string;
+  iconUrl: string;
+
+  // iconUrl is absolute or relative to bundle's www folder, e.g. use img/mydevice.png from device and put image in www/img/mydevice.png
+  constructor(name: string,
+              id: string,
+              product: string,
+              iconUrl: string)   
+  {
     this.name = name;
     this.id = id;
-    this.icon = icon;
+    this.product = product;
+    this.iconUrl = iconUrl;
   }
 }
 
@@ -23,10 +31,9 @@ declare var nabto;
   templateUrl: 'discover.html'
 })
 export class DiscoverPage {
-  selectedItem: any;
-  icons: string[];
-  items: Array<{title: string, note: string, icon: string}>;
-  count: number;
+  empty: boolean;
+  longTitle: string;
+  shortTitle: string;
 
   public devices: Observable<Device[]>;
 
@@ -37,7 +44,18 @@ export class DiscoverPage {
               public toastCtrl: ToastController,
               public platform: Platform,
               private zone: NgZone) {
+    
+    this.longTitle = navParams.get('longTitle');
+    if (!this.longTitle) {
+      this.longTitle = "Discover local devices";
+    }
 
+    this.shortTitle = navParams.get('shortTitle');
+    if (!this.shortTitle) {
+      this.shortTitle = "Discover";
+    }
+    
+    
     this.deviceSrc = [];
     this.devices = Observable.of(this.deviceSrc);
     this.discover();        
@@ -65,9 +83,10 @@ export class DiscoverPage {
         this.deviceSrc.splice(0, this.deviceSrc.length);
         for(let i = 0; i < devices.length; i++) {
           console.log("adding device " + i + " to list: " + devices[i]);
-          this.deviceSrc.push(new Device(`Device ${i}`, devices[i], 'wifi'));
-          this.count = devices.length;
+          this.deviceSrc.push(new Device(`Sommerhus Stuen`, devices[i], 'ACME 9000 Heatpump', 'img/chip.png'));
+          this.deviceSrc.push(new Device(`Sommerhus Stuen`, devices[i], 'ACME 9000 Heatpump', 'http://www.heatpumps4pools.com/myfiles/image/spare-parts-image-2.jpg'));
         }
+        this.empty = (devices.length == 0);
       })
 
     });

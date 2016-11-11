@@ -1,18 +1,25 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Discover</ion-title>
+    <ion-title>{{shortTitle}}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Discover</h2>
-  <ion-list>
-    <p>
-      Count: {{count}}
-    </p>
+  <h2>{{longTitle}}</h2>
+
+ <ion-card [hidden]="!empty">
+    <ion-card-header>
+      No devices found
+    </ion-card-header>
+    <ion-card-content>
+      Make sure you are on the same local area network as the device you try to discover and that the device is powered on. 
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-list [hidden]="empty">
     <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device)">
       <ion-thumbnail item-left>
-        <img src="img/chip.png">
+        <img [src]="device.iconUrl">
       </ion-thumbnail>
       <h2>{{device.name}}</h2>
       <p>ACME 9000 Heatpump</p>

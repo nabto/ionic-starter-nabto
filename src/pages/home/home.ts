@@ -12,7 +12,7 @@ export class HomePage {
   }
 
   showDiscoverPage() {
-    this.navCtrl.push(DiscoverPage);
+    this.navCtrl.push(DiscoverPage, { shortTitle: 'Add device', longTitle: 'Add first device'});
   }
 
 }
