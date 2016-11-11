@@ -58,11 +58,11 @@ export class DiscoverPage {
         toast.present();
         return;
       }
-      
+
       console.log("discover got devices: " + JSON.stringify(devices));
 
-//      this.deviceSrc = [];
-//      this.devices = Observable.of(this.deviceSrc);
+      //      this.deviceSrc = [];
+      //      this.devices = Observable.of(this.deviceSrc);
 
       this.zone.run(() => {
         for(let i = 0; i < devices.length; i++) {
@@ -76,7 +76,7 @@ export class DiscoverPage {
     
   }
 
-  refresh(event) {
+  refresh() {
     console.log("refresh tapped");
     this.discover();
   }

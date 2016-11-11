@@ -11,11 +11,11 @@
       Count: {{count}}
     </p>
     <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device)">
-      <ion-icon name="{{device.icon}}" item-left></ion-icon>
-      {{device.name}}
-      <div class="item-note" item-right>
-        {{device.id}}
-      </div>
+      <ion-thumbnail item-left>
+        <img src="img/chip.png">
+      </ion-thumbnail>
+      <h2>ACME 9000 Heatpump {{device.name}}</h2>
+      <p>Heatpump</p>
     </ion-item>
   </ion-list>
   
@@ -24,3 +24,7 @@
   </button>
   
 </ion-content>
+
+
+
+
