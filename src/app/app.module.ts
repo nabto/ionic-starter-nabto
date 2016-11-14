@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { DiscoverPage } from '../pages/discover/discover';
 import { PairingPage } from '../pages/pairing/pairing';
+import { NabtoService } from './nabto.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,6 @@ import { PairingPage } from '../pages/pairing/pairing';
     DiscoverPage,
     PairingPage
   ],
-  providers: []
+  providers: [NabtoService]
 })
 export class AppModule {}

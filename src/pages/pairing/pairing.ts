@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { NavController, NavParams } from 'ionic-angular';
 
-declare var nabto;
+//declare var nabto;
 
 @Component({
   templateUrl: 'pairing.html'

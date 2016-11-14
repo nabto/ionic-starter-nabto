@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { ToastController } from 'ionic-angular';
-
+import { Http, Response } from '@angular/http'
 import { TabsPage } from '../pages/tabs/tabs';
 
 declare var nabto;
@@ -12,8 +12,42 @@ declare var nabto;
 })
 export class MyApp {
   rootPage = TabsPage;
+
+  error(msg: string) {
+    const toast = this.toastCtrl.create({
+      message: msg,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    Splashscreen.hide();
+    toast.present();
+  }
   
-  constructor(platform: Platform, public toastCtrl: ToastController) {
+
+  constructor(platform: Platform, public toastCtrl: ToastController, http: Http) {
+    platform.ready().then(() => {
+      nabto.startup(() => {
+        http.get("nabto/unabto_queries.xml")
+          .toPromise()
+          .then((res: Response) => {
+            nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+              if (!err) {
+                StatusBar.styleDefault();
+                Splashscreen.hide();
+              } else {
+                console.log(err);
+                this.error("Could not inject device interface definition - please contact app vendor" + err.message);
+              }
+            })
+          })
+          .catch(err => {
+            console.log(err);
+            this.error("Could not load device interface definition - please contact app vendor" + err.message);
+            return;
+          });
+      });
+    });
+    /*
     platform.ready().then(() => {
       if (nabto) {
         console.log("app started - nabto is available");
@@ -35,13 +69,6 @@ export class MyApp {
           console.log("app started - window not available");
         }
 
-        const toast = this.toastCtrl.create({
-          message: "Fatal: nabto object is not available - installation failed",
-          showCloseButton: true,
-          closeButtonText: 'Ok'
-        });
-        Splashscreen.hide();
-        toast.present();
       }
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -49,6 +76,6 @@ export class MyApp {
         StatusBar.styleDefault();
         Splashscreen.hide();
       });
-    });
+    });*/
   }
 }
