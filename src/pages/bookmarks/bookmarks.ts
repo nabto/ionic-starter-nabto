@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import { NabtoDevice } from '../../app/device.class';
 import { DiscoverPage } from '../discover/discover';
 import { BookmarksService } from '../../app/bookmarks.service';
+import { AlertController } from 'ionic-angular';
 
 
 @Component({
@@ -18,7 +19,9 @@ export class BookmarksPage {
   longTitle: string;
   empty: boolean;
 
-  constructor(public navCtrl: NavController, private bookmarks: BookmarksService) {
+  constructor(public navCtrl: NavController,
+              private bookmarksService: BookmarksService,
+              private alertCtrl: AlertController) {
     this.shortTitle = "Devices";
     this.longTitle = "Known devices";
     this.empty = true;
@@ -28,29 +31,49 @@ export class BookmarksPage {
     this.devices = Observable.of(this.deviceSrc);
   }
 
-  itemTapped(event, device_id) {
-    alert('TODO: show actual device page for ' + device_id);
+  ionViewWillEnter() {
+    this.refresh();
   }
-
-  add() {
-    this.navCtrl.push(DiscoverPage);
-  }
-
-  refresh() {
-    this.bookmarks.readBookmarks().then((bookmarks) => {
-      for(let i = 0; i < bookmarks.length; i++) {
-        this.deviceSrc.push(bookmarks[i]);
+  
+  refresh() {    
+    this.bookmarksService.readBookmarks().then((bookmarks) => {
+      this.deviceSrc.splice(0, this.deviceSrc.length);
+      if (bookmarks) {
+        for(let i = 0; i < bookmarks.length; i++) {
+          this.deviceSrc.push(bookmarks[i]);
+        }
       }
       this.empty = (this.deviceSrc.length == 0);
     });
   }
-  
-  writeTestBookmarks() {
-    let bookmarks = [];
-    this.bookmarks.writeBookmarks(bookmarks);
-    bookmarks.push(new NabtoDevice('My bookmarked device A', 'demo.nabto.net', 'LG Premium 1000'));
-    bookmarks.push(new NabtoDevice('My bookmarked device B', 'demo.nabto.net', 'LG Premium 2000', 'img/chip-small.png'));
-    this.bookmarks.writeBookmarks(bookmarks);
+
+  itemTapped(event, device_id) {
+    alert('TODO: show actual device page for ' + device_id);
   }
 
+  addNewDevice() {
+    this.navCtrl.push(DiscoverPage);
+  }
+  
+  clear() {    
+    let alert = this.alertCtrl.create({
+      title: 'Confirm clear',
+      message: 'Do you want to clear list of known devices?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.bookmarksService.clear();
+            this.refresh();
+          }
+        }
+    ]
+    });
+    alert.present();
+  }
+   
 }

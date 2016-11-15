@@ -3,6 +3,7 @@ import { ToastController } from 'ionic-angular';
 import { NavController, NavParams } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { LoadingController } from 'ionic-angular';
+import { BookmarksService } from '../../app/bookmarks.service';
 
 @Component({
   selector: 'page-pairing',
@@ -20,7 +21,8 @@ export class PairingPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
-              public loadingCtrl: LoadingController) {
+              public loadingCtrl: LoadingController,
+              private bookmarksService: BookmarksService) {
     this.device = navParams.get('device');
     this.shortTitle = navParams.get('shortTitle');
     this.longTitle = navParams.get('longTitle');
@@ -39,17 +41,22 @@ export class PairingPage {
     });
     this.loader.present();
   }
-  
+
   pair() {
     this.presentLoading();
     setTimeout(() => {
+      this.writeBookmark();
       this.loader.dismiss();
       this.success = true;
     }, 2000) ;
   }
-
+  
   back() {
     this.navCtrl.popToRoot();
+  }
+
+  writeBookmark() {
+    this.bookmarksService.addBookmark(this.device);
   }
   
 }
