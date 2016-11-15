@@ -40,8 +40,8 @@ export class NabtoService {
         Promise.all(devices).then((res: NabtoDevice[]) => {
           for(let i = 0; i < res.length; i++) {
             console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
-            resolve(res);
           }
+          resolve(res);
         });
       });
     });

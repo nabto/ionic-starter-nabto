@@ -56,6 +56,9 @@ export class DiscoverPage implements OnInit {
           this.deviceSrc.push(discovered[i]);
         }
         this.empty = (discovered.length == 0)
+        if (this.empty) {
+          console.log("no devices found");
+        }
       }).catch(error => {
         let toast = this.toastCtrl.create({
           message: error.message,
