@@ -10,7 +10,7 @@ declare var nabto;
 @Component({
   template: `<ion-nav [root]="rootPage"></ion-nav>`
 })
-export class MyApp {
+export class NabtoIonicApp {
   rootPage = BookmarksPage;
 
   error(msg: string) {
