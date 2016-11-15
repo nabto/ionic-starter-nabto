@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { DiscoverPage } from '../pages/discover/discover';
 import { PairingPage } from '../pages/pairing/pairing';
+import { BookmarksPage } from '../pages/bookmarks/bookmarks';
 import { NabtoService } from './nabto.service';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { NabtoService } from './nabto.service';
     HomePage,
     TabsPage,
     DiscoverPage,
-    PairingPage
+    PairingPage,
+    BookmarksPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -30,7 +32,8 @@ import { NabtoService } from './nabto.service';
     HomePage,
     TabsPage,
     DiscoverPage,
-    PairingPage
+    PairingPage,
+    BookmarksPage
   ],
   providers: [NabtoService]
 })

@@ -14,12 +14,17 @@ export class NabtoDevice {
   constructor(name: string,
               id: string,
               product: string,
-              iconUrl: string)   
+              iconUrl?: string)   
   {
     this.name = name;
     this.id = id;
     this.product = product;
     this.iconUrl = iconUrl;
+    if (iconUrl) {
+      this.iconUrl = iconUrl;
+    } else {
+      this.iconUrl = 'img/chip.png';
+    }
   }
 }
 

@@ -5,16 +5,15 @@ import { NavController, NavParams } from 'ionic-angular';
 import { PairingPage } from '../pairing/pairing';
 import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
-import { OnInit } from '@angular/core';
-
 import { NabtoService, NabtoDevice } from '../../app/nabto.service';
 
 //declare var nabto;
 
 @Component({
+  selector: 'page-discover',
   templateUrl: 'discover.html'
 })
-export class DiscoverPage implements OnInit {
+export class DiscoverPage {
   empty: boolean;
   busy: boolean;
   longTitle: string;
@@ -24,9 +23,9 @@ export class DiscoverPage implements OnInit {
 
   private deviceSrc = [];
 
-  ngOnInit(): void {
+  ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
-//    this.discover();  // apparently this breaks chrome and livereload??!
+    this.discover();  // apparently this breaks chrome and livereload??!
   }
   
   constructor(public navCtrl: NavController,

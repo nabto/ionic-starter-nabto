@@ -7,16 +7,13 @@
 <ion-content padding>
   <h2>{{longTitle}}</h2>
 
- <ion-card [hidden]="!empty">
+  <ion-card [hidden]="!empty">
     <ion-card-header>
-      No devices found
+      No bookmarked devices
     </ion-card-header>
-    <ion-card-content>
-      Make sure you are on the same local area network as the device you try to discover and that the device is powered on. 
-    </ion-card-content>
   </ion-card>
 
-  <!-- todo: move to common template (bookmarks and discover share this list) --> 
+  <!-- todo: move to common template (bookmarks and discover share this list) -->
   <ion-list [hidden]="empty">
     <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device.id)">
       <ion-thumbnail item-left>
@@ -26,14 +23,9 @@
       <p>{{device.product}}</p>
     </ion-item>
   </ion-list>
-  
-  <button ion-button block (click)="refresh()">
-     Refresh
-     <ion-spinner [hidden]="!busy"></ion-spinner>
+
+  <button ion-button block (click)="add()">
+    Add device
   </button>
-
+    
 </ion-content>
-
-
-
-
