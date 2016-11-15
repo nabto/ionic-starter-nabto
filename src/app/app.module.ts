@@ -9,6 +9,9 @@ import { DiscoverPage } from '../pages/discover/discover';
 import { PairingPage } from '../pages/pairing/pairing';
 import { BookmarksPage } from '../pages/bookmarks/bookmarks';
 import { NabtoService } from './nabto.service';
+import { BookmarksService } from './bookmarks.service';
+import { NabtoDevice } from 'device.class';
+import { Storage } from '@ionic/storage';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,6 @@ import { NabtoService } from './nabto.service';
     PairingPage,
     BookmarksPage
   ],
-  providers: [NabtoService]
+  providers: [NabtoService, BookmarksService, Storage]
 })
 export class AppModule {}

@@ -5,7 +5,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { PairingPage } from '../pairing/pairing';
 import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
-import { NabtoService, NabtoDevice } from '../../app/nabto.service';
+import { NabtoService } from '../../app/nabto.service';
+import { NabtoDevice } from '../../app/device.class';
 
 //declare var nabto;
 
