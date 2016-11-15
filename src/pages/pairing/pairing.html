@@ -1,16 +1,39 @@
 <ion-header>
   <ion-navbar>
-    <button menuToggle *ngIf="!device_id">
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Pair with device</ion-title>
+    <ion-title>{{shortTitle}}</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <b>{{device_id}}</b>
-  <ion-icon name="wifi"></ion-icon>
-  <div>
-    blah
+<ion-content padding>
+  <h2>{{longTitle}}</h2>
+  
+  <ion-list>
+    <ion-item>
+      <ion-thumbnail item-left>
+        <img [src]="device.iconUrl">
+      </ion-thumbnail>
+      <h2>{{device.name}}</h2>
+      <p>{{device.product}}</p>
+    </ion-item>
+  </ion-list>
+
+  <div [hidden]="success">   
+    <p>You are about to set yourself as the owner of <em>{{device.name}}</em>.</p>
+  
+    <button ion-button block (click)="pair()">
+      Confirm pairing with this {{operatingSystem}} device
+      <ion-spinner [hidden]="!busy"></ion-spinner>
+    </button>
   </div>
+  
+  <div [hidden]="!success">   
+    <ion-icon align="center" color="primary" name="checkmark-circle-outline"></ion-icon>
+    <button ion-button block (click)="pair()">
+      Go to your new device
+    </button>
+    <button ion-button color="light" block (click)="back()">
+      Back to overview
+    </button>
+  </div>
+
 </ion-content>

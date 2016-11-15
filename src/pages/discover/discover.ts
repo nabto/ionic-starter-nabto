@@ -8,8 +8,6 @@ import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
 
-//declare var nabto;
-
 @Component({
   selector: 'page-discover',
   templateUrl: 'discover.html'
@@ -21,12 +19,11 @@ export class DiscoverPage {
   shortTitle: string;
 
   public devices: Observable<NabtoDevice[]>;
-
   private deviceSrc = [];
 
   ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
-    this.discover();  // apparently this breaks chrome and livereload??!
+    this.discover();
   }
   
   constructor(public navCtrl: NavController,
@@ -56,7 +53,6 @@ export class DiscoverPage {
         this.busy = false;
         this.deviceSrc.splice(0, this.deviceSrc.length);
         for(let i = 0; i < discovered.length; i++) {
-          console.log(`Added device: ${JSON.stringify(discovered[i])} - name ${discovered[i].name}`);
           this.deviceSrc.push(discovered[i]);
         }
         this.empty = (discovered.length == 0)
@@ -71,7 +67,7 @@ export class DiscoverPage {
           closeButtonText: 'Ok'
         });
         toast.present();
-        console.log("ERROR discovering devices (await toast!): " + JSON.stringify(error));
+        console.log("ERROR discovering devices): " + JSON.stringify(error));
       });
   }
            
@@ -82,7 +78,9 @@ export class DiscoverPage {
 
   itemTapped(event, device) {
     this.navCtrl.push(PairingPage, {
-      device_id: device.id
+      device: device,
+      shortTitle: "Pair device",
+      longTitle: "Pair local device"
     });
   }
 }

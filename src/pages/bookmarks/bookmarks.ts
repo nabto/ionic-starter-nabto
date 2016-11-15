@@ -12,14 +12,16 @@ import { BookmarksService } from '../../app/bookmarks.service';
 })
 export class BookmarksPage {
 
-  public devices: Observable<NabtoDevice[]>;
   private deviceSrc: NabtoDevice[] = [];
-  public shortTitle: string;
-  public longTitle: string;
+  devices: Observable<NabtoDevice[]>;
+  shortTitle: string;
+  longTitle: string;
+  empty: boolean;
 
   constructor(public navCtrl: NavController, private bookmarks: BookmarksService) {
     this.shortTitle = "Devices";
     this.longTitle = "Known devices";
+    this.empty = true;
   }
 
   ionViewDidLoad() {
@@ -39,13 +41,15 @@ export class BookmarksPage {
       for(let i = 0; i < bookmarks.length; i++) {
         this.deviceSrc.push(bookmarks[i]);
       }
+      this.empty = (this.deviceSrc.length == 0);
     });
   }
   
   writeTestBookmarks() {
     let bookmarks = [];
+    this.bookmarks.writeBookmarks(bookmarks);
     bookmarks.push(new NabtoDevice('My bookmarked device A', 'demo.nabto.net', 'LG Premium 1000'));
-    bookmarks.push(new NabtoDevice('My bookmarked device B', 'demo.nabto.net', 'LG Premium 2000'));
+    bookmarks.push(new NabtoDevice('My bookmarked device B', 'demo.nabto.net', 'LG Premium 2000', 'img/chip-small.png'));
     this.bookmarks.writeBookmarks(bookmarks);
   }
 

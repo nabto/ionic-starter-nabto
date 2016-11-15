@@ -18,12 +18,13 @@
 
   <!-- todo: move to common template (bookmarks and discover share this list) --> 
   <ion-list [hidden]="empty">
-    <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device.id)">
+    <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device)">
       <ion-thumbnail item-left>
         <img [src]="device.iconUrl">
       </ion-thumbnail>
       <h2>{{device.name}}</h2>
       <p>{{device.product}}</p>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
     </ion-item>
   </ion-list>
   
