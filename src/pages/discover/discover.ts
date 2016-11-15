@@ -52,6 +52,7 @@ export class DiscoverPage implements OnInit {
       .then(discovered => {
         this.deviceSrc.splice(0, this.deviceSrc.length);
         for(let i = 0; i < discovered.length; i++) {
+          console.log(`Added device: ${JSON.stringify(discovered[i])} - name ${discovered[i].name}`);
           this.deviceSrc.push(discovered[i]);
         }
         this.empty = (discovered.length == 0)

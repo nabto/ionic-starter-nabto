@@ -33,24 +33,37 @@ export class NabtoService {
           reject(new Error("Discover failed: " + error.message));
           return;
         }
-        nabto.rpcInvoke("nabto://demo.nabto.net/wind_speed.json?", (err, response) => {
-          if (!err) {
-            console.log("RPC invocation result: " + response);
-            console.log("RPC invocation result: " + JSON.stringify(response));
-          } else {
-            reject(new Error("Invoke failed: " + error.message));
+        let devices = [];
+        for(let i = 0; i < deviceIds.length; i++) {
+          devices.push(this.getDetails(deviceIds[i]));
+        }
+        Promise.all(devices).then((res: NabtoDevice[]) => {
+          for(let i = 0; i < res.length; i++) {
+            console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
+            resolve(res);
           }
         });
-        let richDevices = [];
-        for(let i = 0; i < deviceIds.length; i++) {
-          console.log("adding device " + i + " to list: " + deviceIds[i]);
-          richDevices.push(new NabtoDevice(`Sommerhus Stuen`, deviceIds[i], 'ACME 8000 Heatpump', 'img/chip.png'));
-          richDevices.push(new NabtoDevice(`Sommerhus Stuen`, deviceIds[i], 'ACME 8000 Heatpump', 'http://www.heatpumps4pools.com/myfiles/image/spare-parts-image-2.jpg'));
-        }
-        resolve(richDevices);
-        return;
       });
     });
   }
+
+  
+  getDetails(deviceId: string): Promise<NabtoDevice> {
+    return new Promise((resolve, reject) => {
+      nabto.rpcInvoke("nabto://" + deviceId + "/getPublicDeviceInfo.json?", (err, details) => {
+        if (!err) {
+          let r = details.response;
+          let dev:NabtoDevice = new NabtoDevice(r.deviceName, deviceId, r.deviceType, r.deviceIcon);
+          console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
+          resolve(dev);
+        } else {
+          console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
+          resolve(new NabtoDevice(deviceId, deviceId, "(could not get details)", details.deviceIcon));
+        }
+      });
+    });
+  }
+
+  
 }
 
