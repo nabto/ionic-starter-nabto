@@ -26,7 +26,7 @@ export class NabtoDevice {
 @Injectable()
 export class NabtoService {
 
-  discover(): Promise<NabtoDevice[]> {
+  public discover(): Promise<NabtoDevice[]> {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {
         if (error) {
@@ -48,7 +48,7 @@ export class NabtoService {
   }
 
   
-  getDetails(deviceId: string): Promise<NabtoDevice> {
+  private getDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       nabto.rpcInvoke("nabto://" + deviceId + "/getPublicDeviceInfo.json?", (err, details) => {
         if (!err) {

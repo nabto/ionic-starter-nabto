@@ -16,6 +16,7 @@ import { NabtoService, NabtoDevice } from '../../app/nabto.service';
 })
 export class DiscoverPage implements OnInit {
   empty: boolean;
+  busy: boolean;
   longTitle: string;
   shortTitle: string;
 
@@ -36,6 +37,7 @@ export class DiscoverPage implements OnInit {
               private zone: NgZone
               ) {
 
+    this.busy = false;
     this.longTitle = navParams.get('longTitle');
     if (!this.longTitle) {
       this.longTitle = "Discover local devices";
@@ -48,8 +50,10 @@ export class DiscoverPage implements OnInit {
   }
 
   discover(): void {
+    this.busy = true;
     this.nabtoService.discover()
       .then(discovered => {
+        this.busy = false;
         this.deviceSrc.splice(0, this.deviceSrc.length);
         for(let i = 0; i < discovered.length; i++) {
           console.log(`Added device: ${JSON.stringify(discovered[i])} - name ${discovered[i].name}`);
@@ -60,6 +64,7 @@ export class DiscoverPage implements OnInit {
           console.log("no devices found");
         }
       }).catch(error => {
+        this.busy = false;
         let toast = this.toastCtrl.create({
           message: error.message,
           showCloseButton: true,

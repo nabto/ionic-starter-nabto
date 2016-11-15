@@ -15,7 +15,8 @@
       Make sure you are on the same local area network as the device you try to discover and that the device is powered on. 
     </ion-card-content>
   </ion-card>
-  
+
+ 
   <ion-list [hidden]="empty">
     <ion-item *ngFor="let device of devices | async" (click)="itemTapped($event, device)">
       <ion-thumbnail item-left>
@@ -27,7 +28,8 @@
   </ion-list>
   
   <button ion-button block (click)="refresh()">
-    Refresh
+     Refresh
+     <ion-spinner [hidden]="!busy"></ion-spinner>
   </button>
 
 </ion-content>
