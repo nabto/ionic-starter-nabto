@@ -26,8 +26,12 @@
     </button>
   </div>
   
-  <div [hidden]="!success">   
-    <ion-icon align="center" color="primary" name="checkmark-circle-outline"></ion-icon>
+  <div [hidden]="!success">
+
+    <div style="margin-top: 0px; text-align: center; font-size: 150px;">
+      <ion-icon color="primary" name="checkmark-circle-outline"></ion-icon>
+    </div>
+
     <button ion-button block (click)="pair()">
       Go to your new device
     </button>
