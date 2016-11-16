@@ -29,12 +29,13 @@
     "typescript": "2.0.6"
   },
   "cordovaPlugins": [
-    "cordova-plugin-whitelist",
-    "cordova-plugin-console",
-    "cordova-plugin-statusbar",
+    {
+      "locator": "/Users/nabto/git/cordova-plugin-nabto",
+      "id": "cordova-plugin-nabto"
+    },
     "cordova-plugin-device",
-    "cordova-plugin-splashscreen",
-    "ionic-plugin-keyboard"
+    "cordova-plugin-statusbar",
+    "cordova-plugin-splashscreen"
   ],
   "cordovaPlatforms": [
     "ios",
@@ -42,7 +43,12 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
+    },
+    {
+      "platform": "browser",
+      "version": "",
+      "locator": "browser"
     }
   ],
-  "description": "nabto-ionic-starter: An Ionic project"
+  "description": "ionic-starter-nabto: An Ionic project"
 }

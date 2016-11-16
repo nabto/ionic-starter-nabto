@@ -5,8 +5,6 @@
 </ion-header>
 
 <ion-content padding>
-  <h2>{{longTitle}}</h2>
-
   <ion-card [hidden]="!empty">
     <ion-card-header>
       No bookmarked devices
@@ -14,7 +12,7 @@
   </ion-card>
 
   <ion-list [hidden]="empty">
-    <ion-item *ngFor="let device of devices | async" (click)="showVendorPage($event, device)">
+    <ion-item *ngFor="let device of devices | async" (tap)="showVendorPage($event, device)">
       <ion-thumbnail item-left>
         <img [src]="device.iconUrl">
       </ion-thumbnail>

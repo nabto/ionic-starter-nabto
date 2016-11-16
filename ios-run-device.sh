@@ -1,0 +1,1 @@
+ionic run ios --device
