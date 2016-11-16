@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
 import { NabtoDevice } from '../../app/device.class';
-import { DiscoverPage } from '../discover/discover';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { AlertController } from 'ionic-angular';
-
+import { DiscoverPage } from '../discover/discover';
+import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
 @Component({
   selector: 'page-bookmarks',
@@ -47,8 +47,11 @@ export class BookmarksPage {
     });
   }
 
-  itemTapped(event, device_id) {
-    alert('TODO: show actual device page for ' + device_id);
+  showVendorPage(event, device) {
+    console.log(`item tapped: ${JSON.stringify(device)}`);
+    this.navCtrl.push(VendorHeatingPage, {
+      device: device
+    });
   }
 
   addNewDevice() {
