@@ -6,7 +6,7 @@ npm install
 
 which ionic > /dev/null
 if [ $? != "0" ]; then
-    echo sudo npm install -g ionic
+    sudo npm install -g ionic
 fi
 
 
