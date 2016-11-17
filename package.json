@@ -29,7 +29,6 @@
     "typescript": "2.0.6"
   },
   "cordovaPlugins": [
-    "cordova-plugin-nabto@2.0-beta.3",
     "cordova-plugin-device",
     "cordova-plugin-statusbar",
     "cordova-plugin-splashscreen"
