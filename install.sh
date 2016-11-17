@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 npm install
 
 which ionic > /dev/null
@@ -30,8 +32,6 @@ mkdir -p $DIR
 cd $DIR
 SDKS=nabto-sdk-ios-3.0.15-beta1.tar.gz
 
-pushd . > /dev/null
-
 for f in ${SDKS}; do
     tmp=`mktemp`
     url=https://download.nabto.com/npm-libs/$f
@@ -45,7 +45,7 @@ for f in ${SDKS}; do
     rm -f $tmp
 done
 
-popd > /dev/null
+cd $ROOT
 
 # step 3 - repeat 
 ionic plugin add cordova-plugin-nabto@2.0-beta.4
