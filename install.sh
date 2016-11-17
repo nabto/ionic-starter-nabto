@@ -3,7 +3,6 @@
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 npm -g install ionic cordova
-
 npm install
 
 # super ugly hen-and-egg workaround for nabto-1347: cordova plugin
