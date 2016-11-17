@@ -6,4 +6,33 @@
 
 <ion-content padding>
   <h2>{{device.name}}</h2>
+
+<ion-list>
+  <ion-item>
+    <ion-range [disabled]="!activated" min="16" max="30" [(ngModel)]="heat" color="primary">
+      <ion-icon range-left name="snow" color="primary"></ion-icon>
+      <ion-icon range-right name="sunny" color="primary"></ion-icon>
+    </ion-range>
+ </ion-item>
+ <ion-item>
+   <ion-label [hidden]="!activated" style="font-size: 32px;">{{heat}}&deg;C</ion-label>
+   <ion-note [hidden]="!activated" item-right>20&deg;C in room</ion-note> 
+   <ion-label [hidden]="activated" style="text-align: center; font-size: 32px;">Powered off</ion-label>
+ </ion-item>
+ <ion-item>
+   <ion-label>Heatpump active</ion-label>
+   <ion-toggle [(ngModel)]="activated"></ion-toggle>
+ </ion-item>
+
+ <ion-item>
+   <ion-label>Mode</ion-label>
+   <ion-select [(ngModel)]="mode" interface="action-sheet">
+     <ion-option value="heat">Heat</ion-option>
+     <ion-option value="cool">Cool</ion-option>
+     <ion-option value="circulate">Circulate</ion-option>
+     <ion-option value="dehumidify">Dehumidify</ion-option>
+   </ion-select>
+ </ion-item>
+</ion-list>
+
 </ion-content>

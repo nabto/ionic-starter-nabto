@@ -9,10 +9,16 @@ import { NabtoDevice } from '../../app/device.class';
 export class VendorHeatingPage {
 
   device: NabtoDevice;
+  activated: boolean;
+  heat: number;
+  mode: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams) {
     this.device = navParams.get('device');
+    this.heat = 22;
+    this.activated = true;
+    this.mode = "heat";
   }
 
   ionViewDidLoad() {

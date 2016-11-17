@@ -4,6 +4,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { LoadingController } from 'ionic-angular';
 import { BookmarksService } from '../../app/bookmarks.service';
+import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
 @Component({
   selector: 'page-pairing',
@@ -58,5 +59,11 @@ export class PairingPage {
   writeBookmark() {
     this.bookmarksService.addBookmark(this.device);
   }
-  
+
+  showVendorPage(event) {
+    this.navCtrl.push(VendorHeatingPage, {
+      device: this.device
+    });
+  }
+
 }
