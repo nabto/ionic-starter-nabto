@@ -60,7 +60,7 @@ export class PairingPage {
     this.bookmarksService.addBookmark(this.device);
   }
 
-  showVendorPage(event) {
+  showVendorPage() {
     this.navCtrl.push(VendorHeatingPage, {
       device: this.device
     });
