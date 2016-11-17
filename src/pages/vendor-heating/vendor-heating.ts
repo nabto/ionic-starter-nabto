@@ -10,13 +10,13 @@ export class VendorHeatingPage {
 
   device: NabtoDevice;
   activated: boolean;
-  heat: number;
+  temperature: number;
   mode: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams) {
     this.device = navParams.get('device');
-    this.heat = 22;
+    this.temperature = 22;
     this.activated = true;
     this.mode = "heat";
   }
@@ -24,5 +24,23 @@ export class VendorHeatingPage {
   ionViewDidLoad() {
     console.log('Hello VendorHeatingPage Page');
   }
+
+  activationToggled() {
+    console.log("Activation toggled - state is now " + this.activated);
+  }
+
+  tempChanged(temp) {
+    console.log(`Temperature changed - value is now ${this.temperature}, event temp is ${temp}`);
+    this.temperature = temp;
+  }
+
+  refresh() {
+    console.log("refresh");    
+  }
+
+  showSettings() {
+    console.log("settings");    
+  }
+
 
 }
