@@ -19,8 +19,8 @@
                [ngModel]="temperature" color="primary"
                (ngModelChange)="tempChanged($event)">
       
-      <ion-icon range-left name="snow" color="primary"></ion-icon>
-      <ion-icon range-right name="sunny" color="primary"></ion-icon>
+      <ion-icon (tap)="decrement()" range-left name="snow" color="primary"></ion-icon>
+      <ion-icon (tap)="increment()" range-right name="sunny" color="primary"></ion-icon>
     </ion-range>
   </ion-item>
   <ion-item>
@@ -40,13 +40,19 @@
 
 </ion-list>
 
-  <button ion-button block (click)="refresh()">
-     Refresh
-     <ion-spinner [hidden]="!busy"></ion-spinner>
-  </button>
+<ion-row>
+   <ion-col>
+     <button ion-button icon-left color="light">
+       <ion-icon name="refresh"></ion-icon>
+       Refresh
+     </button>
+   </ion-col>
+   <ion-col>
+     <button ion-button icon-right color="light">
+       Settings
+       <ion-icon name="cog"></ion-icon>
+     </button>
+   </ion-col>
+</ion-row>
 
-  <button ion-button block (click)="showSettings()">
-    Settings
-  </button>
-  
 </ion-content>

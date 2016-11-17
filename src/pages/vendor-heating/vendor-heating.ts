@@ -12,6 +12,7 @@ export class VendorHeatingPage {
   activated: boolean;
   temperature: number;
   mode: string;
+  busy: boolean;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams) {
@@ -19,6 +20,7 @@ export class VendorHeatingPage {
     this.temperature = 22;
     this.activated = true;
     this.mode = "heat";
+    this.busy = false;
   }
 
   ionViewDidLoad() {
@@ -42,5 +44,11 @@ export class VendorHeatingPage {
     console.log("settings");    
   }
 
+  increment() {
+    this.temperature++;
+  }
 
+  decrement() {
+    this.temperature--;
+  }
 }
