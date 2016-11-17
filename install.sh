@@ -2,13 +2,9 @@
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+npm -g install ionic cordova
+
 npm install
-
-which ionic > /dev/null
-if [ $? != "0" ]; then
-    echo sudo npm install -g ionic
-fi
-
 
 # super ugly hen-and-egg workaround for nabto-1347: cordova plugin
 # fails installation because nabto lib files are missing, if nabto lib
