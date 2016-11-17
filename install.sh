@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 npm -g install ionic cordova
