@@ -1,7 +1,7 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "ionic-starter-nabto",
+  "author": "Nabto ApS",
+  "homepage": "https://www.nabto.com",
   "private": true,
   "scripts": {
     "ionic:build": "ionic-app-scripts build",
@@ -29,10 +29,7 @@
     "typescript": "2.0.6"
   },
   "cordovaPlugins": [
-    {
-      "locator": "/Users/nabto/git/cordova-plugin-nabto",
-      "id": "cordova-plugin-nabto"
-    },
+    "cordova-plugin-nabto@2.0-beta.3",
     "cordova-plugin-device",
     "cordova-plugin-statusbar",
     "cordova-plugin-splashscreen"
@@ -43,11 +40,6 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
-    },
-    {
-      "platform": "browser",
-      "version": "",
-      "locator": "browser"
     }
   ],
   "description": "ionic-starter-nabto: An Ionic project"
