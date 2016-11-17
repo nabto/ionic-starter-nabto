@@ -41,7 +41,6 @@ for f in ${SDKS}; do
        rm -f $tmp
        exit 1
     fi
-    cd $DIR
     tar xvfz $tmp
     rm -f $tmp
 done
