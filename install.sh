@@ -2,28 +2,9 @@
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-TOOLS=""
-
-function check_tool() {
-    tool=$1
-    which cordova > /dev/null
-    if [ $? != "0" ]; then
-        TOOLS="${TOOLS} ${tool}"
-    fi
-}
-
-check_tool ios-sim
-check_tool ios-deploy
-check_tool cordova
-check_tool ionic
-
-if [ -n "$TOOLS" ]; then
-  echo "You must enter admin password to install build tools"
-  sudo npm install -g $TOOLS
-fi
-
 set -e
 
+npm install ios-sim ios-deploy cordova ionic
 npm install
 
 # super ugly hen-and-egg workaround for nabto-1347: cordova plugin
