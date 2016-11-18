@@ -3,40 +3,76 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://www.nabto.com/unabto/query_model.xsd">
 
-  <query name="house_temperature.json" description="Measure House Temperature" id="2">
+  <!-- general queries -->
+  <query name="get_public_device_info.json" id="10000">
     <request>
-      <parameter name="sensor_id" type="uint32"/>
+    </request>
+    <response format="json">
+      <parameter name="device_name" type="raw"/>
+      <parameter name="device_type" type="raw"/>
+      <parameter name="device_icon" type="raw"/>
+    </response>
+  </query>
+
+  <!-- heatpump demo queries -->
+
+  <!-- get/set state: 1 => on, 0 => off -->
+  <query name="heatpump_get_state.json" id="20000">
+    <request>
+    </request>
+    <response format="json">
+      <parameter name="state" type="uint8"/>
+    </response>
+  </query>
+  <query name="heatpump_set_state.json" id="20010">
+    <request>
+      <parameter name="state" type="uint8"/>
+    </request>
+    <response format="json">
+      <parameter name="state" type="uint8"/>
+    </response>
+  </query>
+
+  <!-- get room temperature -->
+  <query name="heatpump_get_room_temperature.json" id="20020">
+    <request>
     </request>
     <response format="json">
       <parameter name="temperature" type="int32"/>
     </response>
   </query>
 
-  <query name="wind_speed.json" description="Measure Wind Speed" id="2">
+  <!-- get/set thermostat target temperature -->
+  <query name="heatpump_get_target_temperature.json" id="20030">
     <request>
     </request>
     <response format="json">
-      <parameter name="speed_m_s" type="uint32"/>
+      <parameter name="temperature" type="int32"/>
+    </response>
+  </query>
+  <query name="heatpump_set_target_temperature.json" id="20040">
+    <request>
+      <parameter name="temperature" type="int32"/>
+    </request>
+    <response format="json">
+      <parameter name="temperature" type="int32"/>
     </response>
   </query>
 
-  <query name="weather_station.json" description="Weather Station" id="3">
+  <!-- get/set operational mode -->
+  <query name="heatpump_get_mode.json" id="20050">
     <request>
     </request>
     <response format="json">
-      <parameter name="temperature" type="uint32"/>
-      <parameter name="windspeed" type="uint32"/>
-      <parameter name="humidity" type="uint32"/>
+      <parameter name="mode" type="int32"/>
     </response>
   </query>
-
-  <query name="getPublicDeviceInfo.json" id="1000">
+  <query name="heatpump_set_mode.json" id="20060">
     <request>
+      <parameter name="mode" type="int32"/>
     </request>
     <response format="json">
-      <parameter name="deviceName" type="raw"/>
-      <parameter name="deviceType" type="raw"/>
-      <parameter name="deviceIcon" type="raw"/>
+      <parameter name="mode" type="int32"/>
     </response>
   </query>
 
