@@ -10,7 +10,7 @@
 <ion-list>
   <ion-item>
     <ion-label [hidden]="!activated" style="font-size: 32px;">{{temperature}}&deg;C</ion-label>
-    <ion-note [hidden]="!activated" item-right>20&deg;C in room</ion-note> 
+    <ion-note [hidden]="!activated" item-right>{{roomTemperature}}&deg;C in room</ion-note> 
     <ion-label [hidden]="activated" style="text-align: center; font-size: 32px;">Powered off</ion-label>
   </ion-item>
   <ion-item>
@@ -42,7 +42,7 @@
 
 <ion-row>
    <ion-col>
-     <button ion-button icon-left color="light">
+     <button ion-button icon-left (tap)="refresh()" color="light">
        <ion-icon name="refresh"></ion-icon>
        Refresh
      </button>

@@ -16,7 +16,7 @@ export class NabtoService {
         }
         let devices = [];
         for(let i = 0; i < deviceIds.length; i++) {
-          devices.push(this.getDetails(deviceIds[i]));
+          devices.push(this.getPublicDetails(deviceIds[i]));
         }
         Promise.all(devices).then((res: NabtoDevice[]) => {
           for(let i = 0; i < res.length; i++) {
@@ -28,7 +28,7 @@ export class NabtoService {
     });
   }
   
-  private getDetails(deviceId: string): Promise<NabtoDevice> {
+  private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
         if (!err) {
@@ -44,6 +44,23 @@ export class NabtoService {
     });
   }
 
-  
+  public invokeRpc(device: NabtoDevice, request: string): Promise<NabtoDevice> {
+    return new Promise((resolve, reject) => {
+      nabto.rpcInvoke(`nabto://${device.id}/${request}?`, (err, res) => {
+        if (!err) {
+          resolve(res.response);
+        } else {
+          let msg;
+          if (err.message) {
+            msg = `Request failed: ${err.message}`;
+          } else {
+            msg = "Request failed";
+          }
+          reject(new Error(msg));
+        }
+      });
+    });
+  }  
 }
+
 

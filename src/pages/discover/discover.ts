@@ -67,7 +67,7 @@ export class DiscoverPage {
           closeButtonText: 'Ok'
         });
         toast.present();
-        console.log("ERROR discovering devices): " + JSON.stringify(error));
+        console.log("ERROR discovering devices: " + JSON.stringify(error));
       });
   }
            

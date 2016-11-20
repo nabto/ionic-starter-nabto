@@ -16,41 +16,30 @@
 
   <!-- heatpump demo queries -->
 
-  <!-- get/set state: 1 => on, 0 => off -->
-  <query name="heatpump_get_state.json" id="20000">
+  <!-- get all state details -->
+  <query name="heatpump_get_full_state.json" id="20000">
     <request>
     </request>
     <response format="json">
-      <parameter name="state" type="uint8"/>
-    </response>
-  </query>
-  <query name="heatpump_set_state.json" id="20010">
-    <request>
-      <parameter name="state" type="uint8"/>
-    </request>
-    <response format="json">
-      <parameter name="state" type="uint8"/>
+      <parameter name="activated" type="uint8"/>
+      <parameter name="mode" type="int32"/>
+      <parameter name="target_temperature" type="int32"/>
+      <parameter name="room_temperature" type="int32"/>
     </response>
   </query>
 
-  <!-- get room temperature -->
-  <query name="heatpump_get_room_temperature.json" id="20020">
+  <!-- set activation state: 1 => on, 0 => off -->
+  <query name="heatpump_set_activation_state.json" id="20010">
     <request>
+      <parameter name="activated" type="uint8"/>
     </request>
     <response format="json">
-      <parameter name="temperature" type="int32"/>
+      <parameter name="activated" type="uint8"/>
     </response>
   </query>
 
-  <!-- get/set thermostat target temperature -->
-  <query name="heatpump_get_target_temperature.json" id="20030">
-    <request>
-    </request>
-    <response format="json">
-      <parameter name="temperature" type="int32"/>
-    </response>
-  </query>
-  <query name="heatpump_set_target_temperature.json" id="20040">
+  <!-- set thermostat target temperature -->
+  <query name="heatpump_set_target_temperature.json" id="20020">
     <request>
       <parameter name="temperature" type="int32"/>
     </request>
@@ -59,15 +48,8 @@
     </response>
   </query>
 
-  <!-- get/set operational mode -->
-  <query name="heatpump_get_mode.json" id="20050">
-    <request>
-    </request>
-    <response format="json">
-      <parameter name="mode" type="int32"/>
-    </response>
-  </query>
-  <query name="heatpump_set_mode.json" id="20060">
+  <!-- set operational mode -->
+  <query name="heatpump_set_mode.json" id="20030">
     <request>
       <parameter name="mode" type="int32"/>
     </request>
@@ -75,6 +57,7 @@
       <parameter name="mode" type="int32"/>
     </response>
   </query>
+
 
 </unabto_queries>
 
