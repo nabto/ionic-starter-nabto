@@ -4,7 +4,6 @@ import { ToastController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 import { LoadingController } from 'ionic-angular';
-import { NgZone } from '@angular/core';
 
 declare var NabtoError;
 
@@ -15,6 +14,7 @@ declare var NabtoError;
 export class VendorHeatingPage {
 
   device: NabtoDevice;
+  busy: boolean;
   activated: boolean;
   offline: boolean;
   temperature: number;
@@ -30,7 +30,6 @@ export class VendorHeatingPage {
               private nabtoService: NabtoService,
               public toastCtrl: ToastController,
               public loadingCtrl: LoadingController,
-              private zone: NgZone,
               public navParams: NavParams) {
     this.device = navParams.get('device');
     this.temperature = undefined;
@@ -40,6 +39,7 @@ export class VendorHeatingPage {
     this.maxTemp = 30;
     this.minTemp = 16;
     this.timer = undefined;
+    this.busy = false;
   }
 
   ionViewDidLoad() {
@@ -47,15 +47,23 @@ export class VendorHeatingPage {
   }
 
   armSpinnerTimer() {
+    this.cancelSpinner();
+    this.busy = true;
     this.timer = setTimeout(() => this.showSpinner(), 250);
+    console.log("armed spinner timer");
   }
 
   cancelSpinner() {
+    this.busy = false;
     if (this.timer) {
       clearTimeout(this.timer);
+      this.timer = undefined;
+      console.log("cancelled spinner timer");
     }
     if (this.spinner) {
       this.spinner.dismiss();
+      this.spinner = undefined;
+      console.log("dismissed visible spinner");
     }
   }
   
@@ -214,6 +222,14 @@ export class VendorHeatingPage {
 
   touchEnd() {
     console.log("touchEnd");    
+  }
+
+  available() {
+    return this.activated && !this.offline;
+  }
+
+  unavailable() {
+    return !this.activated || this.offline;
   }
  
 }
