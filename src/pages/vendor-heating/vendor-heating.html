@@ -8,9 +8,9 @@
 
 <ion-list>
   <ion-item>
-    <ion-label [hidden]="!activated" style="font-size: 32px;">{{temperature}}&deg;C</ion-label>
-    <ion-note [hidden]="!activated" item-right>{{roomTemperature}}&deg;C in room</ion-note> 
-    <ion-label [hidden]="activated" style="text-align: center; font-size: 32px;">Powered off</ion-label>
+    <ion-label [hidden]="!activated || offline" style="font-size: 32px;">{{temperature}}&deg;C</ion-label>
+    <ion-note [hidden]="!activated || offline" item-right>{{roomTemperature}}&deg;C in room</ion-note> 
+    <ion-label [hidden]="activated && !offline " style="text-align: center; font-size: 32px;">{{unavailableStatus}}</ion-label>
   </ion-item>
   <ion-item>
     

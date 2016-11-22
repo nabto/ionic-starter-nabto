@@ -55,16 +55,6 @@ export class NabtoService {
     return params.join("&");
   }
 
-  private doReject(reject: any, err: any) {
-    let msg;
-    if (err.message) {
-      msg = err.message;
-    } else {
-      msg = "Request failed";
-    }
-    reject(new Error(msg));
-  }
-  
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
@@ -81,11 +71,15 @@ export class NabtoService {
               if (!err) {
                 resolve(res.response);
               } else {
-                this.doReject(reject, err);
+                if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
+                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is because of target device has gone offline in between two invocations
+                  err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
+                }
+                reject(err);
               }
             });
           } else {
-            this.doReject(reject, err);
+            reject(err);
           }
         }
       });
