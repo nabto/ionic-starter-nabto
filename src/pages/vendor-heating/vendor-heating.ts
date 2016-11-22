@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
+import { LoadingController } from 'ionic-angular';
 
 @Component({
   selector: 'page-vendor-heating',
@@ -14,53 +15,68 @@ export class VendorHeatingPage {
   activated: boolean;
   temperature: number;
   mode: string;
-  busy: boolean;
   roomTemperature: number;
   maxTemp: number;
   minTemp: number;
+  timer: any;
+  spinner: any;
 
   constructor(public navCtrl: NavController,
               private nabtoService: NabtoService,
               public toastCtrl: ToastController,
+              public loadingCtrl: LoadingController,
               public navParams: NavParams) {
     this.device = navParams.get('device');
     this.temperature = undefined;
     this.activated = false;
     this.mode = undefined;
-    this.busy = false;
     this.maxTemp = 30;
     this.minTemp = 16;
+    this.timer = undefined;
   }
 
   ionViewDidLoad() {
     this.refresh();
   }
 
+  armSpinnerTimer() {
+    this.timer = setTimeout(() => this.showSpinner(), 250);
+  }
+
+  cancelSpinner() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    if (this.spinner) {
+      this.spinner.dismiss();
+    }
+  }
+  
   refresh() {
-    this.busy = true;
+    this.armSpinnerTimer();
     this.nabtoService.invokeRpc(this.device, "heatpump_get_full_state.json").
       then((state: any) => {
-        this.busy = false;
+        this.cancelSpinner();
         this.activated = state.activated;
         this.mode = this.mapDeviceMode(state.mode);
         this.temperature = this.mapDeviceTemp(state.target_temperature);
         this.roomTemperature = state.room_temperature;
       }).catch(error => {
-        this.busy = false;
+        this.cancelSpinner();
         this.handleError(error.message);
       });
   }
 
   activationToggled() {
     console.log("Activation toggled - state is now " + this.activated);
-    this.busy = true;
+    this.armSpinnerTimer();
     this.nabtoService.invokeRpc(this.device, "heatpump_set_activation_state.json",
                                 { "activated": this.activated ? 1 : 0 }).
       then((state: any) => {
-        this.busy = false;
+        this.cancelSpinner();
         this.activated = state.activated;
       }).catch(error => {
-        this.busy = false;
+        this.cancelSpinner();
         this.handleError(error.message);
       });
   }
@@ -90,28 +106,25 @@ export class VendorHeatingPage {
   }
 
   updateTargetTemperature() {
-    this.busy = true;
+    // XXX: no spinner as long as we don't debounce and invoke device every time (it yields odd behavior)
     this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
                                 { "temperature": this.temperature }).
       then((state: any) => {
-        this.busy = false;
-        // XXX: this will almost certainly yield an ugly user experience with a bumpy range...
         this.temperature = state.temperature;
       }).catch(error => {
-        this.busy = false;
         this.handleError(error.message);
       });
   }
 
   updateMode() {
-    this.busy = true;
+    this.armSpinnerTimer();
     this.nabtoService.invokeRpc(this.device, "heatpump_set_mode.json",
                                 { "mode": this.mapToDeviceMode(this.mode) }).
       then((state: any) => {
-        this.busy = false;
+        this.cancelSpinner();
         this.mode = this.mapDeviceMode(state.mode);
       }).catch(error => {
-        this.busy = false;
+        this.cancelSpinner();
         this.handleError(error.message);
       });
   }
@@ -155,7 +168,15 @@ export class VendorHeatingPage {
     toast.present();
     console.log("ERROR invoking device: " + JSON.stringify(error));
   }
-  
+
+  showSpinner() {
+    this.spinner = this.loadingCtrl.create({
+      content: "Invoking device...",
+    });
+    this.spinner.present();
+  }
+
+
   showSettings() {
     console.log("settings");    
   }
@@ -163,4 +184,5 @@ export class VendorHeatingPage {
   touchEnd() {
     console.log("touchEnd");    
   }
+ 
 }

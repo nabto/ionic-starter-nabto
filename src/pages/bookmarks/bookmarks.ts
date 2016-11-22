@@ -22,7 +22,7 @@ export class BookmarksPage {
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
               private alertCtrl: AlertController) {
-    this.shortTitle = "Overview X";
+    this.shortTitle = "Overview";
     this.longTitle = "Known devices";
     this.empty = true;
   }
