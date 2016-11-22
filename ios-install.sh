@@ -4,7 +4,7 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 set -e
 
-npm install ios-sim ios-deploy cordova ionic
+#npm install ios-sim ios-deploy cordova ionic
 npm install
 
 # super ugly hen-and-egg workaround for nabto-1347: cordova plugin
@@ -46,6 +46,10 @@ cd $ROOT
 
 # step 3 - repeat 
 ionic plugin add cordova-plugin-nabto@2.0-beta.4
+
+ionic plugin add cordova-plugin-device
+ionic plugin add cordova-plugin-statusbar
+ionic plugin add cordova-plugin-splashscreen
 
 ionic platform add ios 
 echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> platforms/ios/cordova/build.xcconfig

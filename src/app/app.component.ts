@@ -47,35 +47,5 @@ export class NabtoIonicApp {
           });
       });
     });
-    /*
-    platform.ready().then(() => {
-      if (nabto) {
-        console.log("app started - nabto is available");
-      } else {
-        console.log("app started - nabto is not available");
-        if (<any>window) {
-          console.log("app started - window available");
-          if ((<any>window).plugins) {
-            console.log("app started - window.plugins available");
-            if ((<any>window).plugins.nabto) {
-              console.log("app started - window.plugins.nabto available");
-            } else {
-              console.log("app started - window.plugins.nabto not available");
-            }
-          } else {
-            console.log("app started - window.plugins not available");
-          }
-        } else {
-          console.log("app started - window not available");
-        }
-
-      }
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      nabto.startup(() => {
-        StatusBar.styleDefault();
-        Splashscreen.hide();
-      });
-    });*/
   }
 }

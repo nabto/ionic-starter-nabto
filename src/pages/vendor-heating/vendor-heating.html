@@ -1,11 +1,10 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Heating Control</ion-title>
+    <ion-title>{{device.name}}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>{{device.name}}</h2>
 
 <ion-list>
   <ion-item>
@@ -15,12 +14,12 @@
   </ion-item>
   <ion-item>
     
-    <ion-range [disabled]="!activated" min="16" max="30"
+    <ion-range [disabled]="!activated" min="{{minTemp}}" max="{{maxTemp}}"
                [ngModel]="temperature" color="primary"
                (ngModelChange)="tempChanged($event)">
       
-      <ion-icon (tap)="decrement()" range-left name="snow" color="primary"></ion-icon>
-      <ion-icon (tap)="increment()" range-right name="sunny" color="primary"></ion-icon>
+      <ion-icon (tap)="decrement()" range-left name="snow" color="primary" style="padding: 5px"></ion-icon>
+      <ion-icon (tap)="increment()" range-right name="sunny" color="primary" style="padding: 5px"></ion-icon>
     </ion-range>
   </ion-item>
   <ion-item>
@@ -30,7 +29,7 @@
   
   <ion-item>
     <ion-label>Mode</ion-label>
-    <ion-select [(ngModel)]="mode" interface="action-sheet">
+    <ion-select [(ngModel)]="mode" interface="action-sheet" (ionChange)="updateMode()">
      <ion-option value="heat">Heat</ion-option>
      <ion-option value="cool">Cool</ion-option>
      <ion-option value="circulate">Circulate</ion-option>

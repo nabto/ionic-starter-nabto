@@ -44,19 +44,49 @@ export class NabtoService {
     });
   }
 
-  public invokeRpc(device: NabtoDevice, request: string): Promise<NabtoDevice> {
+  private buildParamString(input: any): string {
+    let params = [];
+    for (let key in input) {
+        if (input.hasOwnProperty(key)) {
+            let val = input[key];
+            params.push(`${key}=${val}`);
+        }
+    }
+    return params.join("&");
+  }
+
+  private doReject(reject: any, err: any) {
+    let msg;
+    if (err.message) {
+      msg = err.message;
+    } else {
+      msg = "Request failed";
+    }
+    reject(new Error(msg));
+  }
+  
+  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
-      nabto.rpcInvoke(`nabto://${device.id}/${request}?`, (err, res) => {
+      let paramString = "";
+      if (parameters) {
+          paramString = this.buildParamString(parameters);
+      }
+      nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
         } else {
-          let msg;
-          if (err.message) {
-            msg = `Request failed: ${err.message}`;
+          if (err.code == NabtoError.Code.API_RPC_COMMUNICATION_PROBLEM) {
+            // retry on this specific error (API will have flushed connection and re-connect)
+            nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+              if (!err) {
+                resolve(res.response);
+              } else {
+                this.doReject(reject, err);
+              }
+            });
           } else {
-            msg = "Request failed";
+            this.doReject(reject, err);
           }
-          reject(new Error(msg));
         }
       });
     });
