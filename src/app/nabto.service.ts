@@ -1,12 +1,60 @@
 import { Injectable } from '@angular/core';
 import { NabtoDevice } from './device.class';
+import { Storage } from '@ionic/storage';
 
 declare var nabto;
 declare var NabtoError;
 
 @Injectable()
 export class NabtoService {
-   
+
+  constructor (private storage: Storage) {
+  }
+
+  //
+  // NOTE: Keypair is stored directly on the filesystem with dummy
+  // encryption (common password) - if necessary, encrypt with either
+  // user provided password (more complex user experience) or protect
+  // with a random password (e.g. through window.crypto.getRandomValues)
+  // which is then stored in the platform's keystore.
+  //
+  // A Cordova plugin for accessing the native platform's secure
+  // storage to store and retrieve such generated random password is
+  // available at https://github.com/Crypho/cordova-plugin-secure-storage.
+  //
+  // However, please note that this approach only works well on iOS -
+  // on Android, the keystore is completely nuked when the user
+  // changes security settings as outlined here:
+  // https://doridori.github.io/android-security-the-forgetful-keystore/
+  //
+  // The consequences must be carefully explained to the user - hence
+  // per default, we have not enabled this.
+  //
+  public createKeyPair(username: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let password = "empty"; // see comment above
+      nabto.createKeyPair(username, password, (error) => {
+        if (!error) {
+          console.log("nabto.createKeyPair succeeded");
+          this.storage.set('username', username);    
+          resolve(username)
+        } else {
+          console.log(`nabto.createKeyPair failed: ${error} (code=${error.code}, inner=${error.inner})`);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  public startup(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.storage.get('username').then((username) => {
+        // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
+        resolve("TODO - username");
+      });
+    });
+  }
+  
   public discover(): Promise<NabtoDevice[]> {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {

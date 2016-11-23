@@ -12,7 +12,7 @@ declare var NabtoError;
   templateUrl: 'vendor-heating.html'
 })
 export class VendorHeatingPage {
-
+  
   device: NabtoDevice;
   busy: boolean;
   activated: boolean;
@@ -46,32 +46,11 @@ export class VendorHeatingPage {
     this.refresh();
   }
 
-  armSpinnerTimer() {
-    this.cancelSpinner();
-    this.busy = true;
-    this.timer = setTimeout(() => this.showSpinner(), 250);
-    console.log("armed spinner timer");
-  }
-
-  cancelSpinner() {
-    this.busy = false;
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = undefined;
-      console.log("cancelled spinner timer");
-    }
-    if (this.spinner) {
-      this.spinner.dismiss();
-      this.spinner = undefined;
-      console.log("dismissed visible spinner");
-    }
-  }
-  
   refresh() {
-    this.armSpinnerTimer();
+    this.busyBegin();
     this.nabtoService.invokeRpc(this.device, "heatpump_get_full_state.json").
       then((state: any) => {
-        this.cancelSpinner();
+        this.busyEnd();
         console.log(`Got new heatpump state: ${JSON.stringify(state)}`);
         this.activated = state.activated;
         this.offline = false;
@@ -83,28 +62,47 @@ export class VendorHeatingPage {
         }
         console.log(`offline=${this.offline}, activated=${this.activated}`);
       }).catch(error => {
-        this.cancelSpinner();
+        this.busyEnd();
         this.handleError(error);
       });
   }
 
   activationToggled() {
     console.log("Activation toggled - state is now " + this.activated);
-    this.armSpinnerTimer();
+    this.busyBegin();
     this.nabtoService.invokeRpc(this.device, "heatpump_set_activation_state.json",
                                 { "activated": this.activated ? 1 : 0 }).
       then((state: any) => {
-        this.cancelSpinner();
+        this.busyEnd();
         this.activated = state.activated;
         if (!this.activated) {
           this.unavailableStatus = "Powered off";
         }
       }).catch(error => {
-        this.cancelSpinner();
+        this.busyEnd();
         this.handleError(error);
       });
   }
 
+  busyBegin() {
+    if (!this.busy) {
+      this.busy = true;
+      this.timer = setTimeout(() => this.showSpinner(), 250);
+    }
+  }
+
+  busyEnd() {
+    this.busy = false;
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+    }
+    if (this.spinner) {
+      this.spinner.dismiss();
+      this.spinner = undefined;
+    }
+  }
+  
   tempChanged(temp) {
     console.log(`Temperature changed - value is now ${this.temperature}, event temp is ${temp}`);
     this.temperature = temp;
@@ -141,14 +139,14 @@ export class VendorHeatingPage {
   }
 
   updateMode() {
-    this.armSpinnerTimer();
+    this.busyBegin();
     this.nabtoService.invokeRpc(this.device, "heatpump_set_mode.json",
                                 { "mode": this.mapToDeviceMode(this.mode) }).
       then((state: any) => {
-        this.cancelSpinner();
+        this.busyEnd();
         this.mode = this.mapDeviceMode(state.mode);
       }).catch(error => {
-        this.cancelSpinner();
+        this.busyEnd();
         this.handleError(error);
       });
   }
@@ -213,15 +211,6 @@ export class VendorHeatingPage {
       content: "Invoking device...",
     });
     this.spinner.present();
-  }
-
-
-  showSettings() {
-    console.log("settings");    
-  }
-
-  touchEnd() {
-    console.log("touchEnd");    
   }
 
   available() {

@@ -1,0 +1,34 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Keypair creation</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <p>Enter the name to identify this {{operatingSystem}} device when communicating with other devices.</p>
+
+<!--  <form (ngSubmit)="submit()"> -->
+
+<ion-list>
+
+  <ion-item>
+    <ion-label stacked>Name to use in keypair</ion-label>
+    <ion-input required type="text" [(ngModel)]="deviceName" name="title"></ion-input>
+  </ion-item>
+
+</ion-list>
+
+<button ion-button type="submit" block (click)="submit()">
+  Continue
+</button>
+
+<button color="light" ion-button block (click)="clear()">
+  Clear
+</button>
+
+<!--</form>-->
+
+</ion-content>

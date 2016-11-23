@@ -6,6 +6,8 @@ import { LoadingController } from 'ionic-angular';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
+declare var cordova;
+
 @Component({
   selector: 'page-pairing',
   templateUrl: 'pairing.html'
@@ -18,7 +20,8 @@ export class PairingPage {
   success: boolean;
   busy: boolean;
   loader: any;
-
+  deviceName: string;
+  
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
@@ -34,6 +37,7 @@ export class PairingPage {
   
   ionViewDidLoad() {
     this.operatingSystem = (<any>window).device.platform;
+    this.deviceName = cordova.plugins.deviceName;
   }
   
   presentLoading() {

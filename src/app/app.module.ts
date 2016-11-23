@@ -4,10 +4,12 @@ import { Storage } from '@ionic/storage';
 import { NabtoIonicApp } from './app.component';
 import { NabtoService } from './nabto.service';
 import { BookmarksService } from './bookmarks.service';
+import { ProfileService } from './profile.service';
 import { DiscoverPage } from '../pages/discover/discover';
 import { PairingPage } from '../pages/pairing/pairing';
 import { BookmarksPage } from '../pages/bookmarks/bookmarks';
 import { VendorHeatingPage } from '../pages/vendor-heating/vendor-heating';
+import { ProfilePage } from '../pages/profile/profile';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,8 @@ import { VendorHeatingPage } from '../pages/vendor-heating/vendor-heating';
     DiscoverPage,
     PairingPage,
     BookmarksPage,
-    VendorHeatingPage
+    VendorHeatingPage,
+    ProfilePage
   ],
   imports: [
     IonicModule.forRoot(NabtoIonicApp)
@@ -26,8 +29,9 @@ import { VendorHeatingPage } from '../pages/vendor-heating/vendor-heating';
     DiscoverPage,
     PairingPage,
     BookmarksPage,
-    VendorHeatingPage
+    VendorHeatingPage,
+    ProfilePage
   ],
-  providers: [NabtoService, BookmarksService, Storage]
+  providers: [ProfileService, NabtoService, BookmarksService, Storage]
 })
 export class AppModule {}

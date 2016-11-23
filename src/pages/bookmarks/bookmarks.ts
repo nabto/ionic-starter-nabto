@@ -5,7 +5,10 @@ import { NabtoDevice } from '../../app/device.class';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { AlertController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
+import { ProfilePage } from '../profile/profile';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
+import { ModalController } from 'ionic-angular';
+import { ProfileService } from '../../app/profile.service';
 
 @Component({
   selector: 'page-bookmarks',
@@ -21,6 +24,8 @@ export class BookmarksPage {
 
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
+              private profileService: ProfileService,
+              private modalCtrl: ModalController,
               private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
@@ -29,13 +34,14 @@ export class BookmarksPage {
 
   ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
+    this.initializeWithKeyPair();
   }
 
   ionViewWillEnter() {
     this.refresh();
   }
   
-  refresh() {    
+  refresh() {
     this.bookmarksService.readBookmarks().then((bookmarks) => {
       this.deviceSrc.splice(0, this.deviceSrc.length);
       if (bookmarks) {
@@ -77,6 +83,31 @@ export class BookmarksPage {
     ]
     });
     alert.present();
+  }
+
+  showKeyPairCreationPage() {
+    let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
+    modal.onDidDismiss(name => {
+      this.initialize(name);
+    });
+    modal.present();
+  }
+
+  initializeWithKeyPair() {
+    this.profileService.lookupKeyPairName()
+      .then((name) => {
+        if (name) {
+          this.initialize(name);
+        } else {
+          this.showKeyPairCreationPage();
+        }
+      }).catch((error) => {
+        this.showKeyPairCreationPage();
+      });
+  }
+
+  initialize(name: string) {
+    console.log("TODO: once basestation support selfsigned certs, invoke nabto startup with cert " + name);
   }
    
 }
