@@ -1,6 +1,5 @@
 import { ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
 import { ToastController } from 'ionic-angular';
@@ -17,8 +16,7 @@ export class ProfilePage {
   operatingSystem: string;
   deviceName: string;
   
-  constructor(public navCtrl: NavController,
-              private viewCtrl: ViewController,
+  constructor(private viewCtrl: ViewController,
               private profileService: ProfileService,
               public toastCtrl: ToastController,
               private nabtoService: NabtoService) {

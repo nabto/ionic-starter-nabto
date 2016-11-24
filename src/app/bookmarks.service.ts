@@ -7,15 +7,17 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class BookmarksService {
 
+  private key: string = 'bookmarks';
+  
   constructor (private storage: Storage) {
   }
   
   public readBookmarks(): Promise<NabtoDevice[]> {
-    return this.storage.get('bookmarks');
+    return this.storage.get(this.key);
   }
 
   public writeBookmarks(bookmarks: NabtoDevice[]) {
-    this.storage.set('bookmarks', bookmarks);    
+    this.storage.set(this.key, bookmarks);    
   }
 
   public addBookmark(device: NabtoDevice) {
@@ -39,7 +41,7 @@ export class BookmarksService {
   }
 
   public clear() {
-    this.storage.remove('bookmarks');
+    this.storage.remove(this.key);
   }
   
 }

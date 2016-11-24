@@ -7,6 +7,8 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class ProfileService {
 
+  private key: string = 'keypairName';
+  
   constructor (private nabtoService: NabtoService,
                private storage: Storage) {
   }
@@ -16,13 +18,16 @@ export class ProfileService {
   }
 
   lookupKeyPairName(): Promise<string> {
-    return this.storage.get('keypairName');
+    return this.storage.get(this.key);
   }
 
   storeKeyPairName(name: string) {
-    this.storage.set('keypairName', name);
+    this.storage.set(this.key, name);
   }
-  
+
+  clear() {
+    this.storage.remove(this.key);
+  }
   
 }
 

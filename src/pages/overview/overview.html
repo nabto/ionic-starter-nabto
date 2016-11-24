@@ -1,14 +1,31 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{shortTitle}}</ion-title>
+    <ion-buttons>
+      <button ion-button icon-only (click)="showHelpPage()">
+        <ion-icon color="secondary" name="help"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title>
+      <ion-title>{{shortTitle}}</ion-title>
+    </ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showSettingsPage()">
+        <ion-icon color="secondary" name="cog"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-card [hidden]="!empty">
     <ion-card-header>
-      No bookmarked devices
+      No known devices
     </ion-card-header>
+    <ion-card-content>
+      Add a device by clicking the button below to scan the local network for available devices.
+      </ion-card-content>
   </ion-card>
 
   <ion-list [hidden]="empty">
@@ -24,10 +41,6 @@
 
   <button ion-button block (click)="addNewDevice()">
     Add new device
-  </button>
-
-  <button ion-button color="light"  block (click)="clear()">
-    Clear list of known devices
   </button>
 
 </ion-content>

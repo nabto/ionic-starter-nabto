@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
+import { ModalController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
+import { ProfileService } from '../../app/profile.service';
 import { BookmarksService } from '../../app/bookmarks.service';
-import { AlertController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
-import { ModalController } from 'ionic-angular';
-import { ProfileService } from '../../app/profile.service';
+import { HelpPage } from '../help/help';
+import { SettingsPage } from '../settings/settings';
 
 @Component({
-  selector: 'page-bookmarks',
-  templateUrl: 'bookmarks.html'
+  templateUrl: 'overview.html'
 })
-export class BookmarksPage {
+export class OverviewPage {
 
   private deviceSrc: NabtoDevice[] = [];
   devices: Observable<NabtoDevice[]>;
@@ -25,8 +25,7 @@ export class BookmarksPage {
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
-              private modalCtrl: ModalController,
-              private alertCtrl: AlertController) {
+              private modalCtrl: ModalController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
     this.empty = true;
@@ -64,30 +63,24 @@ export class BookmarksPage {
     this.navCtrl.push(DiscoverPage);
   }
   
-  clear() {    
-    let alert = this.alertCtrl.create({
-      title: 'Confirm clear',
-      message: 'Do you want to clear list of known devices?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Yes',
-          handler: () => {
-            this.bookmarksService.clear();
-            this.refresh();
-          }
-        }
-    ]
+  showHelpPage() {
+    let modal = this.modalCtrl.create(HelpPage, undefined, { enableBackdropDismiss: false });
+    modal.present();
+  }
+
+  showSettingsPage() {
+    let modal = this.modalCtrl.create(SettingsPage, undefined, { enableBackdropDismiss: false });
+    modal.onDidDismiss((dirty) => {
+      if (dirty) {
+        this.refresh();
+      }
     });
-    alert.present();
+    modal.present();
   }
 
   showKeyPairCreationPage() {
     let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
-    modal.onDidDismiss(name => {
+    modal.onDidDismiss((name) => {
       this.initialize(name);
     });
     modal.present();
@@ -105,9 +98,9 @@ export class BookmarksPage {
         this.showKeyPairCreationPage();
       });
   }
-
+  
   initialize(name: string) {
     console.log("TODO: once basestation support selfsigned certs, invoke nabto startup with cert " + name);
   }
-   
+
 }

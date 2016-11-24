@@ -3,7 +3,7 @@ import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { ToastController } from 'ionic-angular';
 import { Http, Response } from '@angular/http';
-import { BookmarksPage } from '../pages/bookmarks/bookmarks';
+import { OverviewPage } from '../pages/overview/overview';
 
 declare var nabto;
 
@@ -11,7 +11,7 @@ declare var nabto;
   template: `<ion-nav [root]="rootPage"></ion-nav>`
 })
 export class NabtoIonicApp {
-  rootPage = BookmarksPage;
+  rootPage = OverviewPage;
 
   error(msg: string) {
     const toast = this.toastCtrl.create({

@@ -10,10 +10,8 @@
 
   <p>Enter the name to identify this {{operatingSystem}} device when communicating with other devices.</p>
 
-<!--  <form (ngSubmit)="submit()"> -->
-
-<ion-list>
-
+  <ion-list>
+    
   <ion-item>
     <ion-label stacked>Name to use in keypair</ion-label>
     <ion-input required type="text" [(ngModel)]="deviceName" name="title"></ion-input>
@@ -28,7 +26,5 @@
 <button color="light" ion-button block (click)="clear()">
   Clear
 </button>
-
-<!--</form>-->
 
 </ion-content>
