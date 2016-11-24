@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { ProfileService } from '../../app/profile.service';
+import { ProfilePage } from '../profile/profile';
 
 @Component({
   templateUrl: 'settings.html'
@@ -15,7 +17,8 @@ export class SettingsPage {
   constructor(public viewCtrl: ViewController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
-              private alertCtrl: AlertController
+              private alertCtrl: AlertController,
+              private modalCtrl: ModalController
              ) {}
 
   ionViewDidLoad() {
@@ -27,10 +30,14 @@ export class SettingsPage {
     this.viewCtrl.dismiss(this.dirty);
   }
 
+  showKeyPairCreationPage() {
+  }
+
   clearProfile() {
-    this.clear(`Do you want to remove the keypair associated with this ${this.operatingSystem} device?`, () => {
+    this.clear(`Are you sure you want to remove the currently active keypair? All known devices must be paired again with the new keypair.`, () => {
       this.dirty = true;
       this.profileService.clear();
+      this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false }).present();
     });
   }
 

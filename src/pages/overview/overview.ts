@@ -73,6 +73,7 @@ export class OverviewPage {
     modal.onDidDismiss((dirty) => {
       if (dirty) {
         this.refresh();
+        // TODO: re-initialize nabto with new profile name
       }
     });
     modal.present();
