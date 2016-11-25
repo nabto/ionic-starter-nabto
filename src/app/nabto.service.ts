@@ -86,7 +86,7 @@ export class NabtoService {
           resolve(dev);
         } else {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
-          resolve(new NabtoDevice(deviceId, deviceId, "(could not get details)", details.deviceIcon));
+          resolve(new NabtoDevice(deviceId, deviceId, "(could not get details)"));
         }
       });
     });
