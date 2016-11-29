@@ -54,7 +54,6 @@ export class VendorHeatingPage {
 
   refresh() {
     this.busyBegin();
-	  //this.nabtoService.prepareInvoke().then(() =>{
 	  this.nabtoService.invokeRpc(this.device, "heatpump_get_full_state.json").
 		then((state: any) => {
 		  this.busyEnd();
@@ -72,13 +71,11 @@ export class VendorHeatingPage {
 		  this.busyEnd();
 		  this.handleError(error);
 	  });
-	//});
   }
 
   activationToggled() {
     console.log("Activation toggled - state is now " + this.activated);
     this.busyBegin();
-    //this.nabtoService.prepareInvoke().then(() =>{
 	  this.nabtoService.invokeRpc(this.device, "heatpump_set_activation_state.json",
                                 { "activated": this.activated ? 1 : 0 }).
       then((state: any) => {
@@ -91,7 +88,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	//});
   }
 
   busyBegin() {
@@ -139,7 +135,6 @@ export class VendorHeatingPage {
 
   updateTargetTemperature() {
     // XXX: no spinner as long as we don't debounce and invoke device every time (it yields odd behavior)
-    //this.nabtoService.prepareInvoke().then(() =>{
 	  this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
                                 { "temperature": this.temperature }).
       then((state: any) => {
@@ -147,12 +142,10 @@ export class VendorHeatingPage {
       }).catch(error => {
         this.handleError(error);
       });
-	//});
   }
 
   updateMode() {
     this.busyBegin();
-    //this.nabtoService.prepareInvoke().then(() =>{
 	  this.nabtoService.invokeRpc(this.device, "heatpump_set_mode.json",
                                 { "mode": this.mapToDeviceMode(this.mode) }).
       then((state: any) => {
@@ -162,7 +155,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	//});
   }
   
   mapDeviceMode(mode: number) {
