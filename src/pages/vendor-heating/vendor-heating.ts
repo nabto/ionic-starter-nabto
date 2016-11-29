@@ -40,12 +40,6 @@ export class VendorHeatingPage {
     this.minTemp = 16;
     this.timer = undefined;
     this.busy = false;
-	// this.nabtoService.prepareInvoke().
-	//   then().catch(error => {
-    //     this.busyEnd();
-    //     this.handleError(error);
-    //   });
-
   }
 
   ionViewDidLoad() {
@@ -88,6 +82,7 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
+	});
   }
   
   busyBegin() {
@@ -135,13 +130,15 @@ export class VendorHeatingPage {
 
   updateTargetTemperature() {
     // XXX: no spinner as long as we don't debounce and invoke device every time (it yields odd behavior)
-	this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
+    this.nabtoService.prepareInvoke().then(() =>{
+	  this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
                                 { "temperature": this.temperature }).
       then((state: any) => {
         this.temperature = state.temperature;
       }).catch(error => {
         this.handleError(error);
       });
+	});
   }
 
   updateMode() {
@@ -155,6 +152,7 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
+	});
   }
   
   mapDeviceMode(mode: number) {
