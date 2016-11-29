@@ -40,7 +40,7 @@ export class VendorHeatingPage {
     this.minTemp = 16;
     this.timer = undefined;
     this.busy = false;
- 	this.nabtoService.prepareConnect().
+ 	this.nabtoService.prepareInvoke().
 	  then().catch(error => {
         this.busyEnd();
         this.handleError(error);
@@ -75,7 +75,7 @@ export class VendorHeatingPage {
   activationToggled() {
     console.log("Activation toggled - state is now " + this.activated);
     this.busyBegin();
-	  this.nabtoService.invokeRpc(this.device, "heatpump_set_activation_state.json",
+	this.nabtoService.invokeRpc(this.device, "heatpump_set_activation_state.json",
                                 { "activated": this.activated ? 1 : 0 }).
       then((state: any) => {
         this.busyEnd();
@@ -87,7 +87,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	//});
   }
   
   busyBegin() {
@@ -142,6 +141,7 @@ export class VendorHeatingPage {
       }).catch(error => {
         this.handleError(error);
       });
+	});
   }
 
   updateMode() {
@@ -155,6 +155,7 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
+	});
   }
   
   mapDeviceMode(mode: number) {
