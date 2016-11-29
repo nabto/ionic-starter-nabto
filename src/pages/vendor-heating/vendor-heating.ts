@@ -45,6 +45,7 @@ export class VendorHeatingPage {
     //     this.busyEnd();
     //     this.handleError(error);
     //   });
+
   }
 
   ionViewDidLoad() {
