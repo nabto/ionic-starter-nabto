@@ -191,7 +191,7 @@ export class NabtoService {
 	  });
 	});
   }
-  
+
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
