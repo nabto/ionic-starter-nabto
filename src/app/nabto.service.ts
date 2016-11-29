@@ -77,7 +77,7 @@ export class NabtoService {
   }
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
-    return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
       nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
         if (!err) {
           let r = details.response;
@@ -103,13 +103,25 @@ export class NabtoService {
     return params.join("&");
   }
 
+	public prepareConnect(): Promise<any> {
+		return new Promise((resolve,reject) => {
+			nabto.prepareConnect((error) => {
+				if(error){
+					reject(new Error("PrepareConnect failed: " + error.message));
+					return
+				}
+				resolve();
+			});
+		});
+	}
+	
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
           paramString = this.buildParamString(parameters);
       }
-      nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+	  nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
         } else {

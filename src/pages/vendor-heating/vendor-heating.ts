@@ -40,6 +40,11 @@ export class VendorHeatingPage {
     this.minTemp = 16;
     this.timer = undefined;
     this.busy = false;
+ 	this.nabtoService.prepareConnect().
+	  then().catch(error => {
+        this.busyEnd();
+        this.handleError(error);
+      });
   }
 
   ionViewDidLoad() {
