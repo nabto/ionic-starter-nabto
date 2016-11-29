@@ -142,7 +142,6 @@ export class VendorHeatingPage {
       }).catch(error => {
         this.handleError(error);
       });
-	//});
   }
 
   updateMode() {
@@ -156,7 +155,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	//});
   }
   
   mapDeviceMode(mode: number) {
