@@ -103,9 +103,9 @@ export class NabtoService {
     return params.join("&");
   }
 
-	public prepareConnect(): Promise<any> {
+	public prepareInvoke(): Promise<void> {
 		return new Promise((resolve,reject) => {
-			nabto.prepareConnect((error) => {
+			nabto.prepareInvoke((error) => {
 				if(error){
 					reject(new Error("PrepareConnect failed: " + error.message));
 					return
