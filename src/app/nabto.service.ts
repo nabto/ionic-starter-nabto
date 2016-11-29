@@ -181,6 +181,7 @@ export class NabtoService {
 	public prepareInvoke(devices: NabtoDevice[]): Promise<void> {
 		return new Promise((resolve,reject) => {
 			nabto.prepareInvoke(devices, (error) => {
+
 				if(error){
 					reject(new Error("PrepareConnect failed: " + error.message));
 					return
@@ -196,7 +197,7 @@ export class NabtoService {
       if (parameters) {
           paramString = this.buildParamString(parameters);
       }
-      nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+	  nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
         } else {
