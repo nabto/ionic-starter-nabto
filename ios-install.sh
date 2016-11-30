@@ -51,7 +51,6 @@ ionic plugin add cordova-plugin-device
 ionic plugin add cordova-plugin-statusbar
 ionic plugin add cordova-plugin-splashscreen
 ionic plugin add cordova-plugin-device-name
-ionic plugin add cordova-plugin-secure-storage
 
 ionic platform add ios 
 echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> platforms/ios/cordova/build.xcconfig

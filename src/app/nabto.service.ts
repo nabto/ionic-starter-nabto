@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
+import { Http, Response } from '@angular/http';
 
 declare var nabto;
 declare var NabtoError;
@@ -8,7 +9,8 @@ declare var NabtoError;
 @Injectable()
 export class NabtoService {
 
-  constructor (private storage: Storage) {
+  constructor (private storage: Storage,
+               private http: Http) {
   }
 
   //
@@ -45,12 +47,36 @@ export class NabtoService {
       });
     });
   }
-
+/*
   public startup(): Promise<string> {
     return new Promise((resolve, reject) => {
       this.storage.get('username').then((username) => {
         // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
         resolve("TODO - username");
+      });
+    });
+    }*/
+
+  public startup(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      nabto.startup(() => {
+        this.http.get("nabto/unabto_queries.xml")
+          .toPromise()
+          .then((res: Response) => {
+            nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+              if (!err) {
+                console.log("nabto started and interface set ok!")
+                resolve();
+              } else {
+                console.log(JSON.stringify(err));
+                reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
+              }
+            })
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
+          });
       });
     });
   }
@@ -59,6 +85,7 @@ export class NabtoService {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {
         if (error) {
+          console.log("getLocalDevices() failed: " + error);
           reject(new Error("Discover failed: " + error.message));
           return;
         }
