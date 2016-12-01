@@ -58,8 +58,9 @@ export class OverviewPage {
         }
       }
       this.empty = (this.deviceSrc.length == 0);
-    });
-	this.platform.ready().then(() => this.nabtoService.prepareInvoke(this.deviceSrc));
+    }).then(() => {
+	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(this.deviceSrc));
+	});
   }
 
   showVendorPage(event, device) {
