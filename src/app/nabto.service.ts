@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Platform } from 'ionic-angular';
 import { NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
@@ -10,9 +11,42 @@ declare var NabtoError;
 export class NabtoService {
 
   constructor (private storage: Storage,
-               private http: Http) {
+               private http: Http,
+               private platform: Platform) {
+    document.addEventListener('pause', () => {
+      this.onPause();
+    });
+    document.addEventListener('resume', () => {
+      this.onResume();
+    });
+    document.addEventListener('resign', () => {
+      this.onResign();
+    });
   }
 
+  onResume() {
+    console.log("resumed, invoking nabto.startup");
+    this.startup();
+  }
+
+  onResign() {
+    if (this.platform.is('ios')) {
+      console.log("Resigning, invoking nabto.shutdown");
+      this.shutdown();
+    } else {
+      console.log("odd, only iOS should get this event");
+    }
+  }
+
+  onPause() {
+    if (!this.platform.is('ios')) {
+      // native plugins cannot be invoked in ios pause event (hence resign above)
+      console.log("Pausing, invoking nabto.shutdown");
+      this.shutdown();
+    }
+  }
+
+  
   //
   // NOTE: Keypair is stored directly on the filesystem with dummy
   // encryption (common password) - if necessary, encrypt with either
@@ -80,6 +114,20 @@ export class NabtoService {
       });
     });
   }
+
+  public shutdown(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      nabto.shutdown((err) => {
+        if (!err) {
+          console.log("nabto.shutdown ok");
+          resolve();
+        } else {
+          console.log("nabto.shutdown failed");
+          reject(new Error(err.message));
+        }
+      });
+    });
+  }
   
   public discover(): Promise<NabtoDevice[]> {
     return new Promise((resolve, reject) => {
@@ -136,6 +184,7 @@ export class NabtoService {
       if (parameters) {
           paramString = this.buildParamString(parameters);
       }
+
       nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
