@@ -137,16 +137,18 @@ export class NabtoService {
           reject(new Error("Discover failed: " + error.message));
           return;
         }
-        let devices = [];
-        for(let i = 0; i < deviceIds.length; i++) {
-          devices.push(this.getPublicDetails(deviceIds[i]));
-        }
-        Promise.all(devices).then((res: NabtoDevice[]) => {
-          for(let i = 0; i < res.length; i++) {
-            console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
-          }
-          resolve(res);
-        });
+		this.prepareInvoke(deviceIds).then(() => {
+		  let devices = [];
+		  for(let i = 0; i < deviceIds.length; i++) {
+			devices.push(this.getPublicDetails(deviceIds[i]));
+		  }
+		  Promise.all(devices).then((res: NabtoDevice[]) => {
+			for(let i = 0; i < res.length; i++) {
+			  console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
+			}
+			  resolve(res);
+		  });
+		});
       });
     });
   }
