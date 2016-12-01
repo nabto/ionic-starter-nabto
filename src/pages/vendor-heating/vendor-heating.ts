@@ -40,11 +40,11 @@ export class VendorHeatingPage {
     this.minTemp = 16;
     this.timer = undefined;
     this.busy = false;
- 	this.nabtoService.prepareInvoke().
-	  then().catch(error => {
-        this.busyEnd();
-        this.handleError(error);
-      });
+	// this.nabtoService.prepareInvoke().
+	//   then().catch(error => {
+    //     this.busyEnd();
+    //     this.handleError(error);
+    //   });
   }
 
   ionViewDidLoad() {
@@ -141,7 +141,7 @@ export class VendorHeatingPage {
       }).catch(error => {
         this.handleError(error);
       });
-	});
+	//});
   }
 
   updateMode() {
@@ -155,7 +155,7 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	});
+	//});
   }
   
   mapDeviceMode(mode: number) {
