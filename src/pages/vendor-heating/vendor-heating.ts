@@ -82,7 +82,7 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	});
+	//});
   }
   
   busyBegin() {
@@ -130,7 +130,6 @@ export class VendorHeatingPage {
 
   updateTargetTemperature() {
     // XXX: no spinner as long as we don't debounce and invoke device every time (it yields odd behavior)
-    this.nabtoService.prepareInvoke().then(() =>{
 	  this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
                                 { "temperature": this.temperature }).
       then((state: any) => {
@@ -138,7 +137,6 @@ export class VendorHeatingPage {
       }).catch(error => {
         this.handleError(error);
       });
-	});
   }
 
   updateMode() {
@@ -152,7 +150,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	});
   }
   
   mapDeviceMode(mode: number) {
