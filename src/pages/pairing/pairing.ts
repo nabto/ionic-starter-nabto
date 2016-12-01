@@ -5,6 +5,7 @@ import { NabtoDevice } from '../../app/device.class';
 import { LoadingController } from 'ionic-angular';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
+import { NabtoService } from '../../app/nabto.service';
 
 @Component({
   selector: 'page-pairing',
@@ -23,6 +24,7 @@ export class PairingPage {
               public navParams: NavParams,
               public toastCtrl: ToastController,
               public loadingCtrl: LoadingController,
+			  private nabtoService: NabtoService,
               private bookmarksService: BookmarksService) {
     this.device = navParams.get('device');
     this.shortTitle = navParams.get('shortTitle');
@@ -48,7 +50,8 @@ export class PairingPage {
     setTimeout(() => {
       this.writeBookmark();
       this.loader.dismiss();
-      this.success = true;
+	  this.success = true;
+	  this.nabtoService.prepareInvoke([this.device])	
     }, 2000) ;
   }
   
