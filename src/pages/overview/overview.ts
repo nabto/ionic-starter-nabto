@@ -10,6 +10,9 @@ import { ProfilePage } from '../profile/profile';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { SettingsPage } from '../settings/settings';
+import { NabtoService } from '../../app/nabto.service';
+
+//declare var nabto;
 
 @Component({
   templateUrl: 'overview.html'
@@ -25,6 +28,7 @@ export class OverviewPage {
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
+			  private nabtoService: NabtoService,
               private modalCtrl: ModalController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
@@ -32,11 +36,13 @@ export class OverviewPage {
   }
 
   ionViewDidLoad() {
+	console.log("IonViewDidLoad");
     this.devices = Observable.of(this.deviceSrc);
     this.initializeWithKeyPair();
   }
 
   ionViewWillEnter() {
+	console.log("IonViewWillEnter");
     this.refresh();
   }
   
@@ -50,6 +56,7 @@ export class OverviewPage {
       }
       this.empty = (this.deviceSrc.length == 0);
     });
+	this.nabtoService.prepareInvoke(this.deviceSrc);
   }
 
   showVendorPage(event, device) {
