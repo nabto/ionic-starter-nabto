@@ -12,6 +12,8 @@ import { HelpPage } from '../help/help';
 import { SettingsPage } from '../settings/settings';
 import { NabtoService } from '../../app/nabto.service';
 
+import { Platform } from 'ionic-angular';
+
 //declare var nabto;
 
 @Component({
@@ -29,6 +31,7 @@ export class OverviewPage {
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
 			  private nabtoService: NabtoService,
+			  private platform: Platform,
               private modalCtrl: ModalController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
@@ -36,13 +39,13 @@ export class OverviewPage {
   }
 
   ionViewDidLoad() {
-	console.log("IonViewDidLoad");
+	console.log("Ion View Did Load");
     this.devices = Observable.of(this.deviceSrc);
     this.initializeWithKeyPair();
   }
 
   ionViewWillEnter() {
-	console.log("IonViewWillEnter");
+	console.log("Ion View Will Enter");
     this.refresh();
   }
   
@@ -56,7 +59,7 @@ export class OverviewPage {
       }
       this.empty = (this.deviceSrc.length == 0);
     });
-	this.nabtoService.prepareInvoke(this.deviceSrc);
+	this.platform.ready().then(() => this.nabtoService.prepareInvoke(this.deviceSrc));
   }
 
   showVendorPage(event, device) {
