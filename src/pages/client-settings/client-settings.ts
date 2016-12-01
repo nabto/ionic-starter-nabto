@@ -7,9 +7,9 @@ import { ProfileService } from '../../app/profile.service';
 import { ProfilePage } from '../profile/profile';
 
 @Component({
-  templateUrl: 'settings.html'
+  templateUrl: 'client-settings.html'
 })
-export class SettingsPage {
+export class ClientSettingsPage {
 
   operatingSystem: string;
   dirty: boolean;

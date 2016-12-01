@@ -1,0 +1,34 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Device Settings</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <p>Enter the name of this device, e.g. "Kitchen".</p>
+
+  <ion-list>
+    
+  <ion-item>
+    <ion-label stacked>Name of device</ion-label>
+    <ion-input required type="text" [(ngModel)]="device.name" name="title"></ion-input>
+  </ion-item>
+
+</ion-list>
+
+<button ion-button type="submit" block (click)="save()">
+  Save
+</button>
+
+<button color="light" ion-button block (click)="clear()">
+  Clear
+</button>
+
+<button color="light" ion-button block (click)="dismiss()">
+  Cancel
+</button>
+
+</ion-content>

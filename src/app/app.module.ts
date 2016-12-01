@@ -10,7 +10,8 @@ import { PairingPage } from '../pages/pairing/pairing';
 import { OverviewPage } from '../pages/overview/overview';
 import { VendorHeatingPage } from '../pages/vendor-heating/vendor-heating';
 import { ProfilePage } from '../pages/profile/profile';
-import { SettingsPage } from '../pages/settings/settings';
+import { ClientSettingsPage } from '../pages/client-settings/client-settings';
+import { DeviceSettingsPage } from '../pages/device-settings/device-settings';
 import { HelpPage } from '../pages/help/help';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { HelpPage } from '../pages/help/help';
     OverviewPage,
     VendorHeatingPage,
     ProfilePage,
-    SettingsPage,
+    ClientSettingsPage,
+    DeviceSettingsPage,
     HelpPage
   ],
   imports: [
@@ -35,7 +37,8 @@ import { HelpPage } from '../pages/help/help';
     OverviewPage,
     VendorHeatingPage,
     ProfilePage,
-    SettingsPage,
+    ClientSettingsPage,
+    DeviceSettingsPage,
     HelpPage
   ],
   providers: [ProfileService, NabtoService, BookmarksService, Storage]

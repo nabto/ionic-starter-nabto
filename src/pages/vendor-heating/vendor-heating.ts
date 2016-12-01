@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
-import { LoadingController } from 'ionic-angular';
+import { DeviceSettingsPage } from '../device-settings/device-settings';
 
 declare var NabtoError;
 
@@ -26,11 +28,12 @@ export class VendorHeatingPage {
   spinner: any;
   unavailableStatus: string;
 
-  constructor(public navCtrl: NavController,
+  constructor(private navCtrl: NavController,
               private nabtoService: NabtoService,
-              public toastCtrl: ToastController,
-              public loadingCtrl: LoadingController,
-              public navParams: NavParams) {
+              private toastCtrl: ToastController,
+              private loadingCtrl: LoadingController,
+              private navParams: NavParams,
+              private modalCtrl: ModalController) {
     this.device = navParams.get('device');
     this.temperature = undefined;
     this.activated = false;
@@ -211,6 +214,17 @@ export class VendorHeatingPage {
       content: "Invoking device...",
     });
     this.spinner.present();
+  }
+
+  showSettingsPage() {
+    let modal = this.modalCtrl.create(DeviceSettingsPage, { device: this.device }, { enableBackdropDismiss: false });
+    modal.onDidDismiss((dirty, device) => {
+      if (dirty) {
+        this.device.name = device.name; // XXX man kan vel ikke sætte hele obj (aht binding)?
+        // TODO: invoke device to set new values
+      }
+    });
+    modal.present();
   }
 
   available() {

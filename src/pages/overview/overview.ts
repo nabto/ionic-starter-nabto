@@ -9,7 +9,7 @@ import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
-import { SettingsPage } from '../settings/settings';
+import { ClientSettingsPage } from '../client-settings/client-settings';
 
 @Component({
   templateUrl: 'overview.html'
@@ -69,7 +69,7 @@ export class OverviewPage {
   }
 
   showSettingsPage() {
-    let modal = this.modalCtrl.create(SettingsPage, undefined, { enableBackdropDismiss: false });
+    let modal = this.modalCtrl.create(ClientSettingsPage, undefined, { enableBackdropDismiss: false });
     modal.onDidDismiss((dirty) => {
       if (dirty) {
         this.refresh();
