@@ -4,6 +4,8 @@
     xsi:noNamespaceSchemaLocation="http://www.nabto.com/unabto/query_model.xsd">
 
   <!-- general queries -->
+
+  <!-- public info for discovery -->
   <query name="get_public_device_info.json" id="10000">
     <request>
     </request>
@@ -11,6 +13,16 @@
       <parameter name="device_name" type="raw"/>
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
+    </response>
+  </query>
+
+  <!-- set general info -->
+  <query name="set_device_info.json" id="10010">
+    <request>
+      <parameter name="device_name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="device_name" type="raw"/>
     </response>
   </query>
 

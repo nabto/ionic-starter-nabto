@@ -218,8 +218,8 @@ export class VendorHeatingPage {
 
   showSettingsPage() {
     let modal = this.modalCtrl.create(DeviceSettingsPage, { device: this.device }, { enableBackdropDismiss: false });
-    modal.onDidDismiss((dirty, device) => {
-      if (dirty) {
+    modal.onDidDismiss((device) => {
+      if (device) {
         this.device.name = device.name; // XXX man kan vel ikke sætte hele obj (aht binding)?
         // TODO: invoke device to set new values
       }

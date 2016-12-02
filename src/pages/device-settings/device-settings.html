@@ -8,27 +8,34 @@
 
 <ion-content padding>
 
-  <p>Enter the name of this device, e.g. "Kitchen".</p>
-
+  <h2>Properties</h2>
   <ion-list>
-    
-  <ion-item>
-    <ion-label stacked>Name of device</ion-label>
-    <ion-input required type="text" [(ngModel)]="device.name" name="title"></ion-input>
-  </ion-item>
+    <ion-item>
+      <ion-label stacked>Enter the name of this device, e.g. "Kitchen".</ion-label>
+      <ion-input required type="text" [(ngModel)]="device.name" (blur)="saveProperties()"></ion-input>
+    </ion-item>
+  </ion-list>
 
-</ion-list>
+  <h2>Access Control</h2>
+  <ion-list>
+      <button ion-item>
+        <h2>Ulrik's iPhone 5</h2>
+        <h3>Owner (you)</h3>
+        <p>RSA signature: 42:d0:2c:4d:cc:32:00:12:a5:dd:af:d0:2c:4d:42:d0:2c:4d:e2:d0:2c</p>
+      </button>
+      <button ion-item>
+        <h2>Sofus's iPhone SE</h2>
+        <h3>Guest</h3>
+        <p>RSA signature: ed:42:d0:2c:4d:4d:42:d0:2c:4d:e2:e2:44:ed:42:d0:2c:4d:ed:d0:2c</p>
+      </button>
+      <button ion-item>
+        <h2>Add new guest</h2>
+      </button>
+  </ion-list>
 
-<button ion-button type="submit" block (click)="save()">
-  Save
-</button>
 
-<button color="light" ion-button block (click)="clear()">
-  Clear
-</button>
-
-<button color="light" ion-button block (click)="dismiss()">
-  Cancel
-</button>
-
+  <button ion-button type="submit" block (click)="dismiss()">
+      Done
+  </button>
+  
 </ion-content>
