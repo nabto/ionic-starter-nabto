@@ -51,7 +51,7 @@ export class PairingPage {
       this.writeBookmark();
       this.loader.dismiss();
 	  this.success = true;
-	  this.nabtoService.prepareInvoke([this.device])	
+	  // this.nabtoService.prepareInvoke([this.device])	
     }, 2000) ;
   }
   

@@ -31,7 +31,7 @@ export class VendorHeatingPage {
               public toastCtrl: ToastController,
               public loadingCtrl: LoadingController,
               public navParams: NavParams) {
-    this.device = navParams.get('device');
+	this.device = navParams.get('device');
     this.temperature = undefined;
     this.activated = false;
     this.offline = true;
@@ -88,7 +88,7 @@ export class VendorHeatingPage {
         this.handleError(error);
       });
   }
-
+  
   busyBegin() {
     if (!this.busy) {
       this.busy = true;
@@ -134,7 +134,7 @@ export class VendorHeatingPage {
 
   updateTargetTemperature() {
     // XXX: no spinner as long as we don't debounce and invoke device every time (it yields odd behavior)
-	  this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
+	this.nabtoService.invokeRpc(this.device, "heatpump_set_target_temperature.json",
                                 { "temperature": this.temperature }).
       then((state: any) => {
         this.temperature = state.temperature;
@@ -225,5 +225,5 @@ export class VendorHeatingPage {
   unavailable() {
     return !this.activated || this.offline;
   }
- 
+  
 }
