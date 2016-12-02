@@ -16,22 +16,33 @@
     </ion-item>
   </ion-list>
 
-  <h2>Access Control</h2>
+  <h2>Access Control List</h2>
+  <p>Control who has remote access to your device.</p>
   <ion-list>
-      <button ion-item>
-        <h2>Ulrik's iPhone 5</h2>
-        <h3>Owner (you)</h3>
-        <p>RSA signature: 42:d0:2c:4d:cc:32:00:12:a5:dd:af:d0:2c:4d:42:d0:2c:4d:e2:d0:2c</p>
-      </button>
-      <button ion-item>
-        <h2>Sofus's iPhone SE</h2>
-        <h3>Guest</h3>
-        <p>RSA signature: ed:42:d0:2c:4d:4d:42:d0:2c:4d:e2:e2:44:ed:42:d0:2c:4d:ed:d0:2c</p>
-      </button>
-      <button ion-item>
-        <h2>Add new guest</h2>
-      </button>
+    <button ion-item>
+      <h2>Ulrik's iPhone 5</h2>
+      <h3>Owner (you)</h3>
+      <p>RSA signature: 42:d0:2c:4d:cc:32:00:12:a5:dd:af:d0:2c:4d:42:d0:2c:4d:e2:d0:2c</p>
+    </button>
+    <button ion-item>
+      <h2>Sofus's iPhone SE</h2>
+      <h3>Guest</h3>
+      <p>RSA signature: ed:42:d0:2c:4d:4d:42:d0:2c:4d:e2:e2:44:ed:42:d0:2c:4d:ed:d0:2c</p>
+    </button>
+    <button ion-item>
+      <h2>Add new guest</h2>
+    </button>
   </ion-list>
+
+    <h2>Local Guests</h2>
+  <p>Automatically grant users on the same local network guest access to this device. They will be added to the access control list above for future remote access. </p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Add local guests to ACL</ion-label>
+      <ion-toggle [(ngModel)]="device.openOnLan" (ionChange)="openOnLanToggled()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
 
 
   <button ion-button type="submit" block (click)="dismiss()">

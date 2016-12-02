@@ -3,13 +3,16 @@ export class NabtoDevice {
   id: string;
   product: string;
   iconUrl: string;
+  openOnLan: boolean;
 
   // iconUrl is absolute or relative to bundle's www folder, e.g. use
   // img/mydevice.png from device and put image in www/img/mydevice.png
   constructor(name: string,
               id: string,
               product: string,
-              iconUrl?: string)   
+              iconUrl?: string,
+              openOnLan?: boolean
+             )   
   {
     this.name = name;
     this.id = id;
@@ -20,5 +23,9 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
+    if (openOnLan) {
+      this.openOnLan = openOnLan;
+    } else
+      this.openOnLan = false;
   }
 }

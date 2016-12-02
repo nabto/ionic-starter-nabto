@@ -36,6 +36,10 @@ export class DeviceSettingsPage {
     this.viewCtrl.dismiss(this.device);
     // todo: save
   }
+
+  openOnLanToggled() {
+    console.log("openOnLan is now " + device.openOnLan);
+  }
   
 
 }
