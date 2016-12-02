@@ -3,7 +3,8 @@ export class NabtoDevice {
   id: string;
   product: string;
   iconUrl: string;
-  openOnLan: boolean;
+  allowLocalAccess: boolean;
+  addLocalUsers: boolean;
 
   // iconUrl is absolute or relative to bundle's www folder, e.g. use
   // img/mydevice.png from device and put image in www/img/mydevice.png
@@ -11,7 +12,8 @@ export class NabtoDevice {
               id: string,
               product: string,
               iconUrl?: string,
-              openOnLan?: boolean
+              allowLocalAccess?: boolean,
+              addLocalUsers?: boolean
              )   
   {
     this.name = name;
@@ -23,9 +25,16 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    if (openOnLan) {
-      this.openOnLan = openOnLan;
-    } else
-      this.openOnLan = false;
+    if (allowLocalAccess) {
+      this.allowLocalAccess = allowLocalAccess;
+    } else {
+      this.allowLocalAccess = false;
+    }
+    if (addLocalUsers) {
+      this.addLocalUsers = addLocalUsers;
+    } else {
+      this.addLocalUsers = false;
+    }
+
   }
 }

@@ -217,6 +217,13 @@ export class VendorHeatingPage {
   }
 
   showSettingsPage() {
+    this.navCtrl.push(DeviceSettingsPage, {
+      device: this.device
+    });
+  }
+
+/*
+    
     let modal = this.modalCtrl.create(DeviceSettingsPage, { device: this.device }, { enableBackdropDismiss: false });
     modal.onDidDismiss((device) => {
       if (device) {
@@ -226,6 +233,7 @@ export class VendorHeatingPage {
     });
     modal.present();
   }
+*/
 
   available() {
     return this.activated && !this.offline;

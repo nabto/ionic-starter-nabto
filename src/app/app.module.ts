@@ -13,6 +13,7 @@ import { ProfilePage } from '../pages/profile/profile';
 import { ClientSettingsPage } from '../pages/client-settings/client-settings';
 import { DeviceSettingsPage } from '../pages/device-settings/device-settings';
 import { HelpPage } from '../pages/help/help';
+import { SecurityPage } from '../pages/security/security';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { HelpPage } from '../pages/help/help';
     ProfilePage,
     ClientSettingsPage,
     DeviceSettingsPage,
-    HelpPage
+    SecurityPage
   ],
   imports: [
     IonicModule.forRoot(NabtoIonicApp)
@@ -39,7 +40,7 @@ import { HelpPage } from '../pages/help/help';
     ProfilePage,
     ClientSettingsPage,
     DeviceSettingsPage,
-    HelpPage
+    SecurityPage
   ],
   providers: [ProfileService, NabtoService, BookmarksService, Storage]
 })
