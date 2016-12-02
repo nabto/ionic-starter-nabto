@@ -26,6 +26,22 @@
     </response>
   </query>
 
+  <!-- access control related queries -->
+
+  <!-- get all users that have access to device -->
+  <query name="get_users.json" id="11000">
+    <request>
+    </request>
+    <response format="json">
+      <list name="users">
+        <parameter name="name" type="raw"/>
+        <parameter name="fingerprint" type="raw"/>
+        <parameter name="permissions" type="uint32"/>
+      </list>
+    </response>
+  </query>
+
+
   <!-- heatpump demo queries -->
 
   <!-- get all state details -->
