@@ -81,13 +81,13 @@ export class NabtoService {
       });
     });
   }
-/*
-  public startup(): Promise<string> {
+  /*
+	public startup(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.storage.get('username').then((username) => {
-        // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
-        resolve("TODO - username");
-      });
+    this.storage.get('username').then((username) => {
+    // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
+    resolve("TODO - username");
+    });
     });
     }*/
 
@@ -146,7 +146,7 @@ export class NabtoService {
 			for(let i = 0; i < res.length; i++) {
 			  console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
 			}
-			  resolve(res);
+			resolve(res);
 		  });
 		});
       });
@@ -154,7 +154,7 @@ export class NabtoService {
   }
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
         if (!err) {
           let r = details.response;
@@ -172,31 +172,31 @@ export class NabtoService {
   private buildParamString(input: any): string {
     let params = [];
     for (let key in input) {
-        if (input.hasOwnProperty(key)) {
-            let val = input[key];
-            params.push(`${key}=${val}`);
-        }
+      if (input.hasOwnProperty(key)) {
+        let val = input[key];
+        params.push(`${key}=${val}`);
+      }
     }
     return params.join("&");
   }
 
-	public prepareInvoke(devices: NabtoDevice[]): Promise<void> {
-		return new Promise((resolve,reject) => {
-			nabto.prepareInvoke(devices, (error) => {
-				if(error){
-					reject(new Error("PrepareConnect failed: " + error.message));
-					return
-				}
-				resolve();
-			});
-		});
-	}
-	
+  public prepareInvoke(devices: NabtoDevice[]): Promise<void> {
+	return new Promise((resolve,reject) => {
+	  nabto.prepareInvoke(devices, (error) => {
+		if(error){
+		  reject(new Error("PrepareConnect failed: " + error.message));
+		  return
+		}
+		resolve();
+	  });
+	});
+  }
+  
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
-          paramString = this.buildParamString(parameters);
+        paramString = this.buildParamString(parameters);
       }
 	  nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {

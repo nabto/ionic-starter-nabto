@@ -32,7 +32,7 @@ export class DiscoverPage {
               public platform: Platform,
               private nabtoService: NabtoService,
               private zone: NgZone
-              ) {
+             ) {
 
     this.busy = false;
     this.longTitle = navParams.get('longTitle');
@@ -70,7 +70,7 @@ export class DiscoverPage {
         console.log("ERROR discovering devices: " + JSON.stringify(error));
       });
   }
-           
+  
   refresh() {
     console.log("refresh tapped");
     this.discover();
