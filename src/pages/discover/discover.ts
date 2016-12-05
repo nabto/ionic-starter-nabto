@@ -43,9 +43,15 @@ export class DiscoverPage {
     this.shortTitle = navParams.get('shortTitle');
     if (!this.shortTitle) {
       this.shortTitle = "Discover";
-    }    
+    }
+	document.addEventListener('resume', () => {
+	  this.onResume();
+	});
   }
-
+  
+  onResume(){
+	this.nabtoService.prepareInvoke(this.deviceSrc);
+  }
   discover(): void {
     this.busy = true;
     this.nabtoService.discover()

@@ -3,6 +3,7 @@ import { Platform } from 'ionic-angular';
 import { NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
+import { BookmarksService } from '../app/bookmarks.service';
 
 declare var nabto;
 declare var NabtoError;
@@ -12,6 +13,7 @@ export class NabtoService {
 
   constructor (private storage: Storage,
                private http: Http,
+               private bookmarksService: BookmarksService,
                private platform: Platform) {
     document.addEventListener('pause', () => {
       this.onPause();
@@ -27,6 +29,17 @@ export class NabtoService {
   onResume() {
     console.log("resumed, invoking nabto.startup");
     this.startup();
+	var deviceSrc : NabtoDevice[] = [];
+	this.bookmarksService.readBookmarks().then((bookmarks) => {
+	  deviceSrc.splice(0, deviceSrc.length);
+      if (bookmarks) {
+        for(let i = 0; i < bookmarks.length; i++) {
+          deviceSrc.push(bookmarks[i]);
+        }
+      }
+	}).then(() => {
+	  this.prepareInvoke(deviceSrc);
+	});
   }
 
   onResign() {
