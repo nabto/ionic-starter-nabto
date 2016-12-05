@@ -106,25 +106,31 @@ export class NabtoService {
 
   public startup(): Promise<boolean> {
     return new Promise((resolve, reject) => {
+	  console.log("nabtoService.startup() called");
       nabto.startup(() => {
-        this.http.get("nabto/unabto_queries.xml")
-          .toPromise()
-          .then((res: Response) => {
-            nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
-              if (!err) {
-                console.log("nabto started and interface set ok!")
-                resolve();
-              } else {
-                console.log(JSON.stringify(err));
-                reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
-              }
-            })
-          })
-          .catch((err) => {
-            console.log(err);
-            reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
-          });
+		console.log("startup Callback");
+		nabto.openSession(() => {
+		  console.log("openSession callback");
+          this.http.get("nabto/unabto_queries.xml")
+			.toPromise()
+			.then((res: Response) => {
+              nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+				if (!err) {
+                  console.log("nabto started and interface set ok!")
+                  resolve();
+				} else {
+                  console.log(JSON.stringify(err));
+                  reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
+				}
+              })
+			})
+			.catch((err) => {
+              console.log(err);
+              reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
+			});
+		});
       });
+	  nabto.openSession(()=>{});
     });
   }
 
