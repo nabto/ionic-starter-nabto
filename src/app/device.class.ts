@@ -36,11 +36,7 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    if (paired) {
-      this.paired = paired;
-    } else {
-      this.paired = false;
-    }
+    this.paired = paired && paired;
     this.openForPairing = (pairingMode && pairingMode == 1);
   }
 }

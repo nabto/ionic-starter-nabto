@@ -8,6 +8,8 @@ import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
+import { BookmarksService } from '../../app/bookmarks.service';
+import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
 @Component({
   selector: 'page-discover',
@@ -33,6 +35,7 @@ export class DiscoverPage {
               private alertCtrl: AlertController,
               public platform: Platform,
               private nabtoService: NabtoService,
+              private bookmarksService: BookmarksService,
               private zone: NgZone
               ) {
 
@@ -74,23 +77,48 @@ export class DiscoverPage {
   }
            
   refresh() {
-    console.log("refresh tapped");
     this.discover();
   }
 
   itemTapped(event, device) {
     if (device.openForPairing) {
-      this.navCtrl.push(PairingPage, {
-        device: device,
-        shortTitle: "Pair device",
-        longTitle: "Pair local device"
-      });
+      if (device.paired) {
+        this.handleAlreadyPairedDevice(device);
+      } else {
+        this.handleUnpairedDevice(device);
+      }
     } else {
-      this.showDeviceClosedAlert();
+      if (device.paired) {
+        this.handleAlreadyPairedDevice(device);
+      } else {
+        this.handleClosedDevice();
+      }
     }
   }
+
+  handleAlreadyPairedDevice(device: NabtoDevice) {
+    let toast = this.toastCtrl.create({
+      message: "Already paired",
+      duration: 1000,
+      showCloseButton: false
+    });
+    toast.present();
+    // if the user has deleted bookmark, add again
+    this.bookmarksService.addBookmark(device);
+    this.navCtrl.push(VendorHeatingPage, { // XXX don't depend directly on vendor page here
+      device: device
+    });
+  }
+
+  handleUnpairedDevice(device: NabtoDevice) {
+    this.navCtrl.push(PairingPage, {
+      device: device,
+      shortTitle: "Pair device",
+      longTitle: "Pair local device"
+    });
+  }
   
-  showDeviceClosedAlert() {
+  handleClosedDevice() {
     let alert = this.alertCtrl.create({
       title: 'Device not open',
       message: "Sorry! This device is not open for pairing, please contact the device owner. Or perform a factory reset if you are the owner of the device but don't have access.",
