@@ -43,6 +43,18 @@
     </response>
   </query>
 
+  <!-- pair client (user) with this device -->
+  <query name="pair_with_device.json" id="11010">
+    <request>
+      <parameter name="user_name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="user_name" type="raw"/>
+      <parameter name="fingerprint" type="raw"/>
+      <parameter name="permissions" type="uint32"/>
+    </response>
+  </query>
+
 
   <!-- heatpump demo queries -->
 
