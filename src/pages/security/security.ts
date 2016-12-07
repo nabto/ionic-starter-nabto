@@ -24,6 +24,9 @@ class AclEntry {
 })
 export class SecurityPage {
 
+  allowLocalAccess: boolean;
+  addLocalUsers: boolean;
+  
   public device: NabtoDevice;
   public acl: Observable<AclEntry[]>;
   private aclSrc = [];
@@ -39,6 +42,7 @@ export class SecurityPage {
     this.acl = Observable.of(this.aclSrc);
     this.readAcl();
     this.toggleTapped = false;
+    this.allowLocalAccess = this.device.openForPairing;
   }
 
   permissionsToRole(permissions: number) {
@@ -65,7 +69,7 @@ export class SecurityPage {
   }
 
   allowLocalAccessToggled() {
-    console.log("allowLocalAccess is now " + this.device.allowLocalAccess);
+    console.log("allowLocalAccess is now " + this.allowLocalAccess);
   }
 
   addLocalUsersTapped() {
@@ -81,11 +85,11 @@ export class SecurityPage {
       return;
     }
     this.toggleTapped = false;
-    console.log("this.device.addLocalUsers=" + this.device.addLocalUsers);
-    if (this.device.addLocalUsers) {
+    console.log("this.device.addLocalUsers=" + this.addLocalUsers);
+    if (this.addLocalUsers) {
       this.showAlert("Are you sure you want to allow local guests to later access your device remotely? You can always change your mind and edit the access control list to remove unwanted guests.",
-                     () => { this.device.addLocalUsers = true; return true },
-                     () => { this.device.addLocalUsers = false; return true }
+                     () => { this.addLocalUsers = true; return true },
+                     () => { this.addLocalUsers = false; return true }
                     );
     }
   }

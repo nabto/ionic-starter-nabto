@@ -147,7 +147,13 @@ export class NabtoService {
       nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
         if (!err) {
           let r = details.response;
-          let dev:NabtoDevice = new NabtoDevice(r.device_name, deviceId, r.device_type, r.device_icon);
+          let dev:NabtoDevice = new NabtoDevice(r.device_name,
+                                                deviceId,
+                                                r.device_type,
+                                                r.device_icon,
+                                                r.paired,
+                                                r.pairingMode
+                                               );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
         } else {

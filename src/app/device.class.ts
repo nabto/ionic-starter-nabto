@@ -3,17 +3,28 @@ export class NabtoDevice {
   id: string;
   product: string;
   iconUrl: string;
+  paired: boolean;
+  openForPairing: boolean;
+  
   allowLocalAccess: boolean;
   addLocalUsers: boolean;
 
+  accessIcon(): string {
+    if (this.openForPairing) {
+      return "unlock";
+    } else {
+      return "lock";
+    }
+  }
+  
   // iconUrl is absolute or relative to bundle's www folder, e.g. use
   // img/mydevice.png from device and put image in www/img/mydevice.png
   constructor(name: string,
               id: string,
               product: string,
               iconUrl?: string,
-              allowLocalAccess?: boolean,
-              addLocalUsers?: boolean
+              paired?: boolean,
+              pairingMode?: number
              )   
   {
     this.name = name;
@@ -25,16 +36,11 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    if (allowLocalAccess) {
-      this.allowLocalAccess = allowLocalAccess;
+    if (paired) {
+      this.paired = paired;
     } else {
-      this.allowLocalAccess = false;
+      this.paired = false;
     }
-    if (addLocalUsers) {
-      this.addLocalUsers = addLocalUsers;
-    } else {
-      this.addLocalUsers = false;
-    }
-
+    this.openForPairing = (pairingMode && pairingMode == 1);
   }
 }

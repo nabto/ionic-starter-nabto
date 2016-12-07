@@ -3,6 +3,7 @@ import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { NavController, NavParams } from 'ionic-angular';
 import { PairingPage } from '../pairing/pairing';
+import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
@@ -29,6 +30,7 @@ export class DiscoverPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
+              private alertCtrl: AlertController,
               public platform: Platform,
               private nabtoService: NabtoService,
               private zone: NgZone
@@ -77,11 +79,31 @@ export class DiscoverPage {
   }
 
   itemTapped(event, device) {
-    this.navCtrl.push(PairingPage, {
-      device: device,
-      shortTitle: "Pair device",
-      longTitle: "Pair local device"
-    });
+    if (device.openForPairing) {
+      this.navCtrl.push(PairingPage, {
+        device: device,
+        shortTitle: "Pair device",
+        longTitle: "Pair local device"
+      });
+    } else {
+      this.showDeviceClosedAlert();
+    }
   }
+  
+  showDeviceClosedAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Device not open',
+      message: "Sorry! This device is not open for pairing, please contact the device owner. Or perform a factory reset if you are the owner of the device but don't have access.",
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Ok',
+        }
+      ]
+    });
+    alert.present();
+  }
+
+
 }
 

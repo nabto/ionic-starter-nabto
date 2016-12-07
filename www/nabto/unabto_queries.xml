@@ -13,6 +13,8 @@
       <parameter name="device_name" type="raw"/>
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
+      <parameter name="paired" type="uint8"/>
+      <parameter name="pairingMode" type="uint8"/>      
     </response>
   </query>
 

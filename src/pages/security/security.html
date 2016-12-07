@@ -28,7 +28,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Allow local guests</ion-label>
-      <ion-toggle [(ngModel)]="device.allowLocalAccess" (ionChange)="allowLocalAccessToggled()"></ion-toggle>
+      <ion-toggle [(ngModel)]="allowLocalAccess" (ionChange)="allowLocalAccessToggled()"></ion-toggle>
     </ion-item>
   </ion-list>
 
@@ -37,7 +37,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Add local guests to ACL</ion-label>
-      <ion-toggle [disabled]="!device.allowLocalAccess" [(ngModel)]="device.addLocalUsers" (tap)="addLocalUsersTapped()" (ionChange)="addLocalUsersToggled()"></ion-toggle>
+      <ion-toggle [disabled]="!allowLocalAccess" [(ngModel)]="addLocalUsers" (tap)="addLocalUsersTapped()" (ionChange)="addLocalUsersToggled()"></ion-toggle>
     </ion-item>
   </ion-list>
 
