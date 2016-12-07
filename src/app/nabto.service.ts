@@ -81,16 +81,7 @@ export class NabtoService {
       });
     });
   }
-/*
-  public startup(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.storage.get('username').then((username) => {
-        // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
-        resolve("TODO - username");
-      });
-    });
-    }*/
-
+  
   public startup(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       nabto.startup(() => {

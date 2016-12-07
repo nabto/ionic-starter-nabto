@@ -14,6 +14,7 @@ import { ClientSettingsPage } from '../pages/client-settings/client-settings';
 import { DeviceSettingsPage } from '../pages/device-settings/device-settings';
 import { HelpPage } from '../pages/help/help';
 import { SecurityPage } from '../pages/security/security';
+import { AclEditPage } from '../pages/acl-edit/acl-edit';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import { SecurityPage } from '../pages/security/security';
     ProfilePage,
     ClientSettingsPage,
     DeviceSettingsPage,
-    SecurityPage
+    SecurityPage,
+    AclEditPage,
+    HelpPage
   ],
   imports: [
     IonicModule.forRoot(NabtoIonicApp)
@@ -40,7 +43,9 @@ import { SecurityPage } from '../pages/security/security';
     ProfilePage,
     ClientSettingsPage,
     DeviceSettingsPage,
-    SecurityPage
+    SecurityPage,
+    AclEditPage,
+    HelpPage
   ],
   providers: [ProfileService, NabtoService, BookmarksService, Storage]
 })
