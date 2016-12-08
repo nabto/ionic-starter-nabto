@@ -83,31 +83,47 @@ export class NabtoService {
       });
     });
   }
-  
+
   public startup(certificate: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.lastUser = certificate; // save for later suspend/resume cycle
-      nabto.startup(certificate, this.pkPassword, () => {
-        this.http.get("nabto/unabto_queries.xml")
-          .toPromise()
-          .then((res: Response) => {
-            nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
-              if (!err) {
-                console.log("nabto started and interface set ok!")
-                resolve();
-              } else {
-                console.log(JSON.stringify(err));
-                reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
-              }
-            })
-          })
-          .catch((err) => {
-            console.log(err);
-            reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
-          });
+      nabto.startup(certificate, this.pkPassword, (err) => {
+        if (!err) {
+          this.injectInterfaceDefinition().then(resolve).catch(reject);
+        } else {
+          if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
+            reject(new Error('BAD_PROFILE'));
+          } else {
+            console.log(`Could not start Nabto: ${err.message}`);
+            reject(new Error(err.message));
+          } 
+        }
       });
     });
   }
+  
+  private injectInterfaceDefinition(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.http.get("nabto/unabto_queries.xml")
+        .toPromise()
+        .then((res: Response) => {
+          nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+            if (!err) {
+              console.log("nabto started and interface set ok!")
+              resolve();
+            } else {
+              console.log(JSON.stringify(err));
+              reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
+            }
+          })
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
+        });
+    });
+  }
+  
 
   public shutdown(): Promise<boolean> {
     return new Promise((resolve, reject) => {

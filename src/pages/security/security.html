@@ -9,6 +9,33 @@
 
 <ion-content padding>
 
+  <h2>Remote Access Master Switch</h2>
+  <p>Allow remote access to this device. If switched off, nobody (not even you, the owner) can connect to the device. If switched on, you can control below who may connect.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Enable remote access</ion-label>
+      <ion-toggle [(ngModel)]="device.remoteAccessEnabled" (tap)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <h2>Open For Local Pairing</h2>
+  <p>Allow users on the same local network to pair with device as guests. Guests can later be removed in the access control list below if you change your mind.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Open for pairing</ion-label>
+      <ion-toggle [(ngModel)]="device.openForPairing" (tap)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+  
+  <h2>Guest Remote Access</h2>
+  <p>When adding new users as guests, allow them to later also access the device remotely (outside your local network). You can later change this for individual guests in the access control list below.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Remote guest access</ion-label>
+      <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (tap)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
   <h2>Access Control List</h2>
   <p>Control who has access to your device.</p>
   <ion-list>
@@ -20,25 +47,10 @@
     <button ion-item>
       <h2>Add new guest</h2>
     </button>
-        
+    
   </ion-list>
   
-    <h2>Open Local Access</h2>
-  <p>Allow all users on the same local network guest access to the device.</p>
-  <ion-list>
-    <ion-item>
-      <ion-label>Allow local guests</ion-label>
-      <ion-toggle [(ngModel)]="allowLocalAccess" (ionChange)="allowLocalAccessToggled()"></ion-toggle>
-    </ion-item>
-  </ion-list>
 
-  <h2>Grant Remote Access</h2>
-  <p>Automatically grant users on the same local network guest access to this device. They will be added to the access control list above for future remote access. </p>
-  <ion-list>
-    <ion-item>
-      <ion-label>Add local guests to ACL</ion-label>
-      <ion-toggle [disabled]="!allowLocalAccess" [(ngModel)]="addLocalUsers" (tap)="addLocalUsersTapped()" (ionChange)="addLocalUsersToggled()"></ion-toggle>
-    </ion-item>
-  </ion-list>
+
 
 </ion-content>

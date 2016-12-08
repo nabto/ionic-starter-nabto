@@ -24,7 +24,6 @@ class AclEntry {
 })
 export class SecurityPage {
 
-  allowLocalAccess: boolean;
   addLocalUsers: boolean;
   
   public device: NabtoDevice;
@@ -42,7 +41,7 @@ export class SecurityPage {
     this.acl = Observable.of(this.aclSrc);
     this.readAcl();
     this.toggleTapped = false;
-    this.allowLocalAccess = this.device.openForPairing;
+    console.log("Security settings for device " + JSON.stringify(this.device));
   }
 
   permissionsToRole(permissions: number) {
@@ -68,10 +67,6 @@ export class SecurityPage {
       });
   }
 
-  allowLocalAccessToggled() {
-    console.log("allowLocalAccess is now " + this.allowLocalAccess);
-  }
-
   addLocalUsersTapped() {
     // if only handling ionChange events, the alert will also be shown
     // when navigating to the form if the toggle is on (odd
@@ -93,7 +88,11 @@ export class SecurityPage {
                     );
     }
   }
-    
+
+  update() {
+    console.log("Device update: " + JSON.stringify(this.device));
+  }
+  
   showAlert(message: string, yesHandler: () => void, noHandler: () => void) {
     let alert = this.alertCtrl.create({
       title: 'Confirm',

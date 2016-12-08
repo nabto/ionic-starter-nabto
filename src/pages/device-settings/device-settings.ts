@@ -42,17 +42,11 @@ export class DeviceSettingsPage {
   }
 
   showSecurityPage() {
+//    TODO check permission - show alert if not admin!
     this.navCtrl.push(SecurityPage, {
       device: this.device
     });
   }
     
-/*    let modal = this.modalCtrl.create(SecurityPage,
-                                      { device: this.device },
-                                      { enableBackdropDismiss: false });
-    modal.onDidDismiss((device) => {
-    });
-    modal.present();*/
-
 }
 

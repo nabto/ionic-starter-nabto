@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import { ModalController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
+import { AlertController } from 'ionic-angular';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
@@ -27,7 +28,8 @@ export class OverviewPage {
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private nabtoService: NabtoService,
-              private modalCtrl: ModalController) {
+              private modalCtrl: ModalController,
+              private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
     this.empty = true;
@@ -104,7 +106,23 @@ export class OverviewPage {
   initialize(name: string) {
     this.nabtoService.startup(name)
       .then(() => console.log("Nabto startup completed"))
-      .catch((error) => console.log("Nabto startup failed: " + error));
+      .catch((error) => {
+        if (error.message === 'BAD_PROFILE') {
+          this.showKeyPairCreationPage();
+        } else {
+          this.showAlert("App could not start, please contact vendor: " + error.message);
+        }
+      });
+  }
+
+  showAlert(message: string) {
+    let alert = this.alertCtrl.create({
+      title: 'Error',
+      message: message,
+      enableBackdropDismiss: false,
+      buttons: [{ text: 'Ok' }]
+    });
+    alert.present();
   }
 
 }
