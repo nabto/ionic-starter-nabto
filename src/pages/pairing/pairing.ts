@@ -3,10 +3,6 @@ import { ToastController } from 'ionic-angular';
 import { NavController, NavParams } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
-<<<<<<< HEAD
-=======
-import { LoadingController } from 'ionic-angular';
->>>>>>> 5150c66fa24d07b4473871875a2cba85ea606984
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { ProfileService } from '../../app/profile.service';
