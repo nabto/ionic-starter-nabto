@@ -10,6 +10,9 @@ declare var NabtoError;
 @Injectable()
 export class NabtoService {
 
+  private pkPassword: string = "empty"; // see comment on createKeyPair() below
+  private lastUser: string;
+  
   constructor (private storage: Storage,
                private http: Http,
                private platform: Platform) {
@@ -26,7 +29,7 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
-    this.startup();
+    this.startup(this.lastUser);
   }
 
   onResign() {
@@ -68,8 +71,7 @@ export class NabtoService {
   //
   public createKeyPair(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      let password = "empty"; // see comment above
-      nabto.createKeyPair(username, password, (error) => {
+      nabto.createKeyPair(username, this.pkPassword, (error) => {
         if (!error) {
           console.log("nabto.createKeyPair succeeded");
           this.storage.set('username', username);    
@@ -82,9 +84,10 @@ export class NabtoService {
     });
   }
   
-  public startup(): Promise<boolean> {
+  public startup(certificate: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      nabto.startup(() => {
+      this.lastUser = certificate; // save for later suspend/resume cycle
+      nabto.startup(certificate, this.pkPassword, () => {
         this.http.get("nabto/unabto_queries.xml")
           .toPromise()
           .then((res: Response) => {

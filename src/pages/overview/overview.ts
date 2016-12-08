@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
 import { ModalController } from 'ionic-angular';
-import { NabtoDevice } from '../../app/device.class';
-import { ProfileService } from '../../app/profile.service';
-import { BookmarksService } from '../../app/bookmarks.service';
 import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
+import { NabtoDevice } from '../../app/device.class';
+import { ProfileService } from '../../app/profile.service';
+import { BookmarksService } from '../../app/bookmarks.service';
+import { NabtoService } from '../../app/nabto.service';
 
 @Component({
   templateUrl: 'overview.html'
@@ -25,6 +26,7 @@ export class OverviewPage {
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
+              private nabtoService: NabtoService,
               private modalCtrl: ModalController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
@@ -73,7 +75,6 @@ export class OverviewPage {
     modal.onDidDismiss((dirty) => {
       if (dirty) {
         this.refresh();
-        // TODO: re-initialize nabto with new profile name
       }
     });
     modal.present();
@@ -101,7 +102,9 @@ export class OverviewPage {
   }
   
   initialize(name: string) {
-    console.log("TODO: once basestation support selfsigned certs, invoke nabto startup with cert " + name);
+    this.nabtoService.startup(name)
+      .then(() => console.log("Nabto startup completed"))
+      .catch((error) => console.log("Nabto startup failed: " + error));
   }
 
 }

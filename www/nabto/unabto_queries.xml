@@ -50,7 +50,7 @@
     </request>
     <response format="json">
       <parameter name="user_name" type="raw"/>
-      <parameter name="fingerprint" type="raw"/>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
