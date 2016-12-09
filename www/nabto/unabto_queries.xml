@@ -60,26 +60,26 @@
     <request>
     </request>
     <response format="json">
-      <parameter name="current_user_is_owner" type="uint8_t"/> 
-      <parameter name="remote_access_enabled" type="uint8_t"/> 
-      <parameter name="open_for_pairing" type="uint8_t"/>
+      <parameter name="current_user_is_owner" type="uint8"/> 
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
       <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
-      <parameter name="default_permissions_after_pairing" type="uint8_t"/>
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
 
   <!-- set device-wide security related settings -->
   <query name="set_security_settings.json" id="11030">
     <request>
-      <parameter name="remote_access_enabled" type="uint8_t"/> 
-      <parameter name="open_for_pairing" type="uint8_t"/>
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
       <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
-      <parameter name="default_permissions_after_pairing" type="uint8_t"/>
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
     </request>
     <response format="json">
-      <parameter name="remote_access_enabled" type="uint8_t"/> 
-      <parameter name="open_for_pairing" type="uint8_t"/>
-      <parameter name="default_permissions_after_pairing" type="uint8_t"/>
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
 
