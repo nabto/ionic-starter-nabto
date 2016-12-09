@@ -7,8 +7,10 @@ export class NabtoDevice {
   public openForPairing: boolean;
   public remoteAccessEnabled: boolean = true;
   public grantGuestRemoteAccess: boolean;
-  
   public accessIcon(): string {
+  public currentUserIsOwner: boolean;
+  
+  accessIcon(): string {
     if (this.openForPairing) {
       return "unlock";
     } else {
@@ -40,8 +42,9 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-
     this.paired = !!paired;
     this.openForPairing = (!!pairingMode && pairingMode == 1);
+    this.remoteAccessEnabled = !!remoteAccessEnabled;
+    this.grantGuestRemoteAccess = !!grantGuestRemoteAccess;
   }
 }
