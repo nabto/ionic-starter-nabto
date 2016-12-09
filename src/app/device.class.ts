@@ -7,7 +7,6 @@ export class NabtoDevice {
   public openForPairing: boolean;
   public remoteAccessEnabled: boolean = true;
   public grantGuestRemoteAccess: boolean;
-  public accessIcon(): string {
   public currentUserIsOwner: boolean;
   
   accessIcon(): string {

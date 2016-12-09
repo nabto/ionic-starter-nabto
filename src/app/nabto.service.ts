@@ -12,10 +12,12 @@ export class NabtoService {
 
   private pkPassword: string = "empty"; // see comment on createKeyPair() below
   private lastUser: string;
+  private initialized: boolean;
   
   constructor (private storage: Storage,
                private http: Http,
                private platform: Platform) {
+    this.initialized = false;
     document.addEventListener('pause', () => {
       this.onPause();
     });
@@ -29,11 +31,15 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
-    this.startup(this.lastUser);
+    this.startup();
   }
 
   onResign() {
     if (this.platform.is('ios')) {
+      // this event is also fired when notification center is shown
+      // etc. - and there is no opposite event, meaning that we cannot
+      // start again, hence the reason for introducing the initalized
+      // flag
       console.log("Resigning, invoking nabto.shutdown");
       this.shutdown();
     } else {
@@ -84,11 +90,21 @@ export class NabtoService {
     });
   }
 
-  public startup(certificate: string): Promise<boolean> {
+  public startup(certificate?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.lastUser = certificate; // save for later suspend/resume cycle
+      if (certificate) {
+        this.lastUser = certificate; // save for later suspend/resume cycle
+      } else {
+        if (this.lastUser) {
+          certificate = this.lastUser;
+        } else {
+          reject(new Error("Startup never invoked with a certificate"));
+          return;
+        }
+      }
       nabto.startup(certificate, this.pkPassword, (err) => {
         if (!err) {
+          this.initialized = true; 
           this.injectInterfaceDefinition().then(resolve).catch(reject);
         } else {
           if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
@@ -113,13 +129,13 @@ export class NabtoService {
               resolve();
             } else {
               console.log(JSON.stringify(err));
-              reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
+              reject(new Error("Could not inject device interface definition: " + err.message));
             }
           })
         })
         .catch((err) => {
           console.log(err);
-          reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
+          reject(new Error("Could not load device interface definition: " + err));
         });
     });
   }
@@ -130,6 +146,7 @@ export class NabtoService {
       nabto.shutdown((err) => {
         if (!err) {
           console.log("nabto.shutdown ok");
+          this.initialized = false;
           resolve();
         } else {
           console.log("nabto.shutdown failed");
@@ -194,13 +211,24 @@ export class NabtoService {
     return params.join("&");
   }
 
-  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
+  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
-          paramString = this.buildParamString(parameters);
+        paramString = this.buildParamString(parameters);
       }
+      if (this.initialized) {
+        this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
+      } else {
+        this.startup().then(() => {
+          return this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
+        }).catch(reject);
+      }
+    });
+  }
 
+  private doInvokeRpc(device: NabtoDevice, request: string, paramString: string): Promise<NabtoDevice>  {
+    return new Promise((resolve, reject) => {
       nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
@@ -224,7 +252,7 @@ export class NabtoService {
         }
       });
     });
-  }  
+  }
 }
 
 
