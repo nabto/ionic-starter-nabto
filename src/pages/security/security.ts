@@ -85,9 +85,9 @@ export class SecurityPage {
 
   update() {
     this.nabtoService.invokeRpc(this.device, "set_security_settings.json",
-                                { "remote_access_enabled": this.device.remoteAccessEnabled,
-                                  "open_for_pairing": this.device.openForPairing,
-                                  "default_permissions_after_pairing": this.device.grantGuestRemoteAccess }).
+                                { "remote_access_enabled": this.device.remoteAccessEnabled ? 1 : 0,
+                                  "open_for_pairing": this.device.openForPairing ? 1 : 0,
+                                  "default_permissions_after_pairing": this.device.grantGuestRemoteAccess ? 1 : 0 }).
       then((state: any) => {
         this.device.remoteAccessEnabled = state.remote_access_enabled;
         this.device.openForPairing = state.open_for_pairing;

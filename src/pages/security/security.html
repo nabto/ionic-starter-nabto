@@ -14,7 +14,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Enable remote access</ion-label>
-      <ion-toggle [(ngModel)]="device.remoteAccessEnabled" (tap)="update()"></ion-toggle>
+      <ion-toggle [(ngModel)]="device.remoteAccessEnabled" (ionChange)="update()"></ion-toggle>
     </ion-item>
   </ion-list>
 
@@ -23,7 +23,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Open for pairing</ion-label>
-      <ion-toggle [(ngModel)]="device.openForPairing" (tap)="update()"></ion-toggle>
+      <ion-toggle [(ngModel)]="device.openForPairing" (ionChange)="update()"></ion-toggle>
     </ion-item>
   </ion-list>
   
@@ -32,7 +32,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Remote guest access</ion-label>
-      <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (tap)="update()"></ion-toggle>
+      <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (ionChange)="update()"></ion-toggle>
     </ion-item>
   </ion-list>
 
