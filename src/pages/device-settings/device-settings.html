@@ -16,10 +16,10 @@
 
   <h2>Security</h2>
   <p>
-    Your device is currently closed for access from anybody but you.
+    {{securityMesssage}}
   </p>
 
-  <button ion-button type="submit" block (click)="showSecurityPage()">
+  <button [disabled]="!device.currentUserIsOwner" ion-button type="submit" block (click)="showSecurityPage()">
        <ion-icon name="lock"></ion-icon>&nbsp; Edit security settings
   </button>
 

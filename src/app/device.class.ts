@@ -1,14 +1,14 @@
 export class NabtoDevice {
-  name: string;
-  id: string;
-  product: string;
-  iconUrl: string;
-  paired: boolean;
-  openForPairing: boolean;
+  public name: string;
+  public id: string;
+  public product: string;
+  public iconUrl: string;
+  public paired: boolean;
+  public openForPairing: boolean;
+  public remoteAccessEnabled: boolean = true;
+  public grantGuestRemoteAccess: boolean;
+  public currentUserIsOwner: boolean;
   
-  allowLocalAccess: boolean;
-  addLocalUsers: boolean;
-
   accessIcon(): string {
     if (this.openForPairing) {
       return "unlock";
@@ -24,7 +24,9 @@ export class NabtoDevice {
               product: string,
               iconUrl?: string,
               paired?: boolean,
-              pairingMode?: number
+              pairingMode?: number,
+              remoteAccessEnabled?: boolean,
+              grantGuestRemoteAccess?: boolean
              )   
   {
     this.name = name;
@@ -36,7 +38,9 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    this.paired = paired && paired;
-    this.openForPairing = (pairingMode && pairingMode == 1);
+    this.paired = !!paired;
+    this.openForPairing = (!!pairingMode && pairingMode == 1);
+    this.remoteAccessEnabled = !!remoteAccessEnabled;
+    this.grantGuestRemoteAccess = !!grantGuestRemoteAccess;
   }
 }
