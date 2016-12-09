@@ -29,7 +29,7 @@ export class DeviceSettingsPage {
     console.log("Editing device " + this.device.name);
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() { 
     this.readDeviceSecuritySettings();
   }
 

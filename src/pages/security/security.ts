@@ -30,7 +30,6 @@ export class SecurityPage {
   public device: NabtoDevice;
   public acl: Observable<AclEntry[]>;
   private aclSrc = [];
-  private toggleTapped = false;
 
   constructor(private params: NavParams,
               private nabtoService: NabtoService,
@@ -41,9 +40,11 @@ export class SecurityPage {
 
   ionViewDidLoad() {
     this.acl = Observable.of(this.aclSrc);
-    this.readAcl();
-    this.toggleTapped = false;
     console.log("Security settings for device " + JSON.stringify(this.device));
+  }
+
+  ionViewDidEnter() {
+    this.readAcl();
   }
 
   readAcl() {
@@ -57,30 +58,8 @@ export class SecurityPage {
                                         acl.users[i].is_owner ? "Owner" : "Guest"));
         }
       }).catch(error => {
-//        this.handleError(error);
+        this.handleError(error);
       });
-  }
-
-  addLocalUsersTapped() {
-    // if only handling ionChange events, the alert will also be shown
-    // when navigating to the form if the toggle is on (odd
-    // behavior...) - so make sure to only show alert if toggle has
-    // actually been tapped.
-    this.toggleTapped = true;
-  }
-
-  addLocalUsersToggled() {
-    if (!this.toggleTapped) {
-      return;
-    }
-    this.toggleTapped = false;
-    console.log("this.device.addLocalUsers=" + this.addLocalUsers);
-    if (this.addLocalUsers) {
-      this.showAlert("Are you sure you want to allow local guests to later access your device remotely? You can always change your mind and edit the access control list to remove unwanted guests.",
-                     () => { this.addLocalUsers = true; return true },
-                     () => { this.addLocalUsers = false; return true }
-                    );
-    }
   }
 
   update() {

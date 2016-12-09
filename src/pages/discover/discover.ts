@@ -26,6 +26,9 @@ export class DiscoverPage {
 
   ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
+  }
+
+  ionViewDidEnter() {
     this.discover();
   }
   

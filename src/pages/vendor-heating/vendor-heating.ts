@@ -45,7 +45,7 @@ export class VendorHeatingPage {
     this.busy = false;
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.refresh();
   }
 
