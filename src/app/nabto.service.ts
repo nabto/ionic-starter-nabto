@@ -139,7 +139,6 @@ export class NabtoService {
         });
     });
   }
-  
 
   public shutdown(): Promise<boolean> {
     return new Promise((resolve, reject) => {
