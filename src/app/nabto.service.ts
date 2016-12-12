@@ -110,9 +110,7 @@ export class NabtoService {
     return new Promise((resolve, reject) => {
 	  console.log("nabtoService.startup() called");
       nabto.startup(() => {
-		console.log("startup Callback");
 		nabto.openSession(() => {
-		  console.log("openSession callback");
           this.http.get("nabto/unabto_queries.xml")
 			.toPromise()
 			.then((res: Response) => {

@@ -39,13 +39,11 @@ export class OverviewPage {
   }
 
   ionViewDidLoad() {
-	console.log("Ion View Did Load");
     this.devices = Observable.of(this.deviceSrc);
     this.initializeWithKeyPair();
   }
 
   ionViewWillEnter() {
-	console.log("Ion View Will Enter");
     this.refresh();
   }
   
@@ -61,7 +59,9 @@ export class OverviewPage {
       }
       this.empty = (this.deviceSrc.length == 0);
     }).then(() => {
-	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(devIds));
+	  this.platform.ready().then(() => {
+		this.nabtoService.prepareInvoke(devIds)
+	  });
 	});
   }
 
