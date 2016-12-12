@@ -61,8 +61,7 @@ export class OverviewPage {
       }
       this.empty = (this.deviceSrc.length == 0);
     }).then(() => {
-//	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(devIds));
-	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(this.deviceSrc));
+	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(devIds));
 	});
   }
 

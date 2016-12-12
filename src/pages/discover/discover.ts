@@ -50,7 +50,13 @@ export class DiscoverPage {
   }
   
   onResume(){
-	this.nabtoService.prepareInvoke(this.deviceSrc);
+	var devIds : string[] = [];
+	var devs : NabtoDevice[] = [];
+	for (var i = 0; i < this.deviceSrc.length; i++){
+	  devs[i] = this.deviceSrc[i];
+	  devIds[i] = devs[i].id;
+	}
+	this.nabtoService.prepareInvoke(devIds);
   }
   discover(): void {
     this.busy = true;

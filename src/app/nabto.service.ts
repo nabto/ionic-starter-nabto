@@ -40,8 +40,7 @@ export class NabtoService {
         }
       }
 	}).then(() => {
-//	  this.prepareInvoke(devIds);
-	  this.prepareInvoke(deviceSrc);
+	  this.prepareInvoke(devIds);
 	});
   }
 
@@ -202,7 +201,7 @@ export class NabtoService {
     return params.join("&");
   }
 
-  public prepareInvoke(devices: NabtoDevice[]): Promise<void> {
+  public prepareInvoke(devices: string[]): Promise<void> {
 	return new Promise((resolve,reject) => {
 	  nabto.prepareInvoke(devices, (error) => {
 		if(error){
