@@ -23,6 +23,7 @@ export class NabtoIonicApp {
   initialize() {
     StatusBar.styleDefault();
     Splashscreen.hide();
+    console.log("AMP app initialized");
   }
 
   error(msg: string) {

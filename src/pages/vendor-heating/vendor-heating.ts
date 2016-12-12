@@ -27,6 +27,7 @@ export class VendorHeatingPage {
   timer: any;
   spinner: any;
   unavailableStatus: string;
+  firstView: boolean = true;
 
   constructor(private navCtrl: NavController,
               private nabtoService: NabtoService,
@@ -45,8 +46,19 @@ export class VendorHeatingPage {
     this.busy = false;
   }
 
-  ionViewDidEnter() {
+  ionViewDidLoad() {
     this.refresh();
+  }
+    
+  ionViewDidEnter() {
+    if (!this.firstView) {
+      this.refresh();
+    } else {
+      // first time we enter the page, just show the values populated
+      // during load (to not invoke device again a few milliseconds
+      // after load)
+      this.firstView = false;
+    }
   }
 
   refresh() {

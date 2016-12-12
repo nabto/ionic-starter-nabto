@@ -31,7 +31,7 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
-    this.startup();
+    this.startupAndOpenProfile();
   }
 
   onResign() {
@@ -90,7 +90,21 @@ export class NabtoService {
     });
   }
 
-  public startup(certificate?: string): Promise<boolean> {
+  public startup(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      nabto.startup((err) => {
+        if (!err) {
+          console.log("Nabto started (without profile)");
+          resolve();
+        } else {
+          console.log(`Could not start Nabto: ${err.message}`);
+          reject(new Error(err.message));
+        }
+      });
+    });
+  }
+  
+  public startupAndOpenProfile(certificate?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (certificate) {
         this.lastUser = certificate; // save for later suspend/resume cycle
@@ -102,7 +116,7 @@ export class NabtoService {
           return;
         }
       }
-      nabto.startup(certificate, this.pkPassword, (err) => {
+      nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
         if (!err) {
           this.initialized = true; 
           this.injectInterfaceDefinition().then(resolve).catch(reject);
@@ -219,7 +233,7 @@ export class NabtoService {
       if (this.initialized) {
         this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
       } else {
-        this.startup().then(() => {
+        this.startupAndOpenProfile().then(() => {
           return this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
         }).catch(reject);
       }

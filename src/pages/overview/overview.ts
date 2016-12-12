@@ -23,7 +23,8 @@ export class OverviewPage {
   shortTitle: string;
   longTitle: string;
   empty: boolean;
-
+  firstView: boolean = true;
+  
   constructor(public navCtrl: NavController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
@@ -38,10 +39,18 @@ export class OverviewPage {
   ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
     this.initializeWithKeyPair();
+    this.refresh();
   }
 
-  ionViewWillEnter() {
-    this.refresh();
+  ionViewDidEnter() {
+    if (!this.firstView) {
+      this.refresh();
+    } else {
+      // first time we enter the page, just show the values populated
+      // during load (to not invoke device again a few milliseconds
+      // after load)
+      this.firstView = false;
+    }
   }
   
   refresh() {
@@ -96,7 +105,7 @@ export class OverviewPage {
         if (name) {
           this.initialize(name);
         } else {
-          this.showKeyPairCreationPage();
+          this.nabtoService.startup().then(() => this.showKeyPairCreationPage());
         }
       }).catch((error) => {
         this.showKeyPairCreationPage();
@@ -104,7 +113,7 @@ export class OverviewPage {
   }
   
   initialize(name: string) {
-    this.nabtoService.startup(name)
+    this.nabtoService.startupAndOpenProfile(name)
       .then(() => console.log("Nabto startup completed"))
       .catch((error) => {
         if (error.message === 'BAD_PROFILE') {

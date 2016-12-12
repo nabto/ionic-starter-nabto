@@ -15,7 +15,8 @@ import { NabtoService } from '../../app/nabto.service';
 export class DeviceSettingsPage {
 
   public device: NabtoDevice;
-  public securityMesssage: string;
+  public securityMessage: string;
+  private firstView: boolean = true;
 
   constructor(public viewCtrl: ViewController,
               private alertCtrl: AlertController,
@@ -29,8 +30,19 @@ export class DeviceSettingsPage {
     console.log("Editing device " + this.device.name);
   }
 
-  ionViewDidEnter() { 
+  ionViewDidLoad() { 
     this.readDeviceSecuritySettings();
+  }
+
+  ionViewDidEnter() {
+    if (!this.firstView) {
+      this.readDeviceSecuritySettings();
+    } else {
+      // first time we enter the page, just show the values populated
+      // during load (to not invoke device again a few milliseconds
+      // after load)
+      this.firstView = false;
+    }
   }
 
   readDeviceSecuritySettings() {
@@ -48,14 +60,11 @@ export class DeviceSettingsPage {
   }
 
   updateSecurityMessage() {
-    if (this.device.currentUserIsOwner) {
-      if (this.device.openForPairing) {
-        this.securityMesssage = "Your device is currently open for pairing.";
-      } else {
-        this.securityMesssage = "Your device is closed for pairing, change this to grant guests access.";
-      }
+    // XXX: include more info in summary?
+    if (this.device.openForPairing) {
+      this.securityMessage = "This device is currently open for pairing to grant new guests access.";
     } else {
-      this.securityMesssage = "Only the owner of this device can change security settings, you currently only have guest permissions. If you actually are the owner, you must perform a factory reset of the device.";
+      this.securityMessage = "This device is closed for pairing, change this to grant new guests access.";
     }
   }
   
