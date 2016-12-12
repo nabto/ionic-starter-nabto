@@ -50,15 +50,18 @@ export class OverviewPage {
   }
   
   refresh() {
-    this.bookmarksService.readBookmarks().then((bookmarks) => {
+ 	var devIds : string[] = [];
+	this.bookmarksService.readBookmarks().then((bookmarks) => {
       this.deviceSrc.splice(0, this.deviceSrc.length);
       if (bookmarks) {
         for(let i = 0; i < bookmarks.length; i++) {
           this.deviceSrc.push(bookmarks[i]);
+		  devIds.push(bookmarks[i].id);
         }
       }
       this.empty = (this.deviceSrc.length == 0);
     }).then(() => {
+//	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(devIds));
 	  this.platform.ready().then(() => this.nabtoService.prepareInvoke(this.deviceSrc));
 	});
   }

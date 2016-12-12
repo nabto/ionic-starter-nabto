@@ -28,6 +28,7 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
+	var devIds : string[] = [];
     this.startup();
 	var deviceSrc : NabtoDevice[] = [];
 	this.bookmarksService.readBookmarks().then((bookmarks) => {
@@ -35,9 +36,11 @@ export class NabtoService {
       if (bookmarks) {
         for(let i = 0; i < bookmarks.length; i++) {
           deviceSrc.push(bookmarks[i]);
+		  devIds.push(bookmarks[i].id);
         }
       }
 	}).then(() => {
+//	  this.prepareInvoke(devIds);
 	  this.prepareInvoke(deviceSrc);
 	});
   }
