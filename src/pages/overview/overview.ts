@@ -38,7 +38,7 @@ export class OverviewPage {
 
   ionViewDidLoad() {
     this.devices = Observable.of(this.deviceSrc);
-    this.initializeWithKeyPair();
+    this.initialize();
     this.refresh();
   }
 
@@ -52,7 +52,45 @@ export class OverviewPage {
       this.firstView = false;
     }
   }
+
+  initialize() {
+    this.profileService.lookupKeyPairName()
+      .then((name) => {
+        if (name) {
+          console.log(`Initializing using profile [${name}]`);
+          this.initializeWithKeyPair(name);
+        } else {
+          console.log('No profile found, creating');
+          this.nabtoService.startup()
+            .then(() => this.showKeyPairCreationPage())
+            .catch((err) => console.log(`An error occurred: ${err}`));
+        }
+      }).catch((err) => {
+        console.log(`An error occurred: ${err}`);
+        this.showKeyPairCreationPage();
+      });
+  }
   
+  initializeWithKeyPair(name: string) {
+    this.nabtoService.startupAndOpenProfile(name)
+      .then(() => console.log("Nabto startup completed"))
+      .catch((error) => {
+        if (error.message === 'BAD_PROFILE') {
+          this.showKeyPairCreationPage();
+        } else {
+          this.showAlert("App could not start, please contact vendor: " + error.message);
+        }
+      });
+  }
+
+  showKeyPairCreationPage() {
+    let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
+    modal.onDidDismiss((name) => {
+      this.initializeWithKeyPair(name);
+    });
+    modal.present();
+  }
+
   refresh() {
     this.bookmarksService.readBookmarks().then((bookmarks) => {
       this.deviceSrc.splice(0, this.deviceSrc.length);
@@ -89,39 +127,6 @@ export class OverviewPage {
       }
     });
     modal.present();
-  }
-
-  showKeyPairCreationPage() {
-    let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
-    modal.onDidDismiss((name) => {
-      this.initialize(name);
-    });
-    modal.present();
-  }
-
-  initializeWithKeyPair() {
-    this.profileService.lookupKeyPairName()
-      .then((name) => {
-        if (name) {
-          this.initialize(name);
-        } else {
-          this.nabtoService.startup().then(() => this.showKeyPairCreationPage());
-        }
-      }).catch((error) => {
-        this.showKeyPairCreationPage();
-      });
-  }
-  
-  initialize(name: string) {
-    this.nabtoService.startupAndOpenProfile(name)
-      .then(() => console.log("Nabto startup completed"))
-      .catch((error) => {
-        if (error.message === 'BAD_PROFILE') {
-          this.showKeyPairCreationPage();
-        } else {
-          this.showAlert("App could not start, please contact vendor: " + error.message);
-        }
-      });
   }
 
   showAlert(message: string) {
