@@ -33,11 +33,13 @@
   <!-- get all users that have access to device -->
   <query name="get_users.json" id="11000">
     <request>
+      <parameter name="count" type="uint8"/> 
+      <parameter name="start" type="uint32"/> 
     </request>
     <response format="json">
       <list name="users">
-        <parameter name="name" type="raw"/>
         <parameter name="fingerprint" type="raw"/>
+        <parameter name="name" type="raw"/>
         <parameter name="permissions" type="uint32"/>
       </list>
     </response>
@@ -49,8 +51,8 @@
       <parameter name="user_name" type="raw"/>
     </request>
     <response format="json">
-      <parameter name="user_name" type="raw"/>
       <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="user_name" type="raw"/>
       <parameter name="is_owner" type="uint32"/>
     </response>
   </query>
