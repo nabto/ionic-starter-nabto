@@ -8,6 +8,17 @@ import { BookmarksService } from '../app/bookmarks.service';
 declare var nabto;
 declare var NabtoError;
 
+//let FP_ACL_PERMISSION_NONE                  = 0x00000000;
+//let FP_ACL_PERMISSION_ALL                   = 0xffffffff;
+//let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
+let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
+let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
+//let FP_ACL_SYSTEM_PERMISSION_NONE           = 0x00000000;
+//let FP_ACL_SYSTEM_PERMISSION_ALL            = 0xffffffff;
+//let FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS   = 0x80000000;
+let FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS  = 0x40000000;
+let FP_ACL_SYSTEM_PERMISSION_PAIRING        = 0x20000000;
+
 @Injectable()
 export class NabtoService {
 
@@ -196,7 +207,9 @@ export class NabtoService {
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
-      nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
+      let url = "nabto://" + deviceId + "/get_public_device_info.json?";
+      console.log(`Retrieving public details through ${url}`);
+      nabto.rpcInvoke(url, (err, details) => {
         if (!err) {
           let r = details.response;
           let dev:NabtoDevice = new NabtoDevice(r.device_name,
@@ -210,7 +223,7 @@ export class NabtoService {
           resolve(dev);
         } else {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
-          resolve(new NabtoDevice(deviceId, deviceId, "(could not get details)"));
+          resolve(new NabtoDevice(deviceId, deviceId, err.message));
         }
       });
     });
@@ -228,17 +241,40 @@ export class NabtoService {
   }
 
   public prepareInvoke(devices: string[]): Promise<void> {
-	return new Promise((resolve,reject) => {
-	  nabto.prepareInvoke(devices, (error) => {
-		if(error){
-		  reject(new Error("PrepareConnect failed: " + error.message));
-		  return
-		}
-		resolve();
-	  });
-	});
+    return new Promise((resolve,reject) => {
+      nabto.prepareInvoke(devices, (error) => {
+	if(error){
+	  reject(new Error("PrepareConnect failed: " + error.message));
+	  return
+	}
+	resolve();
+      });
+    });
   }
 
+  public readDeviceSecuritySettings(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "get_user_permissions.json")
+        .then((user: any) => {
+          device.currentUserIsOwner = ((user.permissions & FP_ACL_PERMISSION_ADMIN) == FP_ACL_PERMISSION_ADMIN);
+          return this.invokeRpc(device, "get_system_security_settings.json");
+        })
+        .then((system: any) => {
+          device.remoteAccessEnabled = ((system.remote_access_enabled & FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS) ==
+                                        FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS);
+          device.openForPairing = ((system.permissions & FP_ACL_SYSTEM_PERMISSION_PAIRING) ==
+                                   FP_ACL_SYSTEM_PERMISSION_PAIRING);
+          device.grantGuestRemoteAccess = ((system.default_user_permissions_after_pairing & FP_ACL_PERMISSION_REMOTE_ACCESS) ==
+                                           FP_ACL_PERMISSION_REMOTE_ACCESS);
+          console.log("Added security settings to device: " + JSON.stringify(device));
+          resolve(device);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+  
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??
     return new Promise((resolve, reject) => {
       let paramString = "";

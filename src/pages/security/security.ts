@@ -55,7 +55,7 @@ export class SecurityPage {
         for(let i = 0; i < acl.users.length; i++) {
           this.aclSrc.push(new AclEntry(acl.users[i].name,
                                         acl.users[i].fingerprint,
-                                        acl.users[i].is_owner ? "Owner" : "Guest"));
+                                        (acl.users[i].permissions & 0x20000000) == 0x20000000 ? "Owner" : "Guest"));
         }
       }).catch(error => {
         this.handleError(error.message);
