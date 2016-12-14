@@ -48,7 +48,7 @@ export class SecurityPage {
   }
 
   readAcl() {
-    this.nabtoService.invokeRpc(this.device, "get_users.json").
+    this.nabtoService.invokeRpc(this.device, "get_users.json", { "count": 10, "start": 0 }).
       then((acl: any) => {
         console.log("Got users: " + JSON.stringify(acl));
         this.aclSrc.splice(0, this.aclSrc.length);
@@ -58,7 +58,7 @@ export class SecurityPage {
                                         acl.users[i].is_owner ? "Owner" : "Guest"));
         }
       }).catch(error => {
-        this.handleError(error);
+        this.handleError(error.message);
       });
   }
 
