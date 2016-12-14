@@ -12,6 +12,7 @@ import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
+import { Platform } from 'ionic-angular';
 
 @Component({
   templateUrl: 'overview.html'
