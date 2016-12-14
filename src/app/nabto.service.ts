@@ -3,6 +3,7 @@ import { Platform } from 'ionic-angular';
 import { NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
+import { BookmarksService } from '../app/bookmarks.service';
 
 declare var nabto;
 declare var NabtoError;
@@ -16,6 +17,7 @@ export class NabtoService {
   
   constructor (private storage: Storage,
                private http: Http,
+               private bookmarksService: BookmarksService,
                private platform: Platform) {
     this.initialized = false;
     document.addEventListener('pause', () => {
@@ -31,7 +33,20 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
+	var devIds : string[] = [];
     this.startupAndOpenProfile();
+	var deviceSrc : NabtoDevice[] = [];
+	this.bookmarksService.readBookmarks().then((bookmarks) => {
+	  deviceSrc.splice(0, deviceSrc.length);
+      if (bookmarks) {
+        for(let i = 0; i < bookmarks.length; i++) {
+          deviceSrc.push(bookmarks[i]);
+		  devIds.push(bookmarks[i].id);
+        }
+      }
+	}).then(() => {
+	  this.prepareInvoke(devIds);
+	});
   }
 
   onResign() {
@@ -89,7 +104,6 @@ export class NabtoService {
       });
     });
   }
-
   public startup(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       nabto.startup((err) => {
@@ -177,16 +191,18 @@ export class NabtoService {
           reject(new Error("Discover failed: " + error.message));
           return;
         }
-        let devices = [];
-        for(let i = 0; i < deviceIds.length; i++) {
-          devices.push(this.getPublicDetails(deviceIds[i]));
-        }
-        Promise.all(devices).then((res: NabtoDevice[]) => {
-          for(let i = 0; i < res.length; i++) {
-            console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
-          }
-          resolve(res);
-        });
+		this.prepareInvoke(deviceIds).then(() => {
+		  let devices = [];
+		  for(let i = 0; i < deviceIds.length; i++) {
+			devices.push(this.getPublicDetails(deviceIds[i]));
+		  }
+		  Promise.all(devices).then((res: NabtoDevice[]) => {
+			for(let i = 0; i < res.length; i++) {
+			  console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
+			}
+			resolve(res);
+		  });
+		});
       });
     });
   }
@@ -216,12 +232,24 @@ export class NabtoService {
   private buildParamString(input: any): string {
     let params = [];
     for (let key in input) {
-        if (input.hasOwnProperty(key)) {
-            let val = input[key];
-            params.push(`${key}=${val}`);
-        }
+      if (input.hasOwnProperty(key)) {
+        let val = input[key];
+        params.push(`${key}=${val}`);
+      }
     }
     return params.join("&");
+  }
+
+  public prepareInvoke(devices: string[]): Promise<void> {
+	return new Promise((resolve,reject) => {
+	  nabto.prepareInvoke(devices, (error) => {
+		if(error){
+		  reject(new Error("PrepareConnect failed: " + error.message));
+		  return
+		}
+		resolve();
+	  });
+	});
   }
 
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??

@@ -5,6 +5,7 @@ import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
+import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class PairingPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
-              private nabtoService: NabtoService,
+			  private nabtoService: NabtoService,
               private profileService: ProfileService,
               private bookmarksService: BookmarksService) {
     this.device = navParams.get('device');

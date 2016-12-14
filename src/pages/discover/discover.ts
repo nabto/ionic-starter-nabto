@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { PairingPage } from '../pairing/pairing';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
@@ -20,7 +20,8 @@ export class DiscoverPage {
   busy: boolean;
   longTitle: string;
   shortTitle: string;
-
+  view : ViewController;
+  
   public devices: Observable<NabtoDevice[]>;
   private deviceSrc = [];
 
@@ -40,8 +41,7 @@ export class DiscoverPage {
               private nabtoService: NabtoService,
               private bookmarksService: BookmarksService,
               private zone: NgZone
-              ) {
-
+             ) {
     this.busy = false;
     this.longTitle = navParams.get('longTitle');
     if (!this.longTitle) {
@@ -51,11 +51,28 @@ export class DiscoverPage {
     this.shortTitle = navParams.get('shortTitle');
     if (!this.shortTitle) {
       this.shortTitle = "Discover";
-    }    
+    }
+	document.addEventListener('resume', () => {
+	  this.onResume();
+	});
+  }
+  
+  onResume(){
+	// Will only prepare devices if this page is the active view 
+	if(this.navCtrl.getActive() == this.view){
+	  var devIds : string[] = [];
+	  var devs : NabtoDevice[] = [];
+	  for (var i = 0; i < this.deviceSrc.length; i++){
+		devs[i] = this.deviceSrc[i];
+		devIds[i] = devs[i].id;
+	  }
+	  this.nabtoService.prepareInvoke(devIds);
+	}
   }
 
   discover(): void {
-    this.busy = true;
+    this.view = this.navCtrl.getActive();
+	this.busy = true;
     this.nabtoService.discover()
       .then(discovered => {
         this.busy = false;
@@ -78,7 +95,7 @@ export class DiscoverPage {
         console.log("ERROR discovering devices: " + JSON.stringify(error));
       });
   }
-           
+  
   refresh() {
     this.discover();
   }

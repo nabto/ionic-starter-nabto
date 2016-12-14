@@ -29,6 +29,7 @@ export class OverviewPage {
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private nabtoService: NabtoService,
+			  private platform: Platform,
               private modalCtrl: ModalController,
               private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
@@ -92,15 +93,21 @@ export class OverviewPage {
   }
 
   refresh() {
-    this.bookmarksService.readBookmarks().then((bookmarks) => {
+ 	var devIds : string[] = [];
+	this.bookmarksService.readBookmarks().then((bookmarks) => {
       this.deviceSrc.splice(0, this.deviceSrc.length);
       if (bookmarks) {
         for(let i = 0; i < bookmarks.length; i++) {
           this.deviceSrc.push(bookmarks[i]);
+		  devIds.push(bookmarks[i].id);
         }
       }
       this.empty = (this.deviceSrc.length == 0);
-    });
+    }).then(() => {
+	  this.platform.ready().then(() => {
+		this.nabtoService.prepareInvoke(devIds)
+	  });
+	});
   }
 
   showVendorPage(event, device) {
