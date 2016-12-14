@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Device Settings</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div [hidden]="device.currentUserIsOwner">
+    Only the owner of this device can change settings, you currently only have guest permissions. If you actually are the owner, you must perform a factory reset of the device.
+  </div>
+  
+  <h2>Properties</h2>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>Enter the name of this device, e.g. "Kitchen".</ion-label>
+      <ion-input [disabled]="!device.currentUserIsOwner" required type="text" [(ngModel)]="device.name" (blur)="saveProperties()"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <h2>Security</h2>
+  <p>
+    {{securityMessage}}
+  </p>
+
+  <button [disabled]="!device.currentUserIsOwner" ion-button type="submit" block (click)="showSecurityPage()">
+       <ion-icon name="lock"></ion-icon>&nbsp; Edit security settings
+  </button>
+
+</ion-content>

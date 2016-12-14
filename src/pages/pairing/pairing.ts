@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { NavController, NavParams } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
-import { LoadingController } from 'ionic-angular';
+import { NabtoService } from '../../app/nabto.service';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { NabtoService } from '../../app/nabto.service';
+import { ProfileService } from '../../app/profile.service';
 
 @Component({
   selector: 'page-pairing',
@@ -18,13 +19,12 @@ export class PairingPage {
   operatingSystem: string;
   success: boolean;
   busy: boolean;
-  loader: any;
   
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
-              public loadingCtrl: LoadingController,
 			  private nabtoService: NabtoService,
+              private profileService: ProfileService,
               private bookmarksService: BookmarksService) {
     this.device = navParams.get('device');
     this.shortTitle = navParams.get('shortTitle');
@@ -38,22 +38,20 @@ export class PairingPage {
     this.operatingSystem = (<any>window).device.platform;
   }
   
-  presentLoading() {
-    this.loader = this.loadingCtrl.create({
-      content: "Pairing...",
-    });
-    this.loader.present();
+  pair() {
+    this.profileService.lookupKeyPairName()
+      .then((profileName) => {
+        this.nabtoService.invokeRpc(this.device, "pair_with_device.json", { "user_name": profileName}).
+          then((pairedUser: any) => {
+            console.log("Got paired user: " + JSON.stringify(pairedUser));
+            this.writeBookmark();
+            this.success = true;
+          }).catch(error => {
+            //        this.handleError(error);        
+          });
+      });
   }
 
-  pair() {
-    this.presentLoading();
-    setTimeout(() => {
-      this.writeBookmark();
-      this.loader.dismiss();
-	  this.success = true;
-    }, 2000) ;
-  }
-  
   back() {
     this.navCtrl.popToRoot();
   }

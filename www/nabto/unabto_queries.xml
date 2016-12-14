@@ -4,6 +4,8 @@
     xsi:noNamespaceSchemaLocation="http://www.nabto.com/unabto/query_model.xsd">
 
   <!-- general queries -->
+
+  <!-- public info for discovery -->
   <query name="get_public_device_info.json" id="10000">
     <request>
     </request>
@@ -11,9 +13,80 @@
       <parameter name="device_name" type="raw"/>
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
+      <parameter name="paired" type="uint8"/>
+      <parameter name="pairingMode" type="uint8"/>      
     </response>
   </query>
 
+  <!-- set general info -->
+  <query name="set_device_info.json" id="10010">
+    <request>
+      <parameter name="device_name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="device_name" type="raw"/>
+    </response>
+  </query>
+
+  <!-- access control related queries -->
+
+  <!-- get all users that have access to device -->
+  <query name="get_users.json" id="11000">
+    <request>
+      <parameter name="count" type="uint8"/> 
+      <parameter name="start" type="uint32"/> 
+    </request>
+    <response format="json">
+      <list name="users">
+        <parameter name="fingerprint" type="raw"/>
+        <parameter name="name" type="raw"/>
+        <parameter name="permissions" type="uint32"/>
+      </list>
+    </response>
+  </query>
+
+  <!-- pair client (user) with this device -->
+  <query name="pair_with_device.json" id="11010">
+    <request>
+      <parameter name="user_name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="user_name" type="raw"/>
+      <parameter name="is_owner" type="uint32"/>
+    </response>
+  </query>
+
+  <!-- get security related settings -->
+  <query name="get_security_settings.json" id="11020">
+    <request>
+    </request>
+    <response format="json">
+      <parameter name="current_user_is_owner" type="uint8"/> 
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
+      <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
+    </response>
+  </query>
+
+  <!-- set device-wide security related settings -->
+  <query name="set_security_settings.json" id="11030">
+    <request>
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
+      <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
+    </request>
+    <response format="json">
+      <parameter name="remote_access_enabled" type="uint8"/> 
+      <parameter name="open_for_pairing" type="uint8"/>
+      <parameter name="default_permissions_after_pairing" type="uint32"/>
+    </response>
+  </query>
+
+
+  
   <!-- heatpump demo queries -->
 
   <!-- get all state details -->

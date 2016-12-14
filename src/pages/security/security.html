@@ -1,0 +1,56 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Security Settings</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <h2>Remote Access Master Switch</h2>
+  <p>Allow remote access to this device. If switched off, nobody (not even you, the owner) can connect to the device. If switched on, you can control below who may connect.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Enable remote access</ion-label>
+      <ion-toggle [(ngModel)]="device.remoteAccessEnabled" (ionChange)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <h2>Open For Local Pairing</h2>
+  <p>Allow users on the same local network to pair with device as guests. Guests can later be removed in the access control list below if you change your mind.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Open for pairing</ion-label>
+      <ion-toggle [(ngModel)]="device.openForPairing" (ionChange)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+  
+  <h2>Guest Remote Access</h2>
+  <p>When adding new users as guests, allow them to later also access the device remotely (outside your local network). You can later change this for individual guests in the access control list below.</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Remote guest access</ion-label>
+      <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (ionChange)="update()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <h2>Access Control List</h2>
+  <p>Control who has access to your device.</p>
+  <ion-list>
+    <button ion-item *ngFor="let entry of acl | async" (tap)="itemTapped($event, entry)">
+      <h2>{{entry.name}}</h2>
+      <h3><ion-icon [name]="entry.icon"></ion-icon> &nbsp; {{entry.role}}</h3>
+      <p>RSA fingerprint: {{entry.fingerprint}}</p>
+    </button>
+    <button ion-item>
+      <h2>Add new guest</h2>
+    </button>
+    
+  </ion-list>
+  
+
+
+
+</ion-content>

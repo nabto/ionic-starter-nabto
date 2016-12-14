@@ -11,10 +11,15 @@ declare var NabtoError;
 @Injectable()
 export class NabtoService {
 
+  private pkPassword: string = "empty"; // see comment on createKeyPair() below
+  private lastUser: string;
+  private initialized: boolean;
+  
   constructor (private storage: Storage,
                private http: Http,
                private bookmarksService: BookmarksService,
                private platform: Platform) {
+    this.initialized = false;
     document.addEventListener('pause', () => {
       this.onPause();
     });
@@ -29,7 +34,7 @@ export class NabtoService {
   onResume() {
     console.log("resumed, invoking nabto.startup");
 	var devIds : string[] = [];
-    this.startup();
+    this.startupAndOpenProfile();
 	var deviceSrc : NabtoDevice[] = [];
 	this.bookmarksService.readBookmarks().then((bookmarks) => {
 	  deviceSrc.splice(0, deviceSrc.length);
@@ -46,6 +51,10 @@ export class NabtoService {
 
   onResign() {
     if (this.platform.is('ios')) {
+      // this event is also fired when notification center is shown
+      // etc. - and there is no opposite event, meaning that we cannot
+      // start again, hence the reason for introducing the initalized
+      // flag
       console.log("Resigning, invoking nabto.shutdown");
       this.shutdown();
     } else {
@@ -83,8 +92,7 @@ export class NabtoService {
   //
   public createKeyPair(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      let password = "empty"; // see comment above
-      nabto.createKeyPair(username, password, (error) => {
+      nabto.createKeyPair(username, this.pkPassword, (error) => {
         if (!error) {
           console.log("nabto.createKeyPair succeeded");
           this.storage.set('username', username);    
@@ -96,41 +104,67 @@ export class NabtoService {
       });
     });
   }
-  /*
-	public startup(): Promise<string> {
-    return new Promise((resolve, reject) => {
-    this.storage.get('username').then((username) => {
-    // resolve if keystore.has(username) && nabtoStartup && nabtoOpensession(username)
-    resolve("TODO - username");
-    });
-    });
-    }*/
-
   public startup(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-	  console.log("nabtoService.startup() called");
-      nabto.startup(() => {
-		nabto.openSession(() => {
-          this.http.get("nabto/unabto_queries.xml")
-			.toPromise()
-			.then((res: Response) => {
-              nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
-				if (!err) {
-                  console.log("nabto started and interface set ok!")
-                  resolve();
-				} else {
-                  console.log(JSON.stringify(err));
-                  reject(new Error("Could not inject device interface definition - please contact app vendor" + err.message));
-				}
-              })
-			})
-			.catch((err) => {
-              console.log(err);
-              reject(new Error("Could not load device interface definition - please contact app vendor: " + err));
-			});
-		});
+      nabto.startup((err) => {
+        if (!err) {
+          console.log("Nabto started (without profile)");
+          resolve();
+        } else {
+          console.log(`Could not start Nabto: ${err.message}`);
+          reject(new Error(err.message));
+        }
       });
-	  nabto.openSession(()=>{});
+    });
+  }
+  
+  public startupAndOpenProfile(certificate?: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (certificate) {
+        this.lastUser = certificate; // save for later suspend/resume cycle
+      } else {
+        if (this.lastUser) {
+          certificate = this.lastUser;
+        } else {
+          reject(new Error("Startup never invoked with a certificate"));
+          return;
+        }
+      }
+      nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
+        if (!err) {
+          this.initialized = true; 
+          this.injectInterfaceDefinition().then(resolve).catch(reject);
+        } else {
+          if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
+            reject(new Error('BAD_PROFILE'));
+          } else {
+            console.log(`Could not start Nabto: ${err.message}`);
+            reject(new Error(err.message));
+          } 
+        }
+      });
+    });
+  }
+  
+  private injectInterfaceDefinition(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.http.get("nabto/unabto_queries.xml")
+        .toPromise()
+        .then((res: Response) => {
+          nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+            if (!err) {
+              console.log("nabto started and interface set ok!")
+              resolve();
+            } else {
+              console.log(JSON.stringify(err));
+              reject(new Error("Could not inject device interface definition: " + err.message));
+            }
+          })
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(new Error("Could not load device interface definition: " + err));
+        });
     });
   }
 
@@ -139,6 +173,7 @@ export class NabtoService {
       nabto.shutdown((err) => {
         if (!err) {
           console.log("nabto.shutdown ok");
+          this.initialized = false;
           resolve();
         } else {
           console.log("nabto.shutdown failed");
@@ -177,7 +212,13 @@ export class NabtoService {
       nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
         if (!err) {
           let r = details.response;
-          let dev:NabtoDevice = new NabtoDevice(r.device_name, deviceId, r.device_type, r.device_icon);
+          let dev:NabtoDevice = new NabtoDevice(r.device_name,
+                                                deviceId,
+                                                r.device_type,
+                                                r.device_icon,
+                                                r.paired,
+                                                r.pairingMode
+                                               );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
         } else {
@@ -210,13 +251,26 @@ export class NabtoService {
 	  });
 	});
   }
-  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
+
+  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
         paramString = this.buildParamString(parameters);
       }
-	  nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+      if (this.initialized) {
+        this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
+      } else {
+        this.startupAndOpenProfile().then(() => {
+          return this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
+        }).catch(reject);
+      }
+    });
+  }
+
+  private doInvokeRpc(device: NabtoDevice, request: string, paramString: string): Promise<NabtoDevice>  {
+    return new Promise((resolve, reject) => {
+      nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
         } else {
@@ -239,7 +293,7 @@ export class NabtoService {
         }
       });
     });
-  }  
+  }
 }
 
 

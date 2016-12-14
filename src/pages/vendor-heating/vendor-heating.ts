@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
-import { LoadingController } from 'ionic-angular';
+import { DeviceSettingsPage } from '../device-settings/device-settings';
 
 declare var NabtoError;
 
@@ -25,13 +27,15 @@ export class VendorHeatingPage {
   timer: any;
   spinner: any;
   unavailableStatus: string;
+  firstView: boolean = true;
 
-  constructor(public navCtrl: NavController,
+  constructor(private navCtrl: NavController,
               private nabtoService: NabtoService,
-              public toastCtrl: ToastController,
-              public loadingCtrl: LoadingController,
-              public navParams: NavParams) {
-	this.device = navParams.get('device');
+              private toastCtrl: ToastController,
+              private loadingCtrl: LoadingController,
+              private navParams: NavParams,
+              private modalCtrl: ModalController) {
+    this.device = navParams.get('device');
     this.temperature = undefined;
     this.activated = false;
     this.offline = true;
@@ -40,15 +44,21 @@ export class VendorHeatingPage {
     this.minTemp = 16;
     this.timer = undefined;
     this.busy = false;
-	// this.nabtoService.prepareInvoke().
-	//   then().catch(error => {
-    //     this.busyEnd();
-    //     this.handleError(error);
-    //   });
   }
 
   ionViewDidLoad() {
     this.refresh();
+  }
+    
+  ionViewDidEnter() {
+    if (!this.firstView) {
+      this.refresh();
+    } else {
+      // first time we enter the page, just show the values populated
+      // during load (to not invoke device again a few milliseconds
+      // after load)
+      this.firstView = false;
+    }
   }
 
   refresh() {
@@ -87,7 +97,6 @@ export class VendorHeatingPage {
         this.busyEnd();
         this.handleError(error);
       });
-	//});
   }
   
   busyBegin() {
@@ -219,6 +228,25 @@ export class VendorHeatingPage {
     });
     this.spinner.present();
   }
+
+  showSettingsPage() {
+    this.navCtrl.push(DeviceSettingsPage, {
+      device: this.device
+    });
+  }
+
+/*
+    
+    let modal = this.modalCtrl.create(DeviceSettingsPage, { device: this.device }, { enableBackdropDismiss: false });
+    modal.onDidDismiss((device) => {
+      if (device) {
+        this.device.name = device.name; // XXX man kan vel ikke sætte hele obj (aht binding)?
+        // TODO: invoke device to set new values
+      }
+    });
+    modal.present();
+  }
+*/
 
   available() {
     return this.activated && !this.offline;
