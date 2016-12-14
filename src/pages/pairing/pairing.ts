@@ -5,7 +5,6 @@ import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
-import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
 
 @Component({
