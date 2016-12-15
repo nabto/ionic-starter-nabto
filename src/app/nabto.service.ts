@@ -32,16 +32,23 @@ export class NabtoService {
   }
 
   onResume() {
+	var devIds : string[] = [];
+	var deviceSrc : NabtoDevice[] = [];
     console.log("resumed, invoking nabto.startup");
-    this.startupAndOpenProfile().then(() => {
-      this.bookmarksService.readBookmarks().then((bookmarks) => {
-        if (bookmarks) {
-          this.prepareInvoke(devIds);
+    this.startupAndOpenProfile();
+	this.bookmarksService.readBookmarks().then((bookmarks) => {
+	  deviceSrc.splice(0, deviceSrc.length);
+      if (bookmarks) {
+        for(let i = 0; i < bookmarks.length; i++) {
+          deviceSrc.push(bookmarks[i]);
+		  devIds.push(bookmarks[i].id);
         }
-      });
-    });
+      }
+	}).then(() => {
+	  this.prepareInvoke(devIds);
+	});
   }
-  
+
   onResign() {
     if (this.platform.is('ios')) {
       // this event is also fired when notification center is shown
