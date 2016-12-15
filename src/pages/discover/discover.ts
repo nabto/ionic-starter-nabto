@@ -102,13 +102,13 @@ export class DiscoverPage {
 
   itemTapped(event, device) {
     if (device.openForPairing) {
-      if (device.paired) {
+      if (device.currentUserIsOwner) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleUnpairedDevice(device);
       }
     } else {
-      if (device.paired) {
+      if (device.currentUserIsOwner) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleClosedDevice();

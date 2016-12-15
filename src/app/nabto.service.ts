@@ -216,7 +216,7 @@ export class NabtoService {
                                                 deviceId,
                                                 r.device_type,
                                                 r.device_icon,
-                                                r.paired,
+                                                r.is_owner,
                                                 r.pairingMode
                                                );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));

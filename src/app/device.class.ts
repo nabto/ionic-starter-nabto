@@ -3,7 +3,6 @@ export class NabtoDevice {
   public id: string;
   public product: string;
   public iconUrl: string;
-  public paired: boolean;
   public openForPairing: boolean;
   public remoteAccessEnabled: boolean = true;
   public grantGuestRemoteAccess: boolean;
@@ -23,7 +22,7 @@ export class NabtoDevice {
               id: string,
               product: string,
               iconUrl?: string,
-              paired?: boolean,
+              currentUserIsOwner?: boolean,
               pairingMode?: number,
               remoteAccessEnabled?: boolean,
               grantGuestRemoteAccess?: boolean
@@ -41,9 +40,10 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    this.paired = !!paired;
+    this.currentUserIsOwner = !!currentUserIsOwner;
     this.openForPairing = (!!pairingMode && pairingMode == 1);
     this.remoteAccessEnabled = !!remoteAccessEnabled;
     this.grantGuestRemoteAccess = !!grantGuestRemoteAccess;
+    console.log(`this.currentUserIsOwner=${this.currentUserIsOwner}, currentUserIsOwner=${currentUserIsOwner}`);
   }
 }
