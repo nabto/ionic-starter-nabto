@@ -32,10 +32,16 @@ export class NabtoService {
   }
 
   onResume() {
-        console.log("resumed, invoking nabto.startup");
-    this.startupAndOpenProfile();
+    console.log("resumed, invoking nabto.startup");
+    this.startupAndOpenProfile().then(() => {
+      this.bookmarksService.readBookmarks().then((bookmarks) => {
+        if (bookmarks) {
+          this.prepareInvoke(devIds);
+        }
+      });
+    });
   }
-
+  
   onResign() {
     if (this.platform.is('ios')) {
       // this event is also fired when notification center is shown
