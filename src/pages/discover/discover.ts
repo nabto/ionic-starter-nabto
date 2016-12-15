@@ -61,10 +61,10 @@ export class DiscoverPage {
 	// Will only prepare devices if this page is the active view 
 	if(this.navCtrl.getActive() == this.view){
 	  var devIds : string[] = [];
-	  var devs : NabtoDevice[] = [];
+//	  var devs : NabtoDevice[] = [];
 	  for (var i = 0; i < this.deviceSrc.length; i++){
-		devs[i] = this.deviceSrc[i];
-		devIds[i] = devs[i].id;
+//		devs[i] = this.deviceSrc[i];
+		devIds[i] = this.deviceSrc[i].id;
 	  }
 	  this.nabtoService.prepareInvoke(devIds);
 	}
