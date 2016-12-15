@@ -37,8 +37,8 @@ export class ProfilePage {
   submit() {
     this.profileService.createKeyPair(this.deviceName)
       .then((name) => {
-        console.log("Key pair created successfully for " + name);
-        this.profileService.storeKeyPairName(name);
+        console.log(`Key pair created successfully for ${name}`)l
+        this.profileService.storeKeyPairName(name);     
         this.viewCtrl.dismiss(name);
       })
       .catch((error) => {
