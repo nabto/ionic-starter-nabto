@@ -136,7 +136,7 @@ export class NabtoService {
           if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
             reject(new Error('BAD_PROFILE'));
           } else {
-            console.log(`Could not start Nabto: ${err.message}`);
+            console.log(`Could not start Nabto and open profile "${certificate}": ${err.message}`);
             reject(new Error(err.message));
           } 
         }

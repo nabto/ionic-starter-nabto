@@ -72,7 +72,7 @@ export class DiscoverPage {
 
   discover(): void {
     this.view = this.navCtrl.getActive();
-	this.busy = true;
+    this.busy = true;
     this.nabtoService.discover()
       .then(discovered => {
         this.busy = false;

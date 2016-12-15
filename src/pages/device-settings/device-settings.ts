@@ -30,8 +30,10 @@ export class DeviceSettingsPage {
     console.log("Editing device " + this.device.name);
   }
 
-  ionViewDidLoad() { 
-    this.readDeviceSecuritySettings();
+  ionViewDidLoad() {
+    if (this.device.currentUserIsOwner) {
+      this.readDeviceSecuritySettings();
+    }
   }
 
   ionViewDidEnter() {

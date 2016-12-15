@@ -44,13 +44,14 @@ export class ClientSettingsPage {
     let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
     modal.onDidDismiss((name) => {
       // restarting Nabto to close session with previous key and start new with new one
-      this.nabtoService.shutdown(() => console.log("Nabto stopped"));
-      this.nabtoService.startupAndOpenProfile(name)
-        .then(() => console.log("Nabto re-started with profile " + name))
-        .catch(() => {
-          console.log("Could not start Nabto");
-          this.showError({ message: "Could not start Nabto after creating new key pair, please contact support" });
-        });
+      this.nabtoService.shutdown().then(() => {
+        console.log("Nabto stopped")
+        this.nabtoService.startupAndOpenProfile(name)
+          .then(() => console.log("Nabto re-started with profile " + name))
+          .catch(() => {
+            console.log("Could not start Nabto after creating new key pair, please contact support");
+          });
+      });
     });
     modal.present();
   }
