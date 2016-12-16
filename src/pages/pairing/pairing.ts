@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { NavController, NavParams } from 'ionic-angular';
-import { NabtoDevice } from '../../app/device.class';
+import { DeviceUser, NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
@@ -42,7 +42,7 @@ export class PairingPage {
       .then((name) => {
         return this.nabtoService.pairWithCurrentUser(this.device, name);
       })
-      .then((user) => {
+      .then((user: DeviceUser) => {
         this.writeBookmark();
         this.success = true;
         this.device.currentUserIsOwner = user.isOwner();
