@@ -1,23 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { NabtoDevice } from './device.class';
+import { DeviceUser, NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
 import { BookmarksService } from '../app/bookmarks.service';
 
 declare var nabto;
 declare var NabtoError;
-
-//let FP_ACL_PERMISSION_NONE                  = 0x00000000;
-//let FP_ACL_PERMISSION_ALL                   = 0xffffffff;
-//let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
-let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
-let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
-//let FP_ACL_SYSTEM_PERMISSION_NONE           = 0x00000000;
-//let FP_ACL_SYSTEM_PERMISSION_ALL            = 0xffffffff;
-//let FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS   = 0x80000000;
-let FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS  = 0x40000000;
-let FP_ACL_SYSTEM_PERMISSION_PAIRING        = 0x20000000;
 
 @Injectable()
 export class NabtoService {
@@ -252,26 +241,43 @@ export class NabtoService {
     });
   }
 
-  public readDeviceSecuritySettings(device: NabtoDevice) {
+  public getCurrentUser(device: NabtoDevice) : Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "get_user_permissions.json")
+      this.invokeRpc(device, "get_current_user.json")
         .then((user: any) => {
-          device.currentUserIsOwner = ((user.permissions & FP_ACL_PERMISSION_ADMIN) == FP_ACL_PERMISSION_ADMIN);
+          resolve(new DeviceUser(user));
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public readAllSecuritySettings(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      this.getCurrentUser(device)
+        .then((user: DeviceUser) => {
+          device.currentUserIsOwner = user.isOwner();
           return this.invokeRpc(device, "get_system_security_settings.json");
         })
-        .then((system: any) => {
-          device.remoteAccessEnabled = ((system.remote_access_enabled & FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS) ==
-                                        FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS);
-          device.openForPairing = ((system.permissions & FP_ACL_SYSTEM_PERMISSION_PAIRING) ==
-                                   FP_ACL_SYSTEM_PERMISSION_PAIRING);
-          device.grantGuestRemoteAccess = ((system.default_user_permissions_after_pairing & FP_ACL_PERMISSION_REMOTE_ACCESS) ==
-                                           FP_ACL_PERMISSION_REMOTE_ACCESS);
-          console.log("Added security settings to device: " + JSON.stringify(device));
+        .then((details: any) => {
+          device.setSystemSecurityDetails(details);
           resolve(device);
         })
         .catch((error) => {
           reject(error);
         });
+    });
+  }
+
+  public pairWithCurrentUser(device: NabtoDevice, user: string) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "pair_with_device.json", { "user_name": user})
+        .then((pairedUser: any) => {
+          console.log("Got paired user: " + JSON.stringify(pairedUser));
+          resolve(new DeviceUser(pairedUser));
+        })
+        .catch(reject);
     });
   }
   

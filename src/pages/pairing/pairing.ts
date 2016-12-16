@@ -22,7 +22,7 @@ export class PairingPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public toastCtrl: ToastController,
-			  private nabtoService: NabtoService,
+	      private nabtoService: NabtoService,
               private profileService: ProfileService,
               private bookmarksService: BookmarksService) {
     this.device = navParams.get('device');
@@ -39,18 +39,28 @@ export class PairingPage {
   
   pair() {
     this.profileService.lookupKeyPairName()
-      .then((profileName) => {
-        this.nabtoService.invokeRpc(this.device, "pair_with_device.json", { "user_name": profileName}).
-          then((pairedUser: any) => {
-            console.log("Got paired user: " + JSON.stringify(pairedUser));
-            this.writeBookmark();
-            this.success = true;
-          }).catch(error => {
-            //        this.handleError(error);        
-          });
+      .then((name) => {
+        return this.nabtoService.pairWithCurrentUser(this.device, name);
+      })
+      .then((user) => {
+        this.writeBookmark();
+        this.success = true;
+        this.device.currentUserIsOwner = user.isOwner();
+      })
+      .catch(error => {
+        this.handleError(error);        
       });
   }
 
+  handleError(error: any) {
+    let toast = this.toastCtrl.create({
+      message: error.message,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
+  }
+  
   back() {
     this.navCtrl.popToRoot();
   }

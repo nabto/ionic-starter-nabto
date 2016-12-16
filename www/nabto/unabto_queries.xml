@@ -99,8 +99,8 @@
     </response>
   </query>
 
-  <!-- get user permissions -->
-  <query name="get_user_permissions.json" id="11030">
+  <!-- get current user -->
+  <query name="get_current_user.json" id="11030">
     <request>
     </request>
     <response format="json">

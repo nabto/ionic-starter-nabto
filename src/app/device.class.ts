@@ -1,3 +1,30 @@
+//let FP_ACL_PERMISSION_NONE                  = 0x00000000;
+//let FP_ACL_PERMISSION_ALL                   = 0xffffffff;
+//let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
+let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
+let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
+//let FP_ACL_SYSTEM_PERMISSION_NONE           = 0x00000000;
+//let FP_ACL_SYSTEM_PERMISSION_ALL            = 0xffffffff;
+//let FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS   = 0x80000000;
+let FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS  = 0x40000000;
+let FP_ACL_SYSTEM_PERMISSION_PAIRING        = 0x20000000;
+
+export class DeviceUser {
+  public fingerprint: string;
+  public name: string;
+  public permissions: number;
+  
+  constructor(object: any) {
+    this.fingerprint = object.fingerprint;
+    this.name = object.name;
+    this.permissions = object.permissions;
+  }
+
+  public isOwner() {
+    return ((this.permissions & FP_ACL_PERMISSION_ADMIN) == FP_ACL_PERMISSION_ADMIN);
+  }
+}
+
 export class NabtoDevice {
   public name: string;
   public id: string;
@@ -14,6 +41,15 @@ export class NabtoDevice {
     } else {
       return "lock";
     }
+  }
+
+  setSystemSecurityDetails(system: any) {
+    this.remoteAccessEnabled = ((system.remote_access_enabled & FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS) ==
+                                  FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS);
+    this.openForPairing = ((system.permissions & FP_ACL_SYSTEM_PERMISSION_PAIRING) ==
+                             FP_ACL_SYSTEM_PERMISSION_PAIRING);
+    this.grantGuestRemoteAccess = ((system.default_user_permissions_after_pairing & FP_ACL_PERMISSION_REMOTE_ACCESS) ==
+                                   FP_ACL_PERMISSION_REMOTE_ACCESS);
   }
   
   // iconUrl is absolute or relative to bundle's www folder, e.g. use

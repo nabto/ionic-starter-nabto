@@ -48,7 +48,7 @@ export class DeviceSettingsPage {
   }
 
   readDeviceSecuritySettings() {
-    this.nabtoService.readDeviceSecuritySettings(this.device)
+    this.nabtoService.readAllSecuritySettings(this.device)
       .then(() => this.updateSecurityMessage())
       .catch((error) => {
         this.handleError("Could not read security settings: " + error.message);
