@@ -68,7 +68,8 @@ export class DeviceSettingsPage {
     var opts = <any>{
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok'
+      closeButtonText: 'Ok',
+      duration: 5000
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();

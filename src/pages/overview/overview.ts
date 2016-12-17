@@ -99,7 +99,7 @@ export class OverviewPage {
       this.deviceSrc.splice(0, this.deviceSrc.length);
       if (bookmarks) {
         for(let i = 0; i < bookmarks.length; i++) {
-          this.deviceSrc.push(bookmarks[i]);
+          this.deviceSrc.push(bookmarks[i] as NabtoDevice);
 	  devIds.push(bookmarks[i].id);
         }
       }

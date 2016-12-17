@@ -5,6 +5,9 @@ import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
 import { BookmarksService } from '../app/bookmarks.service';
 
+declare var require;
+const UINT32: any = require('cuint').UINT32;
+
 declare var nabto;
 declare var NabtoError;
 
@@ -184,9 +187,6 @@ export class NabtoService {
 	    devices.push(this.getPublicDetails(deviceIds[i]));
 	  }
 	  Promise.all(devices).then((res: NabtoDevice[]) => {
-	    for(let i = 0; i < res.length; i++) {
-	      console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
-	    }
 	    resolve(res);
 	  });
 //	});
@@ -205,14 +205,14 @@ export class NabtoService {
                                                 deviceId,
                                                 r.device_type,
                                                 r.device_icon,
-                                                r.is_owner,
-                                                r.pairingMode
+                                                r.is_current_user_owner,
+                                                r.is_open_for_pairing
                                                );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
         } else {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
-          resolve(new NabtoDevice(deviceId, deviceId, err.message));
+          resolve(new NabtoDevice(deviceId, deviceId, err.message, undefined, false, false));
         }
       });
     });
@@ -260,6 +260,24 @@ export class NabtoService {
           device.currentUserIsOwner = user.isOwner();
           return this.invokeRpc(device, "get_system_security_settings.json");
         })
+        .then((details: any) => {
+          device.setSystemSecurityDetails(details);
+          resolve(device);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public setSystemSecuritySettings(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      let settings:any = {
+        // >>> 0: convert to unsigned
+        "permissions": device.getSystemPermissions() >>> 0,
+        "default_user_permissions_after_pairing": device.getDefaultUserPermissions() >>> 0
+      };
+      this.invokeRpc(device, "set_system_security_settings.json", settings)
         .then((details: any) => {
           device.setSystemSecurityDetails(details);
           resolve(device);
