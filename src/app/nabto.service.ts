@@ -3,10 +3,8 @@ import { Platform } from 'ionic-angular';
 import { DeviceUser, NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
-import { BookmarksService } from '../app/bookmarks.service';
-
-declare var require;
-const UINT32: any = require('cuint').UINT32;
+import { Bookmark, BookmarksService } from '../app/bookmarks.service';
+import { Subject } from 'rxjs/Subject';
 
 declare var nabto;
 declare var NabtoError;
@@ -35,7 +33,7 @@ export class NabtoService {
   }
 
   onResume() {
-        console.log("resumed, invoking nabto.startup");
+    console.log("resumed, invoking nabto.startup");
     this.startupAndOpenProfile();
   }
 
@@ -192,6 +190,22 @@ export class NabtoService {
 //	});
       });
     });
+  }
+
+  public getPublicInfo(bookmarks: Bookmark[]) {
+    let deviceInfoSource:Subject<NabtoDevice[]> = new Subject<NabtoDevice[]>();
+    let devices: NabtoDevice[] = [];
+    for (let bookmark of bookmarks) {
+      this.getPublicDetails(bookmark.id)
+        .then((device: NabtoDevice) => {
+          devices.push(device);
+          deviceInfoSource.next(devices);
+        })
+        .catch((error) => {
+          console.log(`Error getting public info for device ${bookmark.id}: ${error.message}`);
+        });
+    }
+    return deviceInfoSource.asObservable();
   }
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {

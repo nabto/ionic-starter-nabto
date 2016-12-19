@@ -1,10 +1,6 @@
-//let FP_ACL_PERMISSION_NONE                  = 0x00000000;
-//let FP_ACL_PERMISSION_ALL                   = 0xffffffff;
 let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
 let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
 let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
-//let FP_ACL_SYSTEM_PERMISSION_NONE           = 0x00000000;
-//let FP_ACL_SYSTEM_PERMISSION_ALL            = 0xffffffff;
 let FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS   = 0x80000000;
 let FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS  = 0x40000000;
 let FP_ACL_SYSTEM_PERMISSION_PAIRING        = 0x20000000;
@@ -26,8 +22,8 @@ export class DeviceUser {
 }
 
 export class NabtoDevice {
-  public name: string;
   public id: string;
+  public name: string;
   public product: string;
   public iconUrl: string;
   public openForPairing: boolean;

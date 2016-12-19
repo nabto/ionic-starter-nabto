@@ -124,7 +124,7 @@ export class DiscoverPage {
     });
     toast.present();
     // if the user has deleted bookmark, add again
-    this.bookmarksService.addBookmark(device);
+    this.bookmarksService.addBookmarkFromDevice(device);
     this.navCtrl.push(VendorHeatingPage, { // XXX don't depend directly on vendor page here
       device: device
     });

@@ -66,7 +66,7 @@ export class PairingPage {
   }
 
   writeBookmark() {
-    this.bookmarksService.addBookmark(this.device);
+    this.bookmarksService.addBookmarkFromDevice(this.device);
   }
 
   showVendorPage() {

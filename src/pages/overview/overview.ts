@@ -10,7 +10,7 @@ import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
 import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
-import { BookmarksService } from '../../app/bookmarks.service';
+import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 import { Platform } from 'ionic-angular';
 
@@ -19,7 +19,7 @@ import { Platform } from 'ionic-angular';
 })
 export class OverviewPage {
 
-  private deviceSrc: NabtoDevice[] = [];
+//  private deviceSrc: NabtoDevice[] = [];
   devices: Observable<NabtoDevice[]>;
   shortTitle: string;
   longTitle: string;
@@ -39,7 +39,6 @@ export class OverviewPage {
   }
 
   ionViewDidLoad() {
-    this.devices = Observable.of(this.deviceSrc);
     this.initialize();
     this.refresh();
   }
@@ -94,19 +93,13 @@ export class OverviewPage {
   }
 
   refresh() {
-    var devIds : string[] = [];
-    this.bookmarksService.readBookmarks().then((bookmarks) => {
-      this.deviceSrc.splice(0, this.deviceSrc.length);
-      if (bookmarks) {
-        for(let i = 0; i < bookmarks.length; i++) {
-          this.deviceSrc.push(bookmarks[i] as NabtoDevice);
-	  devIds.push(bookmarks[i].id);
-        }
-      }
-      this.empty = (this.deviceSrc.length == 0);
+//    var devIds : string[] = [];
+    this.bookmarksService.readBookmarks().then((bookmarks: Bookmark[]) => {
+      this.devices = this.nabtoService.getPublicInfo(bookmarks);
+      this.devices.subscribe((next) => this.empty = false );
     }).then(() => {
       this.platform.ready().then(() => {
-	this.nabtoService.prepareInvoke(devIds)
+//TODO	this.nabtoService.prepareInvoke(devIds)
       });
     });
   }
