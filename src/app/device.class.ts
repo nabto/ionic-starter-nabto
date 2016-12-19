@@ -22,16 +22,17 @@ export class DeviceUser {
 }
 
 export class NabtoDevice {
+  public reachable: boolean;
   public id: string;
   public name: string;
   public product: string;
   public iconUrl: string;
-  public openForPairing: boolean;
-  public remoteAccessEnabled: boolean = true;
-  public grantGuestRemoteAccess: boolean;
-  public currentUserIsOwner: boolean;
+  public openForPairing: boolean = false;
+  public remoteAccessEnabled: boolean = false;
+  public grantGuestRemoteAccess: boolean = false;
+  public currentUserIsOwner: boolean = false;
 
-  // iconUrl is absolute or relative to bundle's www folder, e.g. use
+   // iconUrl is absolute or relative to bundle's www folder, e.g. use
   // img/mydevice.png from device and put image in www/img/mydevice.png
   constructor(name: string,
               id: string,
@@ -41,6 +42,7 @@ export class NabtoDevice {
               openForPairing: boolean,
              )   
   {    
+    this.reachable = true;
     this.name = name;
     this.id = id;
     this.product = product;
@@ -51,9 +53,7 @@ export class NabtoDevice {
     }
     this.currentUserIsOwner = currentUserIsOwner;
     this.openForPairing = openForPairing;
-    this.remoteAccessEnabled = false;
-    this.grantGuestRemoteAccess = false;
-  }
+  }  
 
   accessIcon(): string {
     if (this.openForPairing) {
@@ -61,6 +61,11 @@ export class NabtoDevice {
     } else {
       return "lock";
     }
+  }
+
+  setOffline() {
+    this.name = this.name + " (offline)";
+    this.reachable = false;
   }
 
   setSystemSecurityDetails(system: any) {

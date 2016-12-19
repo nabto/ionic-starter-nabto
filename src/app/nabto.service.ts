@@ -202,7 +202,12 @@ export class NabtoService {
           deviceInfoSource.next(devices);
         })
         .catch((error) => {
-          console.log(`Error getting public info for device ${bookmark.id}: ${error.message}`);
+          // device unavailable, use cached information from bookmark
+          console.log(`Error getting public info for [${bookmark.id}]: ${error.message}`)
+          let offlineDevice = new NabtoDevice(bookmark.name, bookmark.id, bookmark.product, bookmark.iconUrl, false, false);
+          offlineDevice.setOffline();
+          devices.push(offlineDevice);
+          deviceInfoSource.next(devices);
         });
     }
     return deviceInfoSource.asObservable();
@@ -226,7 +231,7 @@ export class NabtoService {
           resolve(dev);
         } else {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
-          resolve(new NabtoDevice(deviceId, deviceId, err.message, undefined, false, false));
+          reject(err);
         }
       });
     });
