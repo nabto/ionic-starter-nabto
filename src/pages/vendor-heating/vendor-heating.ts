@@ -202,22 +202,19 @@ export class VendorHeatingPage {
     if (error.code == NabtoError.Code.API_RPC_DEVICE_OFFLINE) {
       this.unavailableStatus = "Device offline";
       this.offline = true;
-      this.showToast(error.message, 2000);
     } else {
-      this.showToast(error.message);
       console.log("ERROR invoking device: " + JSON.stringify(error));
     }
+    this.showToast(error.message);
   }
 
-  showToast(message: string, duration?: number) {
+  showToast(message: string) {
     var opts = <any>{
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok'
+      closeButtonText: 'Ok',
+      duration: 3000
     };
-    if (duration) {
-      opts.duration = duration;
-    }
     let toast = this.toastCtrl.create(opts);
     toast.present();
   }

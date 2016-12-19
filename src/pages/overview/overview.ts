@@ -5,6 +5,7 @@ import { ModalController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
@@ -30,8 +31,9 @@ export class OverviewPage {
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private nabtoService: NabtoService,
-			  private platform: Platform,
+	      private platform: Platform,
               private modalCtrl: ModalController,
+              public toastCtrl: ToastController,
               private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
@@ -106,11 +108,24 @@ export class OverviewPage {
 
   showVendorPage(event, device) {
     console.log(`item tapped: ${JSON.stringify(device)}`);
-    this.navCtrl.push(VendorHeatingPage, {
-      device: device
-    });
+    if (device.reachable) {
+      this.navCtrl.push(VendorHeatingPage, {
+        device: device
+      });
+    } else {
+      this.showWarning("Device offline");
+    }
   }
 
+  showWarning(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 2000,
+      showCloseButton: true
+    });
+    toast.present();
+  }
+  
   addNewDevice() {
     this.navCtrl.push(DiscoverPage);
   }
