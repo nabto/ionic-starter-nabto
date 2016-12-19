@@ -20,7 +20,6 @@ import { Platform } from 'ionic-angular';
 })
 export class OverviewPage {
 
-//  private deviceSrc: NabtoDevice[] = [];
   devices: Observable<NabtoDevice[]>;
   shortTitle: string;
   longTitle: string;
@@ -113,11 +112,11 @@ export class OverviewPage {
         device: device
       });
     } else {
-      this.showWarning("Device offline");
+      this.showToast("Device offline");
     }
   }
 
-  showWarning(message: string) {
+  showToast(message: string) {
     let toast = this.toastCtrl.create({
       message: message,
       duration: 2000,

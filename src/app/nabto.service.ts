@@ -170,8 +170,23 @@ export class NabtoService {
       });
     });
   }
-  
-  public discover(): Promise<NabtoDevice[]> {
+
+  public discover(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      nabto.getLocalDevices((error: any, deviceIds: any) => {
+        if (error) {
+          console.log("getLocalDevices() failed: " + error);
+          reject(new Error("Discover failed: " + error.message));
+          return;
+        }
+//	this.prepareInvoke(deviceIds).then(() => {
+        resolve(deviceIds);
+//	});
+      });
+    });
+  }
+
+  public discoverOld(): Promise<NabtoDevice[]> {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {
         if (error) {

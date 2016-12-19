@@ -10,12 +10,21 @@ export class Bookmark {
   public name: string;
   public product: string;
   public iconUrl: string;
+  constructor(id: string,
+              name?: string,
+              product?: string,
+              iconUrl?: string) {
+    this.id = id;
+    this.name = name ? "Unknown name" : name;
+    this.product = product ? "Unknown" : product;
+    this.iconUrl = undefined;
+  }
 }
 
 @Injectable()
 export class BookmarksService {
 
-  private key: string = 'bookmarks_5';
+  private key: string = 'bookmarks';
   
   constructor (private storage: Storage) {
   }
@@ -33,12 +42,7 @@ export class BookmarksService {
   }
 
   public createBookmark(device: NabtoDevice): Bookmark {
-    let bookmark: Bookmark = new Bookmark();
-    bookmark.id = device.id;
-    bookmark.name = device.name;
-    bookmark.product = device.product;
-    bookmark.iconUrl = device.iconUrl;
-    return bookmark;
+    return new Bookmark(device.id, device.name, device.product, device.iconUrl);
   }
   
   public writeBookmarks(bookmarks: Bookmark[]) {

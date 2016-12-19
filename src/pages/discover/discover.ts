@@ -8,7 +8,7 @@ import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
-import { BookmarksService } from '../../app/bookmarks.service';
+import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
 @Component({
@@ -17,20 +17,15 @@ import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 })
 export class DiscoverPage {
   empty: boolean;
-  busy: boolean;
   longTitle: string;
   shortTitle: string;
   view : ViewController;
   
   public devices: Observable<NabtoDevice[]>;
-  private deviceSrc = [];
-
-  ionViewDidLoad() {
-    this.devices = Observable.of(this.deviceSrc);
-  }
+  private recentIds: string[];
 
   ionViewDidEnter() {
-    this.discover();
+    this.refresh();
   }
   
   constructor(public navCtrl: NavController,
@@ -42,64 +37,48 @@ export class DiscoverPage {
               private bookmarksService: BookmarksService,
               private zone: NgZone
              ) {
-    this.busy = false;
     this.longTitle = navParams.get('longTitle');
     if (!this.longTitle) {
       this.longTitle = "Discover local devices";
     }
-
     this.shortTitle = navParams.get('shortTitle');
     if (!this.shortTitle) {
       this.shortTitle = "Discover";
     }
-	document.addEventListener('resume', () => {
-	  this.onResume();
-	});
+    document.addEventListener('resume', () => {
+      this.onResume();
+    });
   }
   
   onResume(){
-	// Will only prepare devices if this page is the active view 
-	if(this.navCtrl.getActive() == this.view){
-	  var devIds : string[] = [];
-	  var devs : NabtoDevice[] = [];
-	  for (var i = 0; i < this.deviceSrc.length; i++){
-		devs[i] = this.deviceSrc[i];
-		devIds[i] = devs[i].id;
-	  }
-	  this.nabtoService.prepareInvoke(devIds);
-	}
+    // Will only prepare devices if this page is the active view after resume
+    if (this.navCtrl.getActive() == this.view) {
+      this.nabtoService.prepareInvoke(this.recentIds);
+    }
   }
 
-  discover(): void {
+  refresh() {
     this.view = this.navCtrl.getActive();
-    this.busy = true;
     this.nabtoService.discover()
-      .then(discovered => {
-        this.busy = false;
-        this.deviceSrc.splice(0, this.deviceSrc.length);
-        for(let i = 0; i < discovered.length; i++) {
-          this.deviceSrc.push(discovered[i]);
-        }
-        this.empty = (discovered.length == 0)
-        if (this.empty) {
-          console.log("no devices found");
-        }
+      .then((ids) => {
+        this.devices = this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)));
+        this.devices.subscribe((next) => this.empty = false);
+        this.recentIds = ids;
       }).catch(error => {
-        this.busy = false;
-        let toast = this.toastCtrl.create({
-          message: error.message,
-          showCloseButton: true,
-          closeButtonText: 'Ok'
-        });
-        toast.present();
+        this.showToast(error.message);
         console.log("ERROR discovering devices: " + JSON.stringify(error));
       });
   }
-  
-  refresh() {
-    this.discover();
-  }
 
+  showToast(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
+  }
+  
   itemTapped(event, device) {
     if (device.openForPairing) {
       if (device.currentUserIsOwner) {
