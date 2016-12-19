@@ -218,8 +218,10 @@ export class NabtoService {
         })
         .catch((error) => {
           // device unavailable, use cached information from bookmark
-          console.log(`Error getting public info for [${bookmark.id}]: ${error.message}`)
-          let offlineDevice = new NabtoDevice(bookmark.name, bookmark.id, bookmark.product, bookmark.iconUrl, false, false);
+          let offlineDevice = new NabtoDevice(bookmark.name,
+                                              bookmark.id,
+                                              bookmark.id /* show id in product field with more room */,
+                                              bookmark.iconUrl, false, false, false);
           offlineDevice.setOffline();
           devices.push(offlineDevice);
           deviceInfoSource.next(devices);
@@ -239,8 +241,9 @@ export class NabtoService {
                                                 deviceId,
                                                 r.device_type,
                                                 r.device_icon,
-                                                r.is_current_user_owner,
-                                                r.is_open_for_pairing
+                                                r.is_open_for_pairing,
+                                                r.is_current_user_paired,
+                                                r.is_current_user_owner
                                                );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
@@ -265,13 +268,13 @@ export class NabtoService {
 
   public prepareInvoke(devices: string[]): Promise<void> {
     return new Promise((resolve,reject) => {
-      nabto.prepareInvoke(devices, (error) => {
-	if(error){
-	  reject(new Error("PrepareConnect failed: " + error.message));
-	  return
-	}
-	resolve();
-      });
+//      nabto.prepareInvoke(devices, (error) => {
+//	if(error){
+//	  reject(new Error("PrepareConnect failed: " + error.message));
+//	  return;
+//	}
+	resolve(devices);
+//      });
     });
   }
 
@@ -333,7 +336,7 @@ export class NabtoService {
     });
   }
   
-  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??
+  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
@@ -362,7 +365,8 @@ export class NabtoService {
                 resolve(res.response);
               } else {
                 if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
-                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is because of target device has gone offline in between two invocations
+                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is
+                  // because of target device has gone offline in between two invocations
                   err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
                 }
                 reject(err);

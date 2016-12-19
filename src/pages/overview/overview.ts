@@ -36,7 +36,6 @@ export class OverviewPage {
               private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
-    this.empty = true;
   }
 
   ionViewDidLoad() {
@@ -94,14 +93,18 @@ export class OverviewPage {
   }
 
   refresh() {
-//    var devIds : string[] = [];
+    this.empty = true;
     this.bookmarksService.readBookmarks().then((bookmarks: Bookmark[]) => {
-      this.devices = this.nabtoService.getPublicInfo(bookmarks);
-      this.devices.subscribe((next) => this.empty = false );
-    }).then(() => {
-      this.platform.ready().then(() => {
-//TODO	this.nabtoService.prepareInvoke(devIds)
-      });
+      console.log(`Got ${bookmarks.length} bookmarks`);
+      this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
+        .then(() => {
+          // listview observes this.devices and will be populated as data is received 
+          console.log(`Prepare invoked invoked, invoking ${bookmarks.length} devices`);
+          this.devices = this.nabtoService.getPublicInfo(bookmarks);
+          this.devices.subscribe((next) => this.empty = false);
+        });
+    }).catch((error) => {
+        this.showToast(error.message);
     });
   }
 

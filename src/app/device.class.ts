@@ -30,6 +30,7 @@ export class NabtoDevice {
   public openForPairing: boolean = false;
   public remoteAccessEnabled: boolean = false;
   public grantGuestRemoteAccess: boolean = false;
+  public currentUserIsPaired: boolean = false;
   public currentUserIsOwner: boolean = false;
 
    // iconUrl is absolute or relative to bundle's www folder, e.g. use
@@ -38,8 +39,9 @@ export class NabtoDevice {
               id: string,
               product: string,
               iconUrl: string,
-              currentUserIsOwner: boolean,
               openForPairing: boolean,
+              currentUserIsPaired: boolean,
+              currentUserIsOwner: boolean,
              )   
   {    
     this.reachable = true;
@@ -51,8 +53,9 @@ export class NabtoDevice {
     } else {
       this.iconUrl = 'img/chip.png';
     }
-    this.currentUserIsOwner = currentUserIsOwner;
     this.openForPairing = openForPairing;
+    this.currentUserIsPaired = currentUserIsPaired;
+    this.currentUserIsOwner = currentUserIsOwner;
   }  
 
   accessIcon(): string {

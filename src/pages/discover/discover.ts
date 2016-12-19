@@ -25,6 +25,7 @@ export class DiscoverPage {
   private recentIds: string[];
 
   ionViewDidEnter() {
+    this.view = this.navCtrl.getActive();
     this.refresh();
   }
   
@@ -58,18 +59,20 @@ export class DiscoverPage {
   }
 
   refresh() {
-    this.view = this.navCtrl.getActive();
-    this.nabtoService.discover()
-      .then((ids) => {
+    this.empty = true;
+    this.nabtoService.discover().then((ids: string[]) => {
+      this.nabtoService.prepareInvoke(ids).then(() => {
+        // listview observes this.devices and will be populated as data is received 
         this.devices = this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)));
         this.devices.subscribe((next) => this.empty = false);
         this.recentIds = ids;
-      }).catch(error => {
-        this.showToast(error.message);
-        console.log("ERROR discovering devices: " + JSON.stringify(error));
       });
+    }).catch(error => {
+      this.showToast(error.message);
+      console.error("Error discovering devices: " + JSON.stringify(error));
+    });
   }
-
+  
   showToast(message: string) {
     let toast = this.toastCtrl.create({
       message: message,
