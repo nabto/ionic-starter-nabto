@@ -17,6 +17,7 @@ import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 })
 export class DiscoverPage {
   empty: boolean;
+  busy: boolean;
   longTitle: string;
   shortTitle: string;
   view : ViewController;
@@ -59,20 +60,25 @@ export class DiscoverPage {
   }
 
   refresh() {
-    this.empty = true;
+    this.busy = true;
     this.nabtoService.discover().then((ids: string[]) => {
+      this.busy = false;
+      this.empty = ids.length == 0;
       this.nabtoService.prepareInvoke(ids).then(() => {
         // listview observes this.devices and will be populated as data is received 
         this.devices = this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)));
-        this.devices.subscribe((next) => this.empty = false);
+        this.devices.subscribe((next) => {
+          console.log("Got device for discover: " + JSON.stringify(next));
+        });
         this.recentIds = ids;
       });
     }).catch(error => {
       this.showToast(error.message);
       console.error("Error discovering devices: " + JSON.stringify(error));
+      this.busy = false;
     });
   }
-  
+
   showToast(message: string) {
     let toast = this.toastCtrl.create({
       message: message,
