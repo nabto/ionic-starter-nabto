@@ -56,7 +56,6 @@ export class DeviceSettingsPage {
   }
 
   updateSecurityMessage() {
-    // XXX: include more info in summary?
     if (this.device.openForPairing) {
       this.securityMessage = "This device is currently open for pairing to grant new guests access.";
     } else {
@@ -85,17 +84,15 @@ export class DeviceSettingsPage {
         });
         toast.present();
       }).catch((error) => {
-        handleError(error.message);
+        this.handleError(error.message);
       });
   }
   
   dismiss() {
     this.viewCtrl.dismiss(this.device);
-    // todo: save
   }
 
   showSecurityPage() {
-//    TODO check permission - show alert if not admin!
     this.navCtrl.push(SecurityPage, {
       device: this.device
     });
