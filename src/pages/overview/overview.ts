@@ -93,15 +93,17 @@ export class OverviewPage {
   }
 
   refresh() {
-    this.empty = true;
     this.bookmarksService.readBookmarks().then((bookmarks: Bookmark[]) => {
-      console.log(`Got ${bookmarks.length} bookmarks`);
+      this.empty = bookmarks.length == 0;
+      console.log("got bookmarks: " + JSON.stringify(bookmarks));
       this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
         .then(() => {
           // listview observes this.devices and will be populated as data is received 
           console.log(`Prepare invoked invoked, invoking ${bookmarks.length} devices`);
           this.devices = this.nabtoService.getPublicInfo(bookmarks);
-          this.devices.subscribe((next) => this.empty = false);
+          this.devices.subscribe((next) => {
+            console.log("Got device for overview: " + JSON.stringify(next));
+          });
         });
     }).catch((error) => {
         this.showToast(error.message);

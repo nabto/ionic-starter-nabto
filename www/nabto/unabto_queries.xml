@@ -14,7 +14,7 @@
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
       <parameter name="is_open_for_pairing" type="uint8"/>      
-      <parameter name="is_device_paired" type="uint8"/>
+      <parameter name="is_current_user_paired" type="uint8"/>
       <parameter name="is_current_user_owner" type="uint8"/>
     </response>
   </query>
