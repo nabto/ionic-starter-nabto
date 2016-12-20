@@ -4,6 +4,23 @@ import { Storage } from '@ionic/storage';
 
 // uses https://github.com/driftyco/ionic-storage
 
+// serializable with simple JSON parse/stringify
+export class Bookmark {
+  public id: string;
+  public name: string;
+  public product: string;
+  public iconUrl: string;
+  constructor(id: string,
+              name?: string,
+              product?: string,
+              iconUrl?: string) {
+    this.id = id;
+    this.name = name ? name : "Unknown name";
+    this.product = product ? product : "Unknown";
+    this.iconUrl = undefined;
+  }
+}
+
 @Injectable()
 export class BookmarksService {
 
@@ -12,17 +29,33 @@ export class BookmarksService {
   constructor (private storage: Storage) {
   }
   
-  public readBookmarks(): Promise<NabtoDevice[]> {
-    return this.storage.get(this.key);
+  public readBookmarks(): Promise<Bookmark[]> {
+    return this.storage.get(this.key).then((value:string) => {
+      var bookmarks:Bookmark[] = [];
+      if (value) {
+        console.log(`Parsing bookmarks string [${value}]`);
+        try {
+           bookmarks = JSON.parse(value);
+        } catch (error) {
+          this.clear();
+        }
+      }
+      return bookmarks;
+    });
   }
 
-  public writeBookmarks(bookmarks: NabtoDevice[]) {
-    this.storage.set(this.key, bookmarks);    
+  public createBookmark(device: NabtoDevice): Bookmark {
+    return new Bookmark(device.id, device.name, device.product, device.iconUrl);
+  }
+  
+  public writeBookmarks(bookmarks: Bookmark[]) {
+    let value:string = JSON.stringify(bookmarks);
+    this.storage.set(this.key, value);    
   }
 
-  public addBookmark(device: NabtoDevice) {
+  public addBookmarkFromDevice(device: NabtoDevice) {
     console.log(`adding bookmark ${device.id}`);
-    this.readBookmarks().then((bookmarks: NabtoDevice[]) => {
+    this.readBookmarks().then((bookmarks: Bookmark[]) => {
       if (!bookmarks) {
         bookmarks = [];
       }
@@ -32,7 +65,7 @@ export class BookmarksService {
           return;
         }
       }
-      bookmarks.push(device);
+      bookmarks.push(this.createBookmark(device));
       this.writeBookmarks(bookmarks);
       console.log(`added ${device.id} to bookmarks`);
     }).catch((error) => {

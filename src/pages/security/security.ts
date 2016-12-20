@@ -26,6 +26,7 @@ class AclEntry {
 export class SecurityPage {
 
   addLocalUsers: boolean;
+  hasUnhandledTap: boolean;
   
   public device: NabtoDevice;
   public acl: Observable<AclEntry[]>;
@@ -36,6 +37,7 @@ export class SecurityPage {
               public toastCtrl: ToastController,
               private alertCtrl: AlertController) {
     this.device = params.get('device');
+    this.hasUnhandledTap = false;
   }
 
   ionViewDidLoad() {
@@ -45,6 +47,7 @@ export class SecurityPage {
 
   ionViewDidEnter() {
     this.readAcl();
+    this.hasUnhandledTap = false;
   }
 
   readAcl() {
@@ -55,25 +58,33 @@ export class SecurityPage {
         for(let i = 0; i < acl.users.length; i++) {
           this.aclSrc.push(new AclEntry(acl.users[i].name,
                                         acl.users[i].fingerprint,
-                                        acl.users[i].is_owner ? "Owner" : "Guest"));
+                                        (acl.users[i].permissions & 0x20000000) == 0x20000000 ? "Owner" : "Guest"));
         }
       }).catch(error => {
         this.handleError(error.message);
       });
   }
 
+  tapped() {
+    // we get (ionChange) events when loading page and after updating
+    // model with actual device values, we don't want to invoke the
+    // device in these situations (and updating from (tap) event is not reliable)
+    this.hasUnhandledTap = true;
+  }
+
   update() {
-    this.nabtoService.invokeRpc(this.device, "set_security_settings.json",
-                                { "remote_access_enabled": this.device.remoteAccessEnabled ? 1 : 0,
-                                  "open_for_pairing": this.device.openForPairing ? 1 : 0,
-                                  "default_permissions_after_pairing": this.device.grantGuestRemoteAccess ? 1 : 0 }).
-      then((state: any) => {
-        this.device.remoteAccessEnabled = state.remote_access_enabled;
-        this.device.openForPairing = state.open_for_pairing;
-        this.device.grantGuestRemoteAccess = state.default_permissions_after_pairing;
-      }).catch(error => {
+    if (!this.hasUnhandledTap) {
+      // only invoke device if a user tapped the user interface
+      return;
+    }
+    console.log("Updating settings: " + JSON.stringify(this.device));
+    this.nabtoService.setSystemSecuritySettings(this.device)
+      .then(() => console.log("Updated settings: " + JSON.stringify(this.device)))
+      .catch(error => {
+        console.log(error.message);
         this.handleError("Could not update settings: " + error.message);
       });
+    this.hasUnhandledTap = false;
   }
 
   handleError(message: string) {

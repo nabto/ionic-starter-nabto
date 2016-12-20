@@ -30,8 +30,10 @@ export class DeviceSettingsPage {
     console.log("Editing device " + this.device.name);
   }
 
-  ionViewDidLoad() { 
-    this.readDeviceSecuritySettings();
+  ionViewDidLoad() {
+    if (this.device.currentUserIsOwner) {
+      this.readDeviceSecuritySettings();
+    }
   }
 
   ionViewDidEnter() {
@@ -46,14 +48,8 @@ export class DeviceSettingsPage {
   }
 
   readDeviceSecuritySettings() {
-    this.nabtoService.invokeRpc(this.device, "get_security_settings.json")
-      .then((state: any) => {
-        this.device.currentUserIsOwner = state.current_user_is_owner;
-        this.device.remoteAccessEnabled = state.remote_access_enabled;
-        this.device.openForPairing = state.open_for_pairing;
-        this.device.grantGuestRemoteAccess = state.default_permissions_after_pairing;
-        this.updateSecurityMessage();
-      })
+    this.nabtoService.readAllSecuritySettings(this.device)
+      .then(() => this.updateSecurityMessage())
       .catch((error) => {
         this.handleError("Could not read security settings: " + error.message);
       });
@@ -72,7 +68,8 @@ export class DeviceSettingsPage {
     var opts = <any>{
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok'
+      closeButtonText: 'Ok',
+      duration: 5000
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();

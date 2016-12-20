@@ -25,7 +25,6 @@ export class ProfilePage {
   ionViewDidLoad() {
     this.operatingSystem = (<any>window).device.platform;
     this.deviceName = cordova.plugins.deviceName.name;
-    console.log('Hello ProfilePage Page');
   }
 
   log() {
@@ -37,8 +36,8 @@ export class ProfilePage {
   submit() {
     this.profileService.createKeyPair(this.deviceName)
       .then((name) => {
-        console.log("Key pair created successfully for " + name);
-        this.profileService.storeKeyPairName(name);
+        console.log(`Key pair created successfully for ${name}`);
+        this.profileService.storeKeyPairName(name);     
         this.viewCtrl.dismiss(name);
       })
       .catch((error) => {

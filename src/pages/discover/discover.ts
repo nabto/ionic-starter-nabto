@@ -8,7 +8,7 @@ import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
-import { BookmarksService } from '../../app/bookmarks.service';
+import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 
 @Component({
@@ -23,14 +23,11 @@ export class DiscoverPage {
   view : ViewController;
   
   public devices: Observable<NabtoDevice[]>;
-  private deviceSrc = [];
-
-  ionViewDidLoad() {
-    this.devices = Observable.of(this.deviceSrc);
-  }
+  private recentIds: string[];
 
   ionViewDidEnter() {
-    this.discover();
+    this.view = this.navCtrl.getActive();
+    this.refresh();
   }
   
   constructor(public navCtrl: NavController,
@@ -42,73 +39,64 @@ export class DiscoverPage {
               private bookmarksService: BookmarksService,
               private zone: NgZone
              ) {
-    this.busy = false;
     this.longTitle = navParams.get('longTitle');
     if (!this.longTitle) {
       this.longTitle = "Discover local devices";
     }
-
     this.shortTitle = navParams.get('shortTitle');
     if (!this.shortTitle) {
       this.shortTitle = "Discover";
     }
-	document.addEventListener('resume', () => {
-	  this.onResume();
-	});
+    document.addEventListener('resume', () => {
+      this.onResume();
+    });
   }
   
-  onResume(){
-	// Will only prepare devices if this page is the active view 
-	if(this.navCtrl.getActive() == this.view){
-	  var devIds : string[] = [];
-//	  var devs : NabtoDevice[] = [];
-	  for (var i = 0; i < this.deviceSrc.length; i++){
-//		devs[i] = this.deviceSrc[i];
-		devIds[i] = this.deviceSrc[i].id;
-	  }
-	  this.nabtoService.prepareInvoke(devIds);
-	}
+  onResume() {
+    // Will only prepare devices if this page is the active view after resume
+    if (this.navCtrl.getActive() == this.view) {
+      this.nabtoService.prepareInvoke(this.recentIds);
+    }
   }
 
-  discover(): void {
-    this.view = this.navCtrl.getActive();
-	this.busy = true;
-    this.nabtoService.discover()
-      .then(discovered => {
-        this.busy = false;
-        this.deviceSrc.splice(0, this.deviceSrc.length);
-        for(let i = 0; i < discovered.length; i++) {
-          this.deviceSrc.push(discovered[i]);
-        }
-        this.empty = (discovered.length == 0)
-        if (this.empty) {
-          console.log("no devices found");
-        }
-      }).catch(error => {
-        this.busy = false;
-        let toast = this.toastCtrl.create({
-          message: error.message,
-          showCloseButton: true,
-          closeButtonText: 'Ok'
-        });
-        toast.present();
-        console.log("ERROR discovering devices: " + JSON.stringify(error));
-      });
-  }
-  
   refresh() {
-    this.discover();
+    this.busy = true;
+    this.nabtoService.discover().then((ids: string[]) => {
+      this.busy = false;
+      this.empty = ids.length == 0;
+      this.nabtoService.prepareInvoke(ids).then(() => {
+        // listview observes this.devices and will be populated as data is received 
+        this.devices = this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)));
+        this.devices.subscribe((next) => {
+          console.log("Got device for discover: " + JSON.stringify(next));
+        });
+        this.recentIds = ids;
+      });
+    }).catch(error => {
+      this.showToast(error.message);
+      console.error("Error discovering devices: " + JSON.stringify(error));
+      this.busy = false;
+    });
   }
 
+  showToast(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
+  }
+  
   itemTapped(event, device) {
     if (device.openForPairing) {
-      if (device.paired) {
+      if (device.currentUserIsOwner) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleUnpairedDevice(device);
       }
     } else {
-      if (device.paired) {
+      if (device.currentUserIsOwner) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleClosedDevice();
@@ -124,7 +112,7 @@ export class DiscoverPage {
     });
     toast.present();
     // if the user has deleted bookmark, add again
-    this.bookmarksService.addBookmark(device);
+    this.bookmarksService.addBookmarkFromDevice(device);
     this.navCtrl.push(VendorHeatingPage, { // XXX don't depend directly on vendor page here
       device: device
     });

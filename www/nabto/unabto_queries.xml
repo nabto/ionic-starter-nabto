@@ -13,8 +13,9 @@
       <parameter name="device_name" type="raw"/>
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
-      <parameter name="paired" type="uint8"/>
-      <parameter name="pairingMode" type="uint8"/>      
+      <parameter name="is_open_for_pairing" type="uint8"/>      
+      <parameter name="is_current_user_paired" type="uint8"/>
+      <parameter name="is_current_user_owner" type="uint8"/>
     </response>
   </query>
 
@@ -30,6 +31,35 @@
 
   <!-- access control related queries -->
 
+
+  <!--
+
+  status field in acl related queries:
+
+  enum fp_acl_response_status {
+    FP_ACL_STATUS_OK = 0,
+    FP_ACL_STATUS_NO_SUCH_USER = 1,
+    FP_ACL_STATUS_USER_DB_FULL = 2,
+    FP_ACL_STATUS_SAVE_FAILED = 3,
+    FP_ACL_STATUS_REMOVE_FAILED = 4
+  };
+
+  permission bits in acl and system settings related queries:
+
+    #define FP_ACL_PERMISSION_NONE                                      0x00000000ul
+    #define FP_ACL_PERMISSION_ALL                                       0xfffffffful
+    #define FP_ACL_PERMISSION_LOCAL_ACCESS                              0x80000000ul
+    #define FP_ACL_PERMISSION_REMOTE_ACCESS                             0x40000000ul
+    #define FP_ACL_PERMISSION_ADMIN                                     0x20000000ul
+    
+    #define FP_ACL_SYSTEM_PERMISSION_NONE                               0x00000000ul
+    #define FP_ACL_SYSTEM_PERMISSION_ALL                                0xfffffffful
+    #define FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS                       0x80000000ul
+    #define FP_ACL_SYSTEM_PERMISSION_REMOTE_ACCESS                      0x40000000ul
+    #define FP_ACL_SYSTEM_PERMISSION_PAIRING                            0x20000000ul
+
+  -->
+
   <!-- get all users that have access to device -->
   <query name="get_users.json" id="11000">
     <request>
@@ -38,7 +68,7 @@
     </request>
     <response format="json">
       <list name="users">
-        <parameter name="fingerprint" type="raw"/>
+        <parameter name="fingerprint" type="raw" representation="hex"/>
         <parameter name="name" type="raw"/>
         <parameter name="permissions" type="uint32"/>
       </list>
@@ -51,41 +81,48 @@
       <parameter name="user_name" type="raw"/>
     </request>
     <response format="json">
+      <parameter name="status" type="uint8"/>
       <parameter name="fingerprint" type="raw" representation="hex"/>
       <parameter name="user_name" type="raw"/>
-      <parameter name="is_owner" type="uint32"/>
+      <parameter name="permissions" type="uint32"/>
     </response>
   </query>
-
-  <!-- get security related settings -->
-  <query name="get_security_settings.json" id="11020">
+  
+  <!-- get current user -->
+  <query name="get_current_user.json" id="11020">
     <request>
     </request>
     <response format="json">
-      <parameter name="current_user_is_owner" type="uint8"/> 
-      <parameter name="remote_access_enabled" type="uint8"/> 
-      <parameter name="open_for_pairing" type="uint8"/>
-      <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
-      <parameter name="default_permissions_after_pairing" type="uint32"/>
+      <parameter name="status" type="uint8"/>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="user_name" type="raw"/>
+      <parameter name="permissions" type="uint32"/>
     </response>
   </query>
-
-  <!-- set device-wide security related settings -->
-  <query name="set_security_settings.json" id="11030">
+  
+  <!-- get system security settings -->
+  <query name="get_system_security_settings.json" id="11030">
     <request>
-      <parameter name="remote_access_enabled" type="uint8"/> 
-      <parameter name="open_for_pairing" type="uint8"/>
-      <!-- 0: LOCAL_ACCESS, 1: REMOTE_ACCESS, 2: ADMIN_ACCESS -->
-      <parameter name="default_permissions_after_pairing" type="uint32"/>
     </request>
     <response format="json">
-      <parameter name="remote_access_enabled" type="uint8"/> 
-      <parameter name="open_for_pairing" type="uint8"/>
-      <parameter name="default_permissions_after_pairing" type="uint32"/>
+      <parameter name="status" type="uint8"/> 
+      <parameter name="permissions" type="uint32"/> 
+      <parameter name="default_user_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
 
-
+  <!-- set system security settings -->
+  <query name="set_system_security_settings.json" id="11040">
+    <request>
+      <parameter name="permissions" type="uint32"/> 
+      <parameter name="default_user_permissions_after_pairing" type="uint32"/>
+    </request>
+    <response format="json">
+      <parameter name="status" type="uint8"/> 
+      <parameter name="permissions" type="uint32"/> 
+      <parameter name="default_user_permissions_after_pairing" type="uint32"/>
+    </response>
+  </query>
   
   <!-- heatpump demo queries -->
 
@@ -95,9 +132,9 @@
     </request>
     <response format="json">
       <parameter name="activated" type="uint8"/>
-      <parameter name="mode" type="int32"/>
-      <parameter name="target_temperature" type="int32"/>
-      <parameter name="room_temperature" type="int32"/>
+      <parameter name="mode" type="uint32"/>
+      <parameter name="target_temperature" type="uint32"/>
+      <parameter name="room_temperature" type="uint32"/>
     </response>
   </query>
 
@@ -114,23 +151,22 @@
   <!-- set thermostat target temperature -->
   <query name="heatpump_set_target_temperature.json" id="20020">
     <request>
-      <parameter name="temperature" type="int32"/>
+      <parameter name="temperature" type="uint32"/>
     </request>
     <response format="json">
-      <parameter name="temperature" type="int32"/>
+      <parameter name="temperature" type="uint32"/>
     </response>
   </query>
 
   <!-- set operational mode -->
   <query name="heatpump_set_mode.json" id="20030">
     <request>
-      <parameter name="mode" type="int32"/>
+      <parameter name="mode" type="uint32"/>
     </request>
     <response format="json">
-      <parameter name="mode" type="int32"/>
+      <parameter name="mode" type="uint32"/>
     </response>
   </query>
-
 
 </unabto_queries>
 

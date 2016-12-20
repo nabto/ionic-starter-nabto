@@ -5,12 +5,13 @@ import { ModalController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
 import { ProfilePage } from '../profile/profile';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
 import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
-import { BookmarksService } from '../../app/bookmarks.service';
+import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 import { Platform } from 'ionic-angular';
 
@@ -19,7 +20,6 @@ import { Platform } from 'ionic-angular';
 })
 export class OverviewPage {
 
-  private deviceSrc: NabtoDevice[] = [];
   devices: Observable<NabtoDevice[]>;
   shortTitle: string;
   longTitle: string;
@@ -30,16 +30,15 @@ export class OverviewPage {
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private nabtoService: NabtoService,
-			  private platform: Platform,
+	      private platform: Platform,
               private modalCtrl: ModalController,
+              public toastCtrl: ToastController,
               private alertCtrl: AlertController) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
-    this.empty = true;
   }
 
   ionViewDidLoad() {
-    this.devices = Observable.of(this.deviceSrc);
     this.initialize();
     this.refresh();
   }
@@ -94,30 +93,43 @@ export class OverviewPage {
   }
 
   refresh() {
- 	var devIds : string[] = [];
-	this.bookmarksService.readBookmarks().then((bookmarks) => {
-      this.deviceSrc.splice(0, this.deviceSrc.length);
-      if (bookmarks) {
-        for(let i = 0; i < bookmarks.length; i++) {
-          this.deviceSrc.push(bookmarks[i]);
-		  devIds.push(bookmarks[i].id);
-        }
-      }
-      this.empty = (this.deviceSrc.length == 0);
-    }).then(() => {
-	  this.platform.ready().then(() => {
-		this.nabtoService.prepareInvoke(devIds)
-	  });
-	});
+    this.bookmarksService.readBookmarks().then((bookmarks: Bookmark[]) => {
+      this.empty = bookmarks.length == 0;
+      console.log("got bookmarks: " + JSON.stringify(bookmarks));
+      this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
+        .then(() => {
+          // listview observes this.devices and will be populated as data is received 
+          console.log(`Prepare invoked invoked, invoking ${bookmarks.length} devices`);
+          this.devices = this.nabtoService.getPublicInfo(bookmarks);
+          this.devices.subscribe((next) => {
+            console.log("Got device for overview: " + JSON.stringify(next));
+          });
+        });
+    }).catch((error) => {
+        this.showToast(error.message);
+    });
   }
 
   showVendorPage(event, device) {
     console.log(`item tapped: ${JSON.stringify(device)}`);
-    this.navCtrl.push(VendorHeatingPage, {
-      device: device
-    });
+    if (device.reachable) {
+      this.navCtrl.push(VendorHeatingPage, {
+        device: device
+      });
+    } else {
+      this.showToast("Device offline");
+    }
   }
 
+  showToast(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 2000,
+      showCloseButton: true
+    });
+    toast.present();
+  }
+  
   addNewDevice() {
     this.navCtrl.push(DiscoverPage);
   }

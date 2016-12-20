@@ -19,6 +19,7 @@
 </ion-header>
 
 <ion-content padding>
+
   <ion-card [hidden]="!empty">
     <ion-card-header>
       No known devices
@@ -33,14 +34,29 @@
       <ion-thumbnail item-left>
         <img [src]="device.iconUrl">
       </ion-thumbnail>
-      <h2>{{device.name}}</h2>
+      <h2>{{device.name}}
+        <ion-icon [hidden]="!device.reachable" name="checkmark-circle" color="green"></ion-icon>
+        <ion-icon [hidden]="device.reachable" name="alert" color="red"></ion-icon>
+      </h2>
       <p>{{device.product}}</p>
-      <ion-icon name="arrow-forward" item-right></ion-icon>
+      <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-right></ion-icon>
     </ion-item>
   </ion-list>
-
-  <button ion-button block (click)="addNewDevice()">
-    Add new device
-  </button>
+  
+  <!-- refresh and add buttons -->
+  <ion-row>
+    <ion-col>
+      <button ion-button icon-left (tap)="refresh()" color="light">
+        <ion-icon name="refresh"></ion-icon>
+        Refresh
+      </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button icon-right (tap)="addNewDevice()" color="primary">
+        Add new
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 
 </ion-content>

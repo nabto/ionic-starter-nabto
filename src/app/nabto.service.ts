@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { NabtoDevice } from './device.class';
+import { DeviceUser, NabtoDevice } from './device.class';
 import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
-import { BookmarksService } from '../app/bookmarks.service';
+import { Bookmark, BookmarksService } from '../app/bookmarks.service';
+import { Subject } from 'rxjs/Subject';
 
 declare var nabto;
 declare var NabtoError;
@@ -32,21 +33,11 @@ export class NabtoService {
   }
 
   onResume() {
-	var devIds : string[] = [];
-	var deviceSrc : NabtoDevice[] = [];
     console.log("resumed, invoking nabto.startup");
     this.startupAndOpenProfile();
-	this.bookmarksService.readBookmarks().then((bookmarks) => {
-	  deviceSrc.splice(0, deviceSrc.length);
-      if (bookmarks) {
-        for(let i = 0; i < bookmarks.length; i++) {
-          deviceSrc.push(bookmarks[i]);
-		  devIds.push(bookmarks[i].id);
-        }
-      }
-	}).then(() => {
-	  this.prepareInvoke(devIds);
-	});
+    this.bookmarksService.readBookmarks().then((bookmarks) => {
+      this.prepareInvoke(bookmarks.map((bookmark) => bookmark.id));
+    });
   }
 
   onResign() {
@@ -138,7 +129,7 @@ export class NabtoService {
           if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
             reject(new Error('BAD_PROFILE'));
           } else {
-            console.log(`Could not start Nabto: ${err.message}`);
+            console.log(`Could not start Nabto and open profile "${certificate}": ${err.message}`);
             reject(new Error(err.message));
           } 
         }
@@ -182,8 +173,8 @@ export class NabtoService {
       });
     });
   }
-  
-  public discover(): Promise<NabtoDevice[]> {
+
+  public discover(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {
         if (error) {
@@ -191,39 +182,54 @@ export class NabtoService {
           reject(new Error("Discover failed: " + error.message));
           return;
         }
-		this.prepareInvoke(deviceIds).then(() => {
-		  let devices = [];
-		  for(let i = 0; i < deviceIds.length; i++) {
-			devices.push(this.getPublicDetails(deviceIds[i]));
-		  }
-		  Promise.all(devices).then((res: NabtoDevice[]) => {
-			for(let i = 0; i < res.length; i++) {
-			  console.log(`got devices ${i}: ${res[i].id}, ${res[i].iconUrl}, ${res[i].product}, ${res[i].name}`);
-			}
-			resolve(res);
-		  });
-		});
+        resolve(deviceIds);
       });
     });
+  }
+
+  public getPublicInfo(bookmarks: Bookmark[]) {
+    let deviceInfoSource:Subject<NabtoDevice[]> = new Subject<NabtoDevice[]>();
+    let devices: NabtoDevice[] = [];
+    for (let bookmark of bookmarks) {
+      this.getPublicDetails(bookmark.id)
+        .then((device: NabtoDevice) => {
+          devices.push(device);
+          deviceInfoSource.next(devices);
+        })
+        .catch((error) => {
+          // device unavailable, use cached information from bookmark
+          let offlineDevice = new NabtoDevice(bookmark.name,
+                                              bookmark.id,
+                                              bookmark.id /* show id in product field with more room */,
+                                              bookmark.iconUrl, false, false, false);
+          offlineDevice.setOffline();
+          devices.push(offlineDevice);
+          deviceInfoSource.next(devices);
+        });
+    }
+    return deviceInfoSource.asObservable();
   }
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
-      nabto.rpcInvoke("nabto://" + deviceId + "/get_public_device_info.json?", (err, details) => {
+      let url = "nabto://" + deviceId + "/get_public_device_info.json?";
+      console.log(`Retrieving public details through ${url}`);
+      nabto.rpcInvoke(url, (err, details) => {
         if (!err) {
           let r = details.response;
           let dev:NabtoDevice = new NabtoDevice(r.device_name,
                                                 deviceId,
                                                 r.device_type,
                                                 r.device_icon,
-                                                r.paired,
-                                                r.pairingMode
+                                                r.is_open_for_pairing,
+                                                r.is_current_user_paired,
+                                                r.is_current_user_owner
                                                );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
         } else {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
-          resolve(new NabtoDevice(deviceId, deviceId, "(could not get details)"));
+          reject(err);
         }
       });
     });
@@ -241,18 +247,76 @@ export class NabtoService {
   }
 
   public prepareInvoke(devices: string[]): Promise<void> {
-	return new Promise((resolve,reject) => {
-	  nabto.prepareInvoke(devices, (error) => {
-		if(error){
-		  reject(new Error("PrepareConnect failed: " + error.message));
-		  return
-		}
-		resolve();
-	  });
-	});
+    return new Promise((resolve,reject) => {
+//      nabto.prepareInvoke(devices, (error) => {
+//	if(error){
+//	  reject(new Error("PrepareConnect failed: " + error.message));
+//	  return;
+//	}
+	resolve(devices);
+//      });
+    });
   }
 
-  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> { // NabtoDevice??
+  public getCurrentUser(device: NabtoDevice) : Promise<DeviceUser> {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "get_current_user.json")
+        .then((user: any) => {
+          resolve(new DeviceUser(user));
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public readAllSecuritySettings(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      this.getCurrentUser(device)
+        .then((user: DeviceUser) => {
+          device.currentUserIsOwner = user.isOwner();
+          return this.invokeRpc(device, "get_system_security_settings.json");
+        })
+        .then((details: any) => {
+          device.setSystemSecurityDetails(details);
+          resolve(device);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public setSystemSecuritySettings(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      let settings:any = {
+        // >>> 0: convert to unsigned
+        "permissions": device.getSystemPermissions() >>> 0,
+        "default_user_permissions_after_pairing": device.getDefaultUserPermissions() >>> 0
+      };
+      this.invokeRpc(device, "set_system_security_settings.json", settings)
+        .then((details: any) => {
+          device.setSystemSecurityDetails(details);
+          resolve(device);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public pairWithCurrentUser(device: NabtoDevice, user: string) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "pair_with_device.json", { "user_name": user})
+        .then((pairedUser: any) => {
+          console.log("Got paired user: " + JSON.stringify(pairedUser));
+          resolve(new DeviceUser(pairedUser));
+        })
+        .catch(reject);
+    });
+  }
+  
+  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";
       if (parameters) {
@@ -281,7 +345,8 @@ export class NabtoService {
                 resolve(res.response);
               } else {
                 if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
-                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is because of target device has gone offline in between two invocations
+                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is
+                  // because of target device has gone offline in between two invocations
                   err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
                 }
                 reject(err);
