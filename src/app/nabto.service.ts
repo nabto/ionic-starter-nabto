@@ -179,30 +179,7 @@ export class NabtoService {
           reject(new Error("Discover failed: " + error.message));
           return;
         }
-//	this.prepareInvoke(deviceIds).then(() => {
         resolve(deviceIds);
-//	});
-      });
-    });
-  }
-
-  public discoverOld(): Promise<NabtoDevice[]> {
-    return new Promise((resolve, reject) => {
-      nabto.getLocalDevices((error: any, deviceIds: any) => {
-        if (error) {
-          console.log("getLocalDevices() failed: " + error);
-          reject(new Error("Discover failed: " + error.message));
-          return;
-        }
-//	this.prepareInvoke(deviceIds).then(() => {
-	  let devices = [];
-	  for(let i = 0; i < deviceIds.length; i++) {
-	    devices.push(this.getPublicDetails(deviceIds[i]));
-	  }
-	  Promise.all(devices).then((res: NabtoDevice[]) => {
-	    resolve(res);
-	  });
-//	});
       });
     });
   }
