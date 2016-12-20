@@ -67,7 +67,6 @@ export class NabtoDevice {
   }
 
   setOffline() {
-    this.name = this.name + " (unavailable)";
     this.reachable = false;
   }
 

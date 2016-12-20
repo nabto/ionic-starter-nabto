@@ -34,7 +34,10 @@
       <ion-thumbnail item-left>
         <img [src]="device.iconUrl">
       </ion-thumbnail>
-      <h2>{{device.name}}</h2>
+      <h2>{{device.name}}
+        <ion-icon [hidden]="!device.reachable" name="checkmark-circle" color="green"></ion-icon>
+        <ion-icon [hidden]="device.reachable" name="alert" color="red"></ion-icon>
+      </h2>
       <p>{{device.product}}</p>
       <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-right></ion-icon>
     </ion-item>
