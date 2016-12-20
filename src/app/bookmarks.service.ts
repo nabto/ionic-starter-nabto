@@ -31,13 +31,16 @@ export class BookmarksService {
   
   public readBookmarks(): Promise<Bookmark[]> {
     return this.storage.get(this.key).then((value:string) => {
+      var bookmarks:Bookmark[] = [];
       if (value) {
         console.log(`Parsing bookmarks string [${value}]`);
-        var bookmarks:Bookmark[] = JSON.parse(value);
-        return bookmarks;
-      } else {
-        return [];
+        try {
+           bookmarks = JSON.parse(value);
+        } catch (error) {
+          this.clear();
+        }
       }
+      return bookmarks;
     });
   }
 
