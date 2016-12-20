@@ -247,14 +247,22 @@ export class NabtoService {
   }
 
   public prepareInvoke(devices: string[]): Promise<void> {
+    console.log("Prepare invoke for " + JSON.stringify(devices));
     return new Promise((resolve,reject) => {
-//      nabto.prepareInvoke(devices, (error) => {
-//	if(error){
-//	  reject(new Error("PrepareConnect failed: " + error.message));
-//	  return;
-//	}
+      // awaiting AMP-78 fix
+      resolve(devices);
+      
+      /*
+      nabto.prepareInvoke(devices, (error) => {
+        console.log("Prepare invoke succeeded for " + JSON.stringify(devices));
+	if (error){
+          console.error("Prepare invoke failed: " + error.message);
+	  reject(new Error("PrepareConnect failed: " + error.message));
+	  return;
+	}
 	resolve(devices);
-//      });
+      });
+      */
     });
   }
 
