@@ -313,6 +313,19 @@ export class NabtoService {
     });
   }
 
+  public setSystemInfo(device: NabtoDevice) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "set_device_info.json", { "device_name": device.name })
+        .then((details: any) => {
+          device.name = details.device_name;
+          resolve(device);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
   public pairWithCurrentUser(device: NabtoDevice, user: string) {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device, "pair_with_device.json", { "user_name": user})

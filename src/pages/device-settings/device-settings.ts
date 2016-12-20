@@ -69,20 +69,24 @@ export class DeviceSettingsPage {
       message: message,
       showCloseButton: true,
       closeButtonText: 'Ok',
-      duration: 5000
+      duration: 3000
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();
   }
   
   saveProperties() {
-    let toast = this.toastCtrl.create({
-      message: "Device updated!",
-      showCloseButton: false,
-      duration: 2500,
-      position: 'top'
-    });
-    toast.present();
+    this.nabtoService.setSystemInfo(this.device)
+      .then(() => {
+        let toast = this.toastCtrl.create({
+          message: "Device updated!",
+          showCloseButton: true,
+          duration: 2500,
+        });
+        toast.present();
+      }).catch((error) => {
+        handleError(error.message);
+      });
   }
   
   dismiss() {
