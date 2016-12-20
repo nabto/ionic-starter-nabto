@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
 import { ModalController } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
+import { PairingPage } from '../pairing/pairing';
 import { ProfilePage } from '../profile/profile';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
@@ -110,12 +111,20 @@ export class OverviewPage {
     });
   }
 
-  showVendorPage(event, device) {
+  deviceTapped(event, device) {
     console.log(`item tapped: ${JSON.stringify(device)}`);
     if (device.reachable) {
-      this.navCtrl.push(VendorHeatingPage, {
-        device: device
-      });
+      if (device.currentUserIsPaired) {
+        this.navCtrl.push(VendorHeatingPage, {
+          device: device
+        });
+      } else if (device.openForPairing) {
+        this.navCtrl.push(PairingPage, {
+          device: device,
+          shortTitle: "Pair device",
+          longTitle: "Pair local device"
+        });
+      }
     } else {
       this.showToast("Device offline");
     }
