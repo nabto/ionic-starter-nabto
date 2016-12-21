@@ -359,7 +359,7 @@ export class NabtoService {
         if (!err) {
           resolve(res.response);
         } else {
-          if (err.code == NabtoError.Code.API_RPC_COMMUNICATION_PROBLEM) {
+          if (err.code == NabtoError.Code.DATA_TRANSMISSION_PROBLEM) {
             // retry on this specific error (API will have flushed connection and re-connect)
             nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
               if (!err) {
