@@ -200,7 +200,7 @@ export class NabtoService {
           // device unavailable, use cached information from bookmark
           let offlineDevice = new NabtoDevice(bookmark.name,
                                               bookmark.id,
-                                              bookmark.id /* show id in product field with more room */,
+                                              error.message, /* product field has most room for error message */
                                               bookmark.iconUrl, false, false, false);
           offlineDevice.setOffline();
           devices.push(offlineDevice);
