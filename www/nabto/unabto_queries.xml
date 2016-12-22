@@ -152,6 +152,17 @@
     </response>
   </query>
 
+  <!-- remove user -->
+  <query name="remove_user.json" id="11070">
+    <request>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+    </request>
+    <response format="json">
+      <parameter name="status" type="uint8"/>
+    </response>
+  </query>
+
+
   
   <!-- heatpump demo queries -->
 

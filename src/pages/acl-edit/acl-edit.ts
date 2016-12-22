@@ -11,10 +11,10 @@ import { DeviceUser, NabtoDevice } from '../../app/device.class';
 })
 export class AclEditPage {
 
-  private user: DeviceUser;
-  private device: NabtoDevice;
-  private hasUnhandledTap: boolean = false;
-  private hasRemoteAccess;
+  public user: DeviceUser;
+  public device: NabtoDevice;
+  public hasUnhandledTap: boolean = false;
+  public hasRemoteAccess;
 
   constructor(private navParams: NavParams,
               private nabtoService: NabtoService,
@@ -50,7 +50,7 @@ export class AclEditPage {
       })
       .catch(error => {
         console.error(error.message);
-        this.handleError("Could not update user: " + error.message);
+        this.showToast("Could not update user: " + error.message);
       });
   }
 
@@ -63,11 +63,28 @@ export class AclEditPage {
       })
       .catch(error => {
         console.error(error.message);
-        this.handleError("Could not update user: " + error.message);
+        this.showToast("Could not update user: " + error.message);
       });
   }
 
-  handleError(message: string) {
+  removeUser() {
+    console.log("Removing user (TODO) " + this.user.name);
+    this.nabtoService.removeUser(this.device, this.user)    
+      .then((status: number) => {
+        if (status == 0) {
+          this.navCtrl.pop();
+        } else {
+          this.showToast("Could not delete user, status is " + status);
+        }
+      })
+      .catch(error => {
+        console.error(error.message);
+        this.showToast("Could not delete user: " + error.message);
+      });
+    
+  }
+
+  showToast(message: string) {
     var opts = <any>{
       message: message,
       showCloseButton: true,
@@ -76,7 +93,6 @@ export class AclEditPage {
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();
-  }
-
+  } 
   
 }

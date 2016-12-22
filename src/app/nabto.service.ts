@@ -378,6 +378,20 @@ export class NabtoService {
     });
   }
 
+  public removeUser(device: NabtoDevice, user: DeviceUser) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "remove_user.json", {
+        "fingerprint": user.fingerprint
+      })
+        .then((response: any) => {
+          console.log("Removed user, status: " + JSON.stringify(response.status));
+          resolve(response.status);
+        })
+        .catch(reject);
+    });
+  }
+
+
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";

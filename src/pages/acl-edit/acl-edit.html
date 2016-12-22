@@ -15,12 +15,12 @@
 
 <ion-content padding>
   <p>
-    Control how <em>{{user.name}}</em> may access your {{device.type}} device.
+    Control how <em>{{user.name}}</em> may access your {{device.product}} device.
   </p>
   
   <h2>Remote access</h2>
   <p>
-    If remote access is enabled for your {{device.type}} device, allow this specific user to access it from remote.
+    If remote access is enabled for your {{device.product}} device, allow this specific user to access it from remote.
   </p>
   <ion-list>
     <ion-item>
@@ -39,4 +39,13 @@
       <ion-input required type="text" [(ngModel)]="user.name" name="title" (blur)="updateName()"></ion-input>
     </ion-item>
   </ion-list>
+
+  <div [hidden]="user.isOwner()">
+    <h2>Remove user</h2>
+    Revoke the access granted to <em>{{user.name}}</em>
+    <button ion-button color="red"  block (click)="removeUser()">
+      Remove this user
+    </button>
+  </div>
+
 </ion-content>
