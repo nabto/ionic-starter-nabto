@@ -16,10 +16,10 @@
   </ion-list>
 
   <div [hidden]="success">   
-    <p>You are about to set yourself as the owner of the {{device.product}} <em>"{{device.name}}"</em>.</p>
+    <p>You are about to pair your {{operatingSystem}} device with the {{device.product}} <em>"{{device.name}}"</em>.</p>
   
     <button ion-button block (click)="pair()">
-      Confirm pairing with this {{operatingSystem}} device
+      Confirm pairing 
       <ion-spinner [hidden]="!busy"></ion-spinner>
     </button>
   </div>
