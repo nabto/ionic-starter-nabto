@@ -13,7 +13,7 @@ class AclEntry {
   icon: string;
   constructor (name: string, fingerprint: string, role: string) {
     this.name = name;
-    this.fingerprint = fingerprint;
+    this.fingerprint = fingerprint.replace(/(.{2}(?=.))/g,"$1:");
     this.role = role;
     this.icon = (role == "Guest" ? "people" : "contact");
     console.log("icon: " + this.icon);

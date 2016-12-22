@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { ProfilePage } from '../profile/profile';
 import { BookmarksService } from '../../app/bookmarks.service';
@@ -14,18 +15,44 @@ export class ClientSettingsPage {
 
   operatingSystem: string;
   dirty: boolean;
+  keyName: string;
+  fingerprint: string;
 
   constructor(public viewCtrl: ViewController,
               private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private alertCtrl: AlertController,
               private modalCtrl: ModalController,
+              private toastCtrl: ToastController,
               private nabtoService: NabtoService
              ) {}
 
   ionViewDidLoad() {
     this.operatingSystem = (<any>window).device.platform;
     this.dirty = false;
+  }
+
+  ionViewDidEnter() {
+    this.profileService.lookupKeyPairName()
+      .then((name) => {
+        this.keyName = name;
+        return this.nabtoService.getFingerprint(name);
+      })
+      .then((fingerprint) => {
+        this.fingerprint = fingerprint.replace(/(.{2}(?=.))/g,"$1:");
+      })
+      .catch((error) => {
+        console.log("Error getting name/fingerprint: " + JSON.stringify(error));
+        this.showToast(error.message);
+      });
+  }
+  
+  showToast(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      showCloseButton: true
+    });
+    toast.present();
   }
 
   dismiss() {

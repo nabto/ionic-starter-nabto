@@ -72,9 +72,10 @@ export class DiscoverPage {
         });
         this.recentIds = ids;
       });
-    }).catch(error => {
+    }).catch((error) => {
       this.showToast(error.message);
       console.error("Error discovering devices: " + JSON.stringify(error));
+      this.empty = true;
       this.busy = false;
     });
   }
@@ -83,7 +84,8 @@ export class DiscoverPage {
     let toast = this.toastCtrl.create({
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok'
+      closeButtonText: 'Ok',
+      duration: 3000
     });
     toast.present();
   }
