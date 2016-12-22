@@ -8,16 +8,25 @@
 
 <ion-content padding>
 
+  <h2>Key pair</h2>
+  The key for this device <em>{{keyName}}</em> has RSA fingerprint:
+  <pre>
+    {{fingerprint}}
+  </pre>
+  
   <button ion-button color="light"  block (click)="clearProfile()">
     Re-create keypair for this {{operatingSystem}} device
   </button>
 
+  <h2>Known devices</h2>
   <button ion-button color="light"  block (click)="clearDevices()">
     Clear list of known devices
   </button>
-  
-  <button ion-button block (click)="dismiss()">
-    Close
-  </button>
+
+  <p>
+    <button ion-button block (click)="dismiss()">
+      Close
+    </button>
+  </p>
   
 </ion-content>
