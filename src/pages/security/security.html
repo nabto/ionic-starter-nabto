@@ -27,11 +27,11 @@
     </ion-item>
   </ion-list>
   
-  <h2>Guest Remote Access</h2>
+  <h2>New User Remote Access</h2>
   <p>When adding new users as guests, allow them to later also access the device remotely (outside your local network). You can later change this for individual guests in the access control list below.</p>
   <ion-list>
     <ion-item>
-      <ion-label>Remote guest access</ion-label>
+      <ion-label>New user remote access</ion-label>
       <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (ionChange)="update()" (tap)="tapped()" ></ion-toggle>
     </ion-item>
   </ion-list>
@@ -39,18 +39,10 @@
   <h2>Access Control List</h2>
   <p>Control who has access to your device.</p>
   <ion-list>
-    <button ion-item *ngFor="let entry of acl | async" (tap)="itemTapped($event, entry)">
-      <h2>{{entry.name}}</h2>
-      <h3><ion-icon [name]="entry.icon"></ion-icon> &nbsp; {{entry.role}}</h3>
-      <p>RSA fingerprint: {{entry.fingerprint}}</p>
+    <button ion-item *ngFor="let user of acl | async" (tap)="aclEntryTapped($event, user)">
+      <h2>{{user.name}}</h2>
+      <h3><ion-icon [name]="user.icon()"></ion-icon> &nbsp; {{user.role()}}</h3>
+      <p>RSA fingerprint: {{user.niceFingerprint()}}</p>
     </button>
-    <button ion-item>
-      <h2>Add new guest</h2>
-    </button>
-    
   </ion-list>
-  
-
-
-
 </ion-content>

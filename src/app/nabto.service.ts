@@ -349,7 +349,21 @@ export class NabtoService {
         .catch(reject);
     });
   }
-  
+
+  public setUserPermissions(device: NabtoDevice, user: DeviceUser) {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device, "set_user_permissions.json", {
+        "fingerprint": user.fingerprint,
+        "permissions": user.permissions >>> 0 // >>> 0: convert to unsigned
+      })
+        .then((user: any) => {
+          console.log("Got updated user: " + JSON.stringify(user));
+          resolve(new DeviceUser(user));
+        })
+        .catch(reject);
+    });
+  }
+
   public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       let paramString = "";

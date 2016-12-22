@@ -7,12 +7,36 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>acl-edit</ion-title>
+    <ion-title>Edit user</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-
+  <p>
+    Control how <em>{{user.name}}</em> may access your {{device.type}} device.
+  </p>
+  
+  <h2>Remote access</h2>
+  <p>
+    If remote access is enabled for your {{device.type}} device, allow this specific user to access it from remote.
+  </p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Remote access</ion-label>
+      <ion-toggle [disabled]="!device.remoteAccessEnabled" [(ngModel)]="hasRemoteAccess" (ionChange)="updatePermissions()" (tap)="tapped()" ></ion-toggle>
+    </ion-item>
+  </ion-list>
+  
+  <h2>Display name</h2>
+  <p>
+    Change the display name you see for the user's device.
+  </p>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>Name to use in list</ion-label>
+      <ion-input required type="text" [(ngModel)]="deviceName" name="title"></ion-input>
+    </ion-item>
+  </ion-list>
 </ion-content>

@@ -1,24 +1,12 @@
 import { Component } from '@angular/core';
 import { NavParams } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
+import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
-import { NabtoDevice } from '../../app/device.class';
-
-class AclEntry {
-  name: string;
-  fingerprint: string;
-  role: string;
-  icon: string;
-  constructor (name: string, fingerprint: string, role: string) {
-    this.name = name;
-    this.fingerprint = fingerprint.replace(/(.{2}(?=.))/g,"$1:");
-    this.role = role;
-    this.icon = (role == "Guest" ? "people" : "contact");
-    console.log("icon: " + this.icon);
-  }
-};
+import { DeviceUser, NabtoDevice } from '../../app/device.class';
+import { AclEditPage } from '../acl-edit/acl-edit';
 
 @Component({
   templateUrl: 'security.html'
@@ -29,12 +17,13 @@ export class SecurityPage {
   hasUnhandledTap: boolean;
   
   public device: NabtoDevice;
-  public acl: Observable<AclEntry[]>;
+  public acl: Observable<DeviceUser[]>;
   private aclSrc = [];
 
   constructor(private params: NavParams,
+              private navCtrl: NavController,
               private nabtoService: NabtoService,
-              public toastCtrl: ToastController,
+              private toastCtrl: ToastController,
               private alertCtrl: AlertController) {
     this.device = params.get('device');
     this.hasUnhandledTap = false;
@@ -56,9 +45,7 @@ export class SecurityPage {
         console.log("Got users: " + JSON.stringify(acl));
         this.aclSrc.splice(0, this.aclSrc.length);
         for(let i = 0; i < acl.users.length; i++) {
-          this.aclSrc.push(new AclEntry(acl.users[i].name,
-                                        acl.users[i].fingerprint,
-                                        (acl.users[i].permissions & 0x20000000) == 0x20000000 ? "Owner" : "Guest"));
+          this.aclSrc.push(new DeviceUser(acl.users[i]));
         }
       }).catch(error => {
         this.handleError(error.message);
@@ -72,6 +59,13 @@ export class SecurityPage {
     this.hasUnhandledTap = true;
   }
 
+  aclEntryTapped(event, user) {
+    this.navCtrl.push(AclEditPage, { 
+      user: user,
+      device: this.device
+    });
+  }
+  
   update() {
     if (!this.hasUnhandledTap) {
       // only invoke device if a user tapped the user interface
@@ -91,7 +85,8 @@ export class SecurityPage {
     var opts = <any>{
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok'
+      closeButtonText: 'Ok',
+      duration: 2500
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();

@@ -123,7 +123,21 @@
       <parameter name="default_user_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
-  
+
+  <!-- set user permissions -->
+  <query name="set_user_permissions.json" id="11050">
+    <request>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="permissions" type="uint32"/> 
+    </request>
+    <response format="json">
+      <parameter name="status" type="uint8"/>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="user_name" type="raw"/>
+      <parameter name="permissions" type="uint32"/>
+    </response>
+  </query>
+
   <!-- heatpump demo queries -->
 
   <!-- get all state details -->

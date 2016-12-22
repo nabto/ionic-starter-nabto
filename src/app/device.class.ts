@@ -19,6 +19,30 @@ export class DeviceUser {
   public isOwner() {
     return ((this.permissions & FP_ACL_PERMISSION_ADMIN) == FP_ACL_PERMISSION_ADMIN);
   }
+
+  public hasRemoteAccess() {
+    return ((this.permissions & FP_ACL_PERMISSION_REMOTE_ACCESS) == FP_ACL_PERMISSION_REMOTE_ACCESS);
+  }
+
+  public setRemoteAccessPermission(granted: boolean) {
+    if (granted) {
+      this.permissions = this.permissions | FP_ACL_PERMISSION_REMOTE_ACCESS;
+    } else {
+      this.permissions = this.permissions & ~FP_ACL_PERMISSION_REMOTE_ACCESS;
+    }
+  }
+
+  public role() {
+    return this.isOwner() ? "Owner" : "Guest";
+  }
+
+  public icon() {
+    return this.isOwner() ? "contact" : "people";
+  }
+
+  public niceFingerprint() {
+    return this.fingerprint.replace(/(.{2}(?=.))/g,"$1:");
+  }
 }
 
 export class NabtoDevice {
