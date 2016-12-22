@@ -43,6 +43,14 @@ export class DeviceUser {
   public niceFingerprint() {
     return this.fingerprint.replace(/(.{2}(?=.))/g,"$1:");
   }
+
+  public niceAccessString() {
+    if (this.hasRemoteAccess()) {
+      return "local and remote access";
+    } else {
+      return "local access only";
+    }
+  }
 }
 
 export class NabtoDevice {

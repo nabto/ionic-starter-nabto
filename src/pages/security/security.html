@@ -41,7 +41,7 @@
   <ion-list>
     <button ion-item *ngFor="let user of acl | async" (tap)="aclEntryTapped($event, user)">
       <h2>{{user.name}}</h2>
-      <h3><ion-icon [name]="user.icon()"></ion-icon> &nbsp; {{user.role()}}</h3>
+      <h3><ion-icon [name]="user.icon()"></ion-icon> &nbsp; {{user.role()}}, {{user.niceAccessString()}}</h3>
       <p>RSA fingerprint: {{user.niceFingerprint()}}</p>
     </button>
   </ion-list>
