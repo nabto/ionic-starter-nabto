@@ -46,7 +46,7 @@ export class DeviceUser {
 
   public niceAccessString() {
     if (this.hasRemoteAccess()) {
-      return "local and remote access";
+      return "local & remote access";
     } else {
       return "local access only";
     }

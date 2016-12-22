@@ -78,12 +78,12 @@
   <!-- pair client (user) with this device -->
   <query name="pair_with_device.json" id="11010">
     <request>
-      <parameter name="user_name" type="raw"/>
+      <parameter name="name" type="raw"/>
     </request>
     <response format="json">
       <parameter name="status" type="uint8"/>
       <parameter name="fingerprint" type="raw" representation="hex"/>
-      <parameter name="user_name" type="raw"/>
+      <parameter name="name" type="raw"/>
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
@@ -95,7 +95,7 @@
     <response format="json">
       <parameter name="status" type="uint8"/>
       <parameter name="fingerprint" type="raw" representation="hex"/>
-      <parameter name="user_name" type="raw"/>
+      <parameter name="name" type="raw"/>
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
@@ -133,11 +133,26 @@
     <response format="json">
       <parameter name="status" type="uint8"/>
       <parameter name="fingerprint" type="raw" representation="hex"/>
-      <parameter name="user_name" type="raw"/>
+      <parameter name="name" type="raw"/>
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
 
+  <!-- set user name -->
+  <query name="set_user_name.json" id="11060">
+    <request>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="status" type="uint8"/>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="name" type="raw"/>
+      <parameter name="permissions" type="uint32"/>
+    </response>
+  </query>
+
+  
   <!-- heatpump demo queries -->
 
   <!-- get all state details -->

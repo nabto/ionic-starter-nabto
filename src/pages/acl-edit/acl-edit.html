@@ -31,12 +31,12 @@
   
   <h2>Display name</h2>
   <p>
-    Change the display name you see for the user's device.
+    Change the display name you see for the user's device, e.g. "Dad's iPhone" instead of the name the user suggested when pairing (e.g. "iPhone 5").
   </p>
   <ion-list>
     <ion-item>
       <ion-label stacked>Name to use in list</ion-label>
-      <ion-input required type="text" [(ngModel)]="deviceName" name="title"></ion-input>
+      <ion-input required type="text" [(ngModel)]="user.name" name="title" (blur)="updateName()"></ion-input>
     </ion-item>
   </ion-list>
 </ion-content>

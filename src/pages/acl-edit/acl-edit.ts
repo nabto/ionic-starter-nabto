@@ -42,18 +42,29 @@ export class AclEditPage {
       // only invoke device if a user tapped the user interface
       return;
     }
+    this.hasUnhandledTap = false;
     this.user.setRemoteAccessPermission(this.hasRemoteAccess);
-    console.log("Updating user: " + JSON.stringify(this.user));
     this.nabtoService.setUserPermissions(this.device, this.user)    
       .then((user: DeviceUser) => {
-        console.log("Updated user: " + JSON.stringify(this.user));
         this.user = user;
       })
       .catch(error => {
-        console.log(error.message);
+        console.error(error.message);
         this.handleError("Could not update user: " + error.message);
       });
-    this.hasUnhandledTap = false;
+  }
+
+  updateName() {
+    console.log("Updating name " + this.user.name);
+    this.nabtoService.setUserName(this.device, this.user)    
+      .then((user: DeviceUser) => {
+        this.user = user;
+        console.log("Updated user: " + JSON.stringify(this.user));
+      })
+      .catch(error => {
+        console.error(error.message);
+        this.handleError("Could not update user: " + error.message);
+      });
   }
 
   handleError(message: string) {
