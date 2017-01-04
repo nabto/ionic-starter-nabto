@@ -110,4 +110,9 @@ export class SecurityPage {
     });
     alert.present();
   }
+  
+  home() {
+    this.navCtrl.popToRoot();
+  }
+  
 }

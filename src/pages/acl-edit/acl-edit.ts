@@ -93,6 +93,10 @@ export class AclEditPage {
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();
-  } 
+  }
+  
+  home() {
+    this.navCtrl.popToRoot();
+  }
   
 }

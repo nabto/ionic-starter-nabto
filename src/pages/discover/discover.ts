@@ -142,6 +142,9 @@ export class DiscoverPage {
     alert.present();
   }
 
-
+  home() {
+    this.navCtrl.popToRoot();
+  }
+  
 }
 
