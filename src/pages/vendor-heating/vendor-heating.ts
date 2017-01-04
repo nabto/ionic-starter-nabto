@@ -252,5 +252,9 @@ export class VendorHeatingPage {
   unavailable() {
     return !this.activated || this.offline;
   }
+
+  home() {
+    this.navCtrl.popToRoot();
+  }
   
 }

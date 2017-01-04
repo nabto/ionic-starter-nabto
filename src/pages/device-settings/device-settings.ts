@@ -97,6 +97,11 @@ export class DeviceSettingsPage {
       device: this.device
     });
   }
+
+  home() {
+    this.navCtrl.popToRoot();
+  }
+
     
 }
 
