@@ -130,6 +130,7 @@ export class NabtoService {
         if (this.lastUser) {
           certificate = this.lastUser;
         } else {
+          console.error("Startup never invoked with a certificate");
           reject(new Error("Startup never invoked with a certificate"));
           return;
         }
@@ -225,26 +226,23 @@ export class NabtoService {
   
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
-      let url = "nabto://" + deviceId + "/get_public_device_info.json?";
-      console.log(`Retrieving public details through ${url}`);
-      nabto.rpcInvoke(url, (err, details) => {
-        if (!err) {
-          let r = details.response;
-          let dev:NabtoDevice = new NabtoDevice(r.device_name,
+      this.invokeRpc(deviceId, "get_public_device_info.json")
+        .then((details:any) => {
+          let dev:NabtoDevice = new NabtoDevice(details.device_name,
                                                 deviceId,
-                                                r.device_type,
-                                                r.device_icon,
-                                                r.is_open_for_pairing,
-                                                r.is_current_user_paired,
-                                                r.is_current_user_owner
+                                                details.device_type,
+                                                details.device_icon,
+                                                details.is_open_for_pairing,
+                                                details.is_current_user_paired,
+                                                details.is_current_user_owner
                                                );
           console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
           resolve(dev);
-        } else {
+        })
+        .catch((err) => {
           console.error(`public info could not be retrieved for ${deviceId}: ${JSON.stringify(err)}`);
           reject(err);
-        }
-      });
+        });
     });
   }
 
@@ -281,7 +279,7 @@ export class NabtoService {
   
   public getCurrentUser(device: NabtoDevice) : Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "get_current_user.json")
+      this.invokeRpc(device.id, "get_current_user.json")
         .then((user: any) => {
           resolve(new DeviceUser(user));
         })
@@ -296,7 +294,7 @@ export class NabtoService {
       this.getCurrentUser(device)
         .then((user: DeviceUser) => {
           device.currentUserIsOwner = user.isOwner();
-          return this.invokeRpc(device, "get_system_security_settings.json");
+          return this.invokeRpc(device.id, "get_system_security_settings.json");
         })
         .then((details: any) => {
           device.setSystemSecurityDetails(details);
@@ -315,7 +313,7 @@ export class NabtoService {
         "permissions": device.getSystemPermissions() >>> 0,
         "default_user_permissions_after_pairing": device.getDefaultUserPermissions() >>> 0
       };
-      this.invokeRpc(device, "set_system_security_settings.json", settings)
+      this.invokeRpc(device.id, "set_system_security_settings.json", settings)
         .then((details: any) => {
           device.setSystemSecurityDetails(details);
           resolve(device);
@@ -328,7 +326,7 @@ export class NabtoService {
 
   public setSystemInfo(device: NabtoDevice) {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "set_device_info.json", { "device_name": device.name })
+      this.invokeRpc(device.id, "set_device_info.json", { "device_name": device.name })
         .then((details: any) => {
           device.name = details.device_name;
           resolve(device);
@@ -341,7 +339,7 @@ export class NabtoService {
 
   public pairWithCurrentUser(device: NabtoDevice, user: string) {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "pair_with_device.json", { "name": user})
+      this.invokeRpc(device.id, "pair_with_device.json", { "name": user})
         .then((pairedUser: any) => {
           console.log("Got paired user: " + JSON.stringify(pairedUser));
           resolve(new DeviceUser(pairedUser));
@@ -352,7 +350,7 @@ export class NabtoService {
 
   public setUserPermissions(device: NabtoDevice, user: DeviceUser) {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "set_user_permissions.json", {
+      this.invokeRpc(device.id, "set_user_permissions.json", {
         "fingerprint": user.fingerprint,
         "permissions": user.permissions >>> 0 // >>> 0: convert to unsigned
       })
@@ -366,7 +364,7 @@ export class NabtoService {
 
   public setUserName(device: NabtoDevice, user: DeviceUser) {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "set_user_name.json", {
+      this.invokeRpc(device.id, "set_user_name.json", {
         "fingerprint": user.fingerprint,
         "name": user.name
       })
@@ -380,7 +378,7 @@ export class NabtoService {
 
   public removeUser(device: NabtoDevice, user: DeviceUser) {
     return new Promise((resolve, reject) => {
-      this.invokeRpc(device, "remove_user.json", {
+      this.invokeRpc(device.id, "remove_user.json", {
         "fingerprint": user.fingerprint
       })
         .then((response: any) => {
@@ -392,8 +390,9 @@ export class NabtoService {
   }
 
 
-  public invokeRpc(device: NabtoDevice, request: string, parameters?: any): Promise<NabtoDevice> {
+  public invokeRpc(device: string, request: string, parameters?: any): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
+      console.log(`Invoking RPC ${request} - initialized? ${this.initialized ? "yes" : "no"}`);
       let paramString = "";
       if (parameters) {
         paramString = this.buildParamString(parameters);
@@ -408,15 +407,15 @@ export class NabtoService {
     });
   }
 
-  private doInvokeRpc(device: NabtoDevice, request: string, paramString: string): Promise<NabtoDevice>  {
+  private doInvokeRpc(id: string, request: string, paramString: string): Promise<NabtoDevice>  {
     return new Promise((resolve, reject) => {
-      nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+      nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
         if (!err) {
           resolve(res.response);
         } else {
           if (err.code == NabtoError.Code.DATA_TRANSMISSION_PROBLEM) {
             // retry on this specific error (API will have flushed connection and re-connect)
-            nabto.rpcInvoke(`nabto://${device.id}/${request}?${paramString}`, (err, res) => {
+            nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
               if (!err) {
                 resolve(res.response);
               } else {

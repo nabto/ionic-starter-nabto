@@ -8,32 +8,16 @@ import { OverviewPage } from '../pages/overview/overview';
   template: `<ion-nav [root]="rootPage"></ion-nav>`
 })
 export class NabtoIonicApp {
+
   rootPage = OverviewPage;
 
   constructor(platform: Platform,
               public toastCtrl: ToastController) {
     platform.ready()
-      .then(() => this.initialize())
-      .catch((err) => {
-        console.log(err);
-        this.error("Could not startup nabto - please contact app vendor: " + err.message);
+      .then(() => {
+        StatusBar.styleDefault();
+        Splashscreen.hide();
       });
-  }
-  
-  initialize() {
-    StatusBar.styleDefault();
-    Splashscreen.hide();
-    console.log("AMP app initialized");
-  }
-
-  error(msg: string) {
-    const toast = this.toastCtrl.create({
-      message: msg,
-      showCloseButton: true,
-      closeButtonText: 'Ok'
-    });
-    Splashscreen.hide();
-    toast.present();
   }
 
 }

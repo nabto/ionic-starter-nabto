@@ -29,7 +29,7 @@
       </ion-card-content>
   </ion-card>
 
-  <ion-list [hidden]="empty">
+  <ion-list [hidden]="empty" text-wrap>
     <ion-item *ngFor="let device of devices | async" (tap)="deviceTapped($event, device)">
       <ion-thumbnail item-left>
         <img [src]="device.iconUrl">

@@ -40,7 +40,7 @@ export class SecurityPage {
   }
 
   readAcl() {
-    this.nabtoService.invokeRpc(this.device, "get_users.json", { "count": 10, "start": 0 }).
+    this.nabtoService.invokeRpc(this.device.id, "get_users.json", { "count": 10, "start": 0 }).
       then((acl: any) => {
         console.log("Got users: " + JSON.stringify(acl));
         this.aclSrc.splice(0, this.aclSrc.length);
