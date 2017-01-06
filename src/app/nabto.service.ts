@@ -22,12 +22,15 @@ export class NabtoService {
                private platform: Platform) {
     this.initialized = false;
     document.addEventListener('pause', () => {
+      console.log('nabto.service - pause');
       this.onPause();
     });
     document.addEventListener('resume', () => {
+      console.log('nabto.service - resume');
       this.onResume();
     });
     document.addEventListener('resign', () => {
+      console.log('nabto.service - resign');
       this.onResign();
     });
   }
@@ -46,7 +49,6 @@ export class NabtoService {
       // etc. - and there is no opposite event, meaning that we cannot
       // start again, hence the reason for introducing the initalized
       // flag
-      console.log("Resigning, invoking nabto.shutdown");
       this.shutdown();
     } else {
       console.log("odd, only iOS should get this event");
@@ -82,6 +84,14 @@ export class NabtoService {
   // per default, we have not enabled this.
   //
   public createKeyPair(username: string): Promise<string> {
+    if (this.initialized) {
+      return this.doCreateKeyPair(username);
+    } else {
+      this.startup().then(() => this.doCreateKeyPair(username));
+    }
+  }
+
+  private doCreateKeyPair(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
       nabto.createKeyPair(username, this.pkPassword, (error) => {
         if (!error) {
@@ -97,6 +107,14 @@ export class NabtoService {
   }
 
   public getFingerprint(username: string): Promise<string> {
+    if (this.initialized) {
+      return this.doGetFingerprint(username);
+    } else {
+      this.startupAndOpenProfile().then(() => this.doGetFingerprint(username));
+    }
+  }
+  
+  private doGetFingerprint(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
       nabto.getFingerprint(username, (err, result) => {
         if (!err) {
@@ -137,8 +155,9 @@ export class NabtoService {
       }
       nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
         if (!err) {
-          this.initialized = true; 
-          this.injectInterfaceDefinition().then(resolve).catch(reject);
+          this.initialized = true;
+          console.log("successfully initialized nabto service");
+          return this.injectInterfaceDefinition().then(resolve).catch(reject);
         } else {
           if (err == 'API_OPEN_CERT_OR_PK_FAILED') {
             reject(new Error('BAD_PROFILE'));
@@ -159,7 +178,7 @@ export class NabtoService {
           nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
             if (!err) {
               console.log("nabto started and interface set ok!")
-              resolve();
+              resolve(true);
             } else {
               console.log(JSON.stringify(err));
               reject(new Error("Could not inject device interface definition: " + err.message));
@@ -189,6 +208,16 @@ export class NabtoService {
   }
 
   public discover(): Promise<string[]> {
+    if (this.initialized) {
+      return this.doDiscover();
+    } else {
+      this.startupAndOpenProfile()
+        .then(() => this.doDiscover())
+        .catch((err) => Promise.reject(err));
+    }
+  }
+
+  private doDiscover(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       nabto.getLocalDevices((error: any, deviceIds: any) => {
         if (error) {
@@ -223,7 +252,7 @@ export class NabtoService {
     }
     return deviceInfoSource.asObservable();
   }
-  
+
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(deviceId, "get_public_device_info.json")
@@ -337,7 +366,7 @@ export class NabtoService {
     });
   }
 
-  public pairWithCurrentUser(device: NabtoDevice, user: string) {
+  public pairWithCurrentUser(device: NabtoDevice, user: string): Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "pair_with_device.json", { "name": user})
         .then((pairedUser: any) => {
@@ -348,7 +377,7 @@ export class NabtoService {
     });
   }
 
-  public setUserPermissions(device: NabtoDevice, user: DeviceUser) {
+  public setUserPermissions(device: NabtoDevice, user: DeviceUser): Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "set_user_permissions.json", {
         "fingerprint": user.fingerprint,
@@ -362,7 +391,7 @@ export class NabtoService {
     });
   }
 
-  public setUserName(device: NabtoDevice, user: DeviceUser) {
+  public setUserName(device: NabtoDevice, user: DeviceUser): Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "set_user_name.json", {
         "fingerprint": user.fingerprint,
@@ -376,7 +405,7 @@ export class NabtoService {
     });
   }
 
-  public removeUser(device: NabtoDevice, user: DeviceUser) {
+  public removeUser(device: NabtoDevice, user: DeviceUser): Promise<number> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "remove_user.json", {
         "fingerprint": user.fingerprint
@@ -389,25 +418,24 @@ export class NabtoService {
     });
   }
 
-
-  public invokeRpc(device: string, request: string, parameters?: any): Promise<NabtoDevice> {
-    return new Promise((resolve, reject) => {
-      console.log(`Invoking RPC ${request} - initialized? ${this.initialized ? "yes" : "no"}`);
-      let paramString = "";
-      if (parameters) {
-        paramString = this.buildParamString(parameters);
-      }
-      if (this.initialized) {
-        this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
-      } else {
-        this.startupAndOpenProfile().then(() => {
-          return this.doInvokeRpc(device, request, paramString).then(resolve).catch(reject);
-        }).catch(reject);
-      }
-    });
+  public invokeRpc(device: string, request: string, parameters?: any): Promise<any> {
+    console.log(`Invoking RPC ${request} - initialized? ${this.initialized ? "yes" : "no"}`);
+    let paramString = "";
+    if (parameters) {
+      paramString = this.buildParamString(parameters);
+    }
+    if (this.initialized) {
+      return this.doInvokeRpc(device, request, paramString);
+    } else {
+      this.startupAndOpenProfile().then(() => {
+        return this.doInvokeRpc(device, request, paramString);
+      }).catch((err) => {
+        return Promise.reject(err);
+      });
+    }
   }
 
-  private doInvokeRpc(id: string, request: string, paramString: string): Promise<NabtoDevice>  {
+  private doInvokeRpc(id: string, request: string, paramString: string): Promise<any>  {
     return new Promise((resolve, reject) => {
       nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
         if (!err) {

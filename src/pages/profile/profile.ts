@@ -37,8 +37,20 @@ export class ProfilePage {
     this.profileService.createKeyPair(this.deviceName)
       .then((name) => {
         console.log(`Key pair created successfully for ${name}`);
-        this.profileService.storeKeyPairName(name);     
-        this.viewCtrl.dismiss(name);
+        this.profileService.storeKeyPairName(name);
+        // restarting Nabto to close session with previous key and start new with new one
+        this.nabtoService.shutdown().then(() => {
+          console.log("Nabto stopped")
+          this.nabtoService.startupAndOpenProfile(name)
+            .then(() => {
+              console.log("Nabto re-started with profile " + name);
+              this.viewCtrl.dismiss(name);
+            })
+            .catch(() => {
+              console.log("Could not start Nabto after creating new key pair, please contact support");
+              this.viewCtrl.dismiss(name);
+            })
+        });
       })
       .catch((error) => {
         this.showError(error);

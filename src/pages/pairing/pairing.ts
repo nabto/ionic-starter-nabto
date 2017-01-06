@@ -75,4 +75,8 @@ export class PairingPage {
     });
   }
 
+  home() {
+    this.navCtrl.popToRoot();
+  }
+
 }
