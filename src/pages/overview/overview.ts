@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
+import { NavController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+import { Events } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { DiscoverPage } from '../discover/discover';
 import { PairingPage } from '../pairing/pairing';
 import { ProfilePage } from '../profile/profile';
-import { AlertController } from 'ionic-angular';
-import { ToastController } from 'ionic-angular';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { HelpPage } from '../help/help';
 import { ClientSettingsPage } from '../client-settings/client-settings';
@@ -14,7 +16,6 @@ import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
-import { Platform } from 'ionic-angular';
 
 @Component({
   templateUrl: 'overview.html'
@@ -34,14 +35,16 @@ export class OverviewPage {
 	      private platform: Platform,
               private modalCtrl: ModalController,
               public toastCtrl: ToastController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private events: Events) {
     this.shortTitle = "Overview";
     this.longTitle = "Known devices";
+
   }
 
   ionViewDidLoad() {
+    this.events.subscribe("overview:profileLoaded", () => this.refresh());
     this.initialize();
-    this.refresh();
   }
 
   ionViewDidEnter() {
@@ -75,7 +78,7 @@ export class OverviewPage {
   
   initializeWithKeyPair(name: string) {
     this.nabtoService.startupAndOpenProfile(name)
-      .then(() => console.log("Nabto startup completed"))
+      .then(() => this.events.publish('overview:profileLoaded'))
       .catch((error) => {
         if (error.message === 'BAD_PROFILE') {
           this.showKeyPairCreationPage();

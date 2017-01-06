@@ -87,7 +87,7 @@ export class NabtoService {
     if (this.initialized) {
       return this.doCreateKeyPair(username);
     } else {
-      this.startup().then(() => this.doCreateKeyPair(username));
+      return this.startup().then(() => this.doCreateKeyPair(username));
     }
   }
 
@@ -110,7 +110,7 @@ export class NabtoService {
     if (this.initialized) {
       return this.doGetFingerprint(username);
     } else {
-      this.startupAndOpenProfile().then(() => this.doGetFingerprint(username));
+      return this.startupAndOpenProfile().then(() => this.doGetFingerprint(username));
     }
   }
   
@@ -211,7 +211,7 @@ export class NabtoService {
     if (this.initialized) {
       return this.doDiscover();
     } else {
-      this.startupAndOpenProfile()
+      return this.startupAndOpenProfile()
         .then(() => this.doDiscover())
         .catch((err) => Promise.reject(err));
     }
@@ -427,7 +427,7 @@ export class NabtoService {
     if (this.initialized) {
       return this.doInvokeRpc(device, request, paramString);
     } else {
-      this.startupAndOpenProfile().then(() => {
+      return this.startupAndOpenProfile().then(() => {
         return this.doInvokeRpc(device, request, paramString);
       }).catch((err) => {
         return Promise.reject(err);
