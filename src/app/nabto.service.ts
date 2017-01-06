@@ -142,7 +142,9 @@ export class NabtoService {
   }
   
   public startup(): Promise<boolean> {
+    console.log("DEBUG: startup invoked");
     return new Promise((resolve, reject) => {
+      console.log("DEBUG: invoking nabto once platform is ready");
       this.platform.ready().then(() => {
         nabto.startup((err) => {
           if (!err) {
