@@ -146,6 +146,7 @@ export class NabtoService {
     return new Promise((resolve, reject) => {
       console.log("DEBUG: invoking nabto once platform is ready");
       this.platform.ready().then(() => {
+        console.log("DEBUG: platform ready, invoking nabto.startup");
         nabto.startup((err) => {
           if (!err) {
             console.log("Nabto started (without profile)");
@@ -155,7 +156,7 @@ export class NabtoService {
             reject(new Error(err.message));
           }
         });
-      });
+      }).catch((err) => console.log(`platform.ready fail: ${err}`));
     });
   }
   
