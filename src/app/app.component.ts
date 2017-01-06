@@ -31,10 +31,10 @@ export class NabtoIonicApp {
           // do something when the notification is opened.
         });
         OneSignal.endInit();    
-        
         OneSignal.getIds().then(data => {
+          console.warn("OneSignal userId: " + data.userId);
           // this gives you back the new userId and pushToken associated with the device. Helpful.
-        });       
+        });
         
       });
   }
