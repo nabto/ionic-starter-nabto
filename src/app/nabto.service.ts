@@ -89,7 +89,14 @@ export class NabtoService {
       return this.doCreateKeyPair(username);
     } else {
       console.log(`DEBUG: createKeyPair invoked, initialized=false, username=${username}`);
-      return this.startup().then(() => this.doCreateKeyPair(username));
+      return this.startup()
+        .then(() => {
+          console.log(`DEBUG: startup completed successfully`);
+          return this.doCreateKeyPair(username);
+        })
+        .catch((err) => {
+          console.log(`DEBUG: startup or createkeypair failed: ${err}`);
+        });
     }
   }
 
