@@ -37,7 +37,6 @@ export class NabtoService {
 
   onResume() {
     console.log("resumed, invoking nabto.startup");
-    this.startupAndOpenProfile();
     this.bookmarksService.readBookmarks().then((bookmarks) => {
       this.prepareInvoke(bookmarks.map((bookmark) => bookmark.id));
     });
@@ -315,6 +314,14 @@ export class NabtoService {
   }
 
   public prepareInvoke(devices: string[]): Promise<void> {
+    if (this.initialized) {
+      return this.doPrepareInvoke(devices);
+    } else {
+      return this.startupAndOpenProfile().then(() => this.doPrepareInvoke(devices));
+    }
+  }
+
+  private doPrepareInvoke(devices: string[]): Promise<void> {
     console.log("Prepare invoke for " + JSON.stringify(devices));
     return new Promise((resolve,reject) => {
       if (this.platform.is('ios')) {
@@ -336,7 +343,7 @@ export class NabtoService {
       }
     });
   }
-  
+
   public getCurrentUser(device: NabtoDevice) : Promise<DeviceUser> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "get_current_user.json")
