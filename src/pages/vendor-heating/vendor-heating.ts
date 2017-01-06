@@ -63,23 +63,23 @@ export class VendorHeatingPage {
 
   refresh() {
     this.busyBegin();
-	  this.nabtoService.invokeRpc(this.device.id, "heatpump_get_full_state.json").
-		then((state: any) => {
-		  this.busyEnd();
-		  console.log(`Got new heatpump state: ${JSON.stringify(state)}`);
-		  this.activated = state.activated;
-		  this.offline = false;
-		  this.mode = this.mapDeviceMode(state.mode);
-		  this.temperature = this.mapDeviceTemp(state.target_temperature);
-		  this.roomTemperature = state.room_temperature;
-		  if (!this.activated) {
-		    this.unavailableStatus = "Powered off";
-		  }
-		  console.log(`offline=${this.offline}, activated=${this.activated}`);
-		}).catch(error => {
-		  this.busyEnd();
-		  this.handleError(error);
-	  });
+    this.nabtoService.invokeRpc(this.device.id, "heatpump_get_full_state.json").
+      then((state: any) => {
+	this.busyEnd();
+	console.log(`Got new heatpump state: ${JSON.stringify(state)}`);
+	this.activated = state.activated;
+	this.offline = false;
+	this.mode = this.mapDeviceMode(state.mode);
+	this.temperature = this.mapDeviceTemp(state.target_temperature);
+	this.roomTemperature = state.room_temperature;
+	if (!this.activated) {
+	  this.unavailableStatus = "Powered off";
+	}
+	console.log(`offline=${this.offline}, activated=${this.activated}`);
+      }).catch(error => {
+	this.busyEnd();
+	this.handleError(error);
+      });
   }
 
   activationToggled() {
@@ -102,7 +102,7 @@ export class VendorHeatingPage {
   busyBegin() {
     if (!this.busy) {
       this.busy = true;
-      this.timer = setTimeout(() => this.showSpinner(), 250);
+      this.timer = setTimeout(() => this.showSpinner(), 500);
     }
   }
 
