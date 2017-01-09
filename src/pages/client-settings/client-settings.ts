@@ -69,7 +69,10 @@ export class ClientSettingsPage {
   }
 
   showProfilePage() {
-    let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
+    let modal = this.modalCtrl.create(ProfilePage, undefined, {
+      enableBackdropDismiss: false/*,
+      hardwareBackButtonClose: false*/
+    });
     modal.onDidDismiss((name) => {
     });
     modal.present();

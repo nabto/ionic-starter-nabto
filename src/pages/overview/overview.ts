@@ -44,9 +44,11 @@ export class OverviewPage {
 
   ionViewDidLoad() {
     this.events.subscribe("overview:profileLoaded", () => this.refresh());
-    this.initialize();
+    this.verifyPlumbing()
+      .then(() => this.initialize())
+      .catch((err) => console.error("App could not start: " + err.message || err));
   }
-
+  
   ionViewDidEnter() {
     if (!this.firstView) {
       this.refresh();
@@ -56,6 +58,35 @@ export class OverviewPage {
       // after load)
       this.firstView = false;
     }
+  }
+
+  verifyPlumbing(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.nabtoService.checkNabto()
+        .then((version) => {
+          console.log(`Nabto SDK ${version} installed and working`);
+          resolve(undefined);
+        })
+        .catch((err) => {
+          if (err.message) {
+            console.log("err.message=[" + err.message + "]");
+            console.log("err.message===[NA...]? " + err.message === 'NABTO_NOT_AVAILABLE' ? "yes" : "no");
+          } else {
+            console.log("err.message is undefined");
+          }                                          
+          if (err && err.message && err.message === 'NABTO_NOT_AVAILABLE') {
+            this.showToast("Installation problem: Nabto SDK not available, please contact vendor", true);
+          } else {
+            console.log("Could not get SDK version: " + (err.message || err));
+          }
+          reject(err);
+        })
+        .catch(() => {
+          console.log("Unspecified error");
+          reject(new Error("Unspecified error"));
+        });
+
+    });
   }
 
   initialize() {
@@ -70,7 +101,8 @@ export class OverviewPage {
             .then(() => this.showKeyPairCreationPage())
             .catch((err) => console.log(`An error occurred: ${err}`));
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(`An error occurred: ${err}`);
         this.showKeyPairCreationPage();
       });
@@ -80,16 +112,19 @@ export class OverviewPage {
     this.nabtoService.startupAndOpenProfile(name)
       .then(() => this.events.publish('overview:profileLoaded'))
       .catch((error) => {
-        if (error.message === 'BAD_PROFILE') {
+        if (error && error.message && error.message === 'BAD_PROFILE') {
           this.showKeyPairCreationPage();
         } else {
-          this.showAlert("App could not start, please contact vendor: " + error.message);
+          this.showAlert("App could not start, please contact vendor: " + error.message || error);
         }
       });
   }
 
   showKeyPairCreationPage() {
-    let modal = this.modalCtrl.create(ProfilePage, undefined, { enableBackdropDismiss: false });
+    let modal = this.modalCtrl.create(ProfilePage, undefined, {
+      enableBackdropDismiss: false/*,
+      hardwareBackButtonClose: false*/
+    });
     modal.onDidDismiss((name) => {
       this.initializeWithKeyPair(name);
     });
@@ -110,7 +145,7 @@ export class OverviewPage {
           });
         });
     }).catch((error) => {
-        this.showToast(error.message);
+        this.showToast(error.message || error);
     });
   }
 
@@ -133,12 +168,15 @@ export class OverviewPage {
     }
   }
 
-  showToast(message: string) {
-    let toast = this.toastCtrl.create({
+  showToast(message: string, stayOnScreen?: boolean) {
+    let options:any = {
       message: message,
-      duration: 2000,
       showCloseButton: true
-    });
+    };
+    if (!stayOnScreen) {
+      options.duration = 2000;
+    };
+    let toast = this.toastCtrl.create(options);
     toast.present();
   }
   
@@ -147,12 +185,18 @@ export class OverviewPage {
   }
   
   showHelpPage() {
-    let modal = this.modalCtrl.create(HelpPage, undefined, { enableBackdropDismiss: false });
+    let modal = this.modalCtrl.create(HelpPage, undefined, {
+      enableBackdropDismiss: false/*,
+      hardwareBackButtonClose: false*/
+    });
     modal.present();
   }
 
   showSettingsPage() {
-    let modal = this.modalCtrl.create(ClientSettingsPage, undefined, { enableBackdropDismiss: false });
+    let modal = this.modalCtrl.create(ClientSettingsPage, undefined, {
+      enableBackdropDismiss: false/*,
+      hardwareBackButtonClose: false*/
+    });
     modal.onDidDismiss((dirty) => {
       if (dirty) {
         this.refresh();
@@ -161,9 +205,9 @@ export class OverviewPage {
     modal.present();
   }
 
-  showAlert(message: string) {
+  showAlert(message: string, title?: string) {
     let alert = this.alertCtrl.create({
-      title: 'Error',
+      title: title ? title : 'Error',
       message: message,
       enableBackdropDismiss: false,
       buttons: [{ text: 'Ok' }]

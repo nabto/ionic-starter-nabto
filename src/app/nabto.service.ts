@@ -102,22 +102,20 @@ export class NabtoService {
   private doCreateKeyPair(username: string): Promise<string> {
     console.log(`DEBUG: doCeateKeyPair invoked, username=${username}`);
     return new Promise((resolve, reject) => {
-      this.platform.ready().then(() => {
-        console.log(`DEBUG: platform is ready, invoking nabto`);
-        nabto.createKeyPair(username, this.pkPassword, (error) => {
-          if (!error) {
-            console.log("nabto.createKeyPair succeeded");
-            this.storage.set('username', username);    
-            resolve(username)
-          } else {
-            console.log(`nabto.createKeyPair failed: ${error} (code=${error.code}, inner=${error.inner})`);
-            reject(error);
-          }
-        });
+      console.log(`DEBUG: platform is ready, invoking nabto`);
+      nabto.createKeyPair(username, this.pkPassword, (error) => {
+        if (!error) {
+          console.log("nabto.createKeyPair succeeded");
+          this.storage.set('username', username);    
+          resolve(username)
+        } else {
+          console.log(`nabto.createKeyPair failed: ${error} (code=${error.code}, inner=${error.inner})`);
+          reject(error);
+        }
       });
     });
   }
-
+  
   public getFingerprint(username: string): Promise<string> {
     if (this.initialized) {
       return this.doGetFingerprint(username);
@@ -128,14 +126,12 @@ export class NabtoService {
   
   private doGetFingerprint(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.platform.ready().then(() => {
-        nabto.getFingerprint(username, (err, result) => {
-          if (!err) {
-            resolve(result);
-          } else {
-            reject(new Error(err.message));
-          }
-        });
+      nabto.getFingerprint(username, (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(new Error(err.message));
+        }
       });
     });
   }
@@ -146,16 +142,25 @@ export class NabtoService {
       console.log("DEBUG: invoking nabto once platform is ready");
       this.platform.ready().then(() => {
         console.log("DEBUG: platform ready, invoking nabto.startup");
-        nabto.startup((err) => {
-          if (!err) {
-            console.log("Nabto started (without profile)");
-            resolve();
-          } else {
-            console.log(`Could not start Nabto: ${err.message}`);
-            reject(new Error(err.message));
-          }
-        });
-      }).catch((err) => console.log(`platform.ready fail: ${err}`));
+        try {
+          // if plugin not available, access to global "nabto" will
+          // throw, neither of the following checks are possible:
+          //   if (nabto) { ... }
+          //   if (typeof(nabto) !== 'undefined'))
+          nabto.startup((err) => {
+            if (!err) {
+              console.log("Nabto started (without profile)");
+              resolve();
+            } else {
+              console.log(`Could not start Nabto: ${err.message}`);
+              reject(new Error(err.message));
+            }
+          });
+        } catch (e) {
+          console.log("Caught exception when invoking nabto: " + (e.message || e));
+          reject(new Error('NABTO_NOT_AVAILABLE'));
+        }
+      }).catch((err) => console.error(`platform.ready fail: ${err}`));
     });
   }
   
@@ -172,7 +177,8 @@ export class NabtoService {
           return;
         }
       }
-      this.platform.ready().then(() => {
+      this.startup().then(() => { // waits for platform.ready
+        // NABTO-1397: introduce plain nabtoOpenSession in Cordova
         nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
           if (!err) {
             this.initialized = true;
@@ -190,22 +196,21 @@ export class NabtoService {
       });
     });
   }
-  
+
+  // assumes nabto is available and started
   private injectInterfaceDefinition(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.http.get("nabto/unabto_queries.xml")
         .toPromise()
         .then((res: Response) => {
-          this.platform.ready().then(() => {
-            nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
-              if (!err) {
-                console.log("nabto started and interface set ok!")
-                resolve(true);
-              } else {
-                console.log(JSON.stringify(err));
-                reject(new Error("Could not inject device interface definition: " + err.message));
-              }
-            });
+          nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
+            if (!err) {
+              console.log("nabto started and interface set ok!")
+              resolve(true);
+            } else {
+              console.log(JSON.stringify(err));
+              reject(new Error("Could not inject device interface definition: " + err.message));
+            }
           });
         })
         .catch((err) => {
@@ -475,34 +480,53 @@ export class NabtoService {
 
   private doInvokeRpc(id: string, request: string, paramString: string): Promise<any>  {
     return new Promise((resolve, reject) => {
-      this.platform.ready().then(() => {
-        nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
-          if (!err) {
-            resolve(res.response);
-          } else {
-            if (err.code == NabtoError.Code.DATA_TRANSMISSION_PROBLEM) {
-              // retry on this specific error (API will have flushed connection and re-connect)
-              nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
-                if (!err) {
-                  resolve(res.response);
-                } else {
-                  console.log(`An API error occurred: ${JSON.stringify(err)}`);
-                  if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
-                    // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is
-                    // because of target device has gone offline in between two invocations
-                    err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
-                  }
-                  reject(err);
+      nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
+        if (!err) {
+          resolve(res.response);
+        } else {
+          if (err.code == NabtoError.Code.DATA_TRANSMISSION_PROBLEM) {
+            // retry on this specific error (API will have flushed connection and re-connect)
+            nabto.rpcInvoke(`nabto://${id}/${request}?${paramString}`, (err, res) => {
+              if (!err) {
+                resolve(res.response);
+              } else {
+                console.log(`An API error occurred: ${JSON.stringify(err)}`);
+                if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
+                  // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is
+                  // because of target device has gone offline in between two invocations
+                  err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
                 }
-              });
-            } else {
-              reject(err);
-            }
+                reject(err);
+              }
+            });
+          } else {
+            reject(err);
           }
-        });
+        }
       });
     });
   }
+  
+  public checkNabto(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.startup().then(() => {
+        // startup on resolves if nabto is ready and nabtoStartup() succeeds
+        nabto.version((err,res) => {
+          if (!err) {
+            resolve(res);
+          } else {
+            reject(new Error(err.message));
+          }
+        });
+      }).catch((e) => {
+        console.log("startup failed: " + e.message || e);
+        reject(e);
+      });
+    });
+  }
+  
 }
+
+
 
 
