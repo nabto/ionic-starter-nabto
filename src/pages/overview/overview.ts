@@ -23,8 +23,6 @@ import { NabtoService } from '../../app/nabto.service';
 export class OverviewPage {
 
   devices: Observable<NabtoDevice[]>;
-  shortTitle: string;
-  longTitle: string;
   empty: boolean;
   firstView: boolean = true;
   
@@ -36,10 +34,8 @@ export class OverviewPage {
               private modalCtrl: ModalController,
               public toastCtrl: ToastController,
               private alertCtrl: AlertController,
-              private events: Events) {
-    this.shortTitle = "Overview";
-    this.longTitle = "Known devices";
-
+              private events: Events)
+  {
   }
 
   ionViewDidLoad() {

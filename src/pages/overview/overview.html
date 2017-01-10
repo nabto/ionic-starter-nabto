@@ -1,14 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <ion-buttons>
+    <ion-buttons start>
       <button ion-button icon-only (click)="showHelpPage()">
         <ion-icon color="secondary" name="help"></ion-icon>
       </button>
     </ion-buttons>
 
-    <ion-title>
-      <ion-title>{{shortTitle}}</ion-title>
-    </ion-title>
+    <ion-title>Overview</ion-title>
 
     <ion-buttons end>
       <button ion-button icon-only (click)="showSettingsPage()">
@@ -45,13 +43,13 @@
   
   <!-- refresh and add buttons -->
   <ion-row>
-    <ion-col>
+    <ion-col text-left>
       <button ion-button icon-left (tap)="refresh()" color="light">
         <ion-icon name="refresh"></ion-icon>
         Refresh
       </button>
     </ion-col>
-    <ion-col>
+    <ion-col text-right>
       <button ion-button icon-right (tap)="addNewDevice()" color="primary">
         Add new
         <ion-icon name="add"></ion-icon>

@@ -52,13 +52,13 @@
 
   <!-- refresh and config buttons -->
   <ion-row>
-    <ion-col>
+    <ion-col text-left>
       <button [disabled]="busy" ion-button icon-left (tap)="refresh()" color="light">
         <ion-icon name="refresh"></ion-icon>
         Refresh
       </button>
     </ion-col>
-    <ion-col>
+    <ion-col text-right>
       <button ion-button icon-right (tap)="showSettingsPage()" color="light">
         Settings
         <ion-icon name="cog"></ion-icon>

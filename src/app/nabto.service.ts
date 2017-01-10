@@ -84,25 +84,21 @@ export class NabtoService {
   //
   public createKeyPair(username: string): Promise<string> {
     if (this.initialized) {
-      console.log(`DEBUG: createKeyPair invoked, initialized=true, username=${username}`);
       return this.doCreateKeyPair(username);
     } else {
-      console.log(`DEBUG: createKeyPair invoked, initialized=false, username=${username}`);
       return this.startup()
         .then(() => {
-          console.log(`DEBUG: startup completed successfully`);
           return this.doCreateKeyPair(username);
         })
         .catch((err) => {
-          console.log(`DEBUG: startup or createkeypair failed: ${err}`);
+          console.log(`startup or createkeypair failed: ${err}`);
+          return Promise.reject(err);
         });
     }
   }
 
   private doCreateKeyPair(username: string): Promise<string> {
-    console.log(`DEBUG: doCeateKeyPair invoked, username=${username}`);
     return new Promise((resolve, reject) => {
-      console.log(`DEBUG: platform is ready, invoking nabto`);
       nabto.createKeyPair(username, this.pkPassword, (error) => {
         if (!error) {
           console.log("nabto.createKeyPair succeeded");
