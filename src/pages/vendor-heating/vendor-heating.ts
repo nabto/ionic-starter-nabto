@@ -213,7 +213,7 @@ export class VendorHeatingPage {
       message: message,
       showCloseButton: true,
       closeButtonText: 'Ok',
-      duration: 3000
+      duration: 4000
     };
     let toast = this.toastCtrl.create(opts);
     toast.present();

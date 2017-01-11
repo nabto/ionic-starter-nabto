@@ -133,11 +133,8 @@ export class NabtoService {
   }
   
   public startup(): Promise<boolean> {
-    console.log("DEBUG: startup invoked");
     return new Promise((resolve, reject) => {
-      console.log("DEBUG: invoking nabto once platform is ready");
       this.platform.ready().then(() => {
-        console.log("DEBUG: platform ready, invoking nabto.startup");
         try {
           // if plugin not available, access to global "nabto" will
           // throw, neither of the following checks are possible:
