@@ -142,7 +142,6 @@ export class NabtoService {
           //   if (typeof(nabto) !== 'undefined'))
           nabto.startup((err) => {
             if (!err) {
-              console.log("Nabto started (without profile)");
               resolve();
             } else {
               console.log(`Could not start Nabto: ${err.message}`);
@@ -171,7 +170,7 @@ export class NabtoService {
         }
       }
       this.startup().then(() => { // waits for platform.ready
-        // NABTO-1397: introduce plain nabtoOpenSession in Cordova
+        // NABTO-1397: redundant startup (but idempotent), introduce plain nabtoOpenSession in Cordova
         nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
           if (!err) {
             this.initialized = true;
@@ -201,8 +200,9 @@ export class NabtoService {
               console.log("nabto started and interface set ok!")
               resolve(true);
             } else {
-              console.log(JSON.stringify(err));
-              reject(new Error("Could not inject device interface definition: " + err.message));
+              console.log("Could not inject interface definition: " + err.message);
+              reject(new Error("Could not inject device interface definition: " +
+                               err.message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")));
             }
           });
         })
