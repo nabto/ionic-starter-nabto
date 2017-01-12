@@ -17,6 +17,21 @@ import { ProfileService } from '../../app/profile.service';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 
+
+/*
+ * Root page with overview of known devices and entry point for adding new devices.
+ * 
+ * For any Nabto operations to work, a user profile must be
+ * present. The profile creation page is hence shown in the following
+ * cases:
+ *
+ * 1) first app launch
+ * 
+ * 2) after re-creation of key
+ *
+ * 3) if there is any problem reading the key
+ */
+
 @Component({
   templateUrl: 'overview.html'
 })
@@ -94,13 +109,13 @@ export class OverviewPage {
         } else {
           console.log('No profile found, creating');
           this.nabtoService.startup()
-            .then(() => this.showKeyPairCreationPage())
+            .then(() => this.navCtrl.push(ProfilePage))
             .catch((err) => console.log(`An error occurred: ${err}`));
         }
       })
       .catch((err) => {
         console.log(`An error occurred: ${err}`);
-        this.showKeyPairCreationPage();
+        this.navCtrl.push(ProfilePage);
       });
   }
   
@@ -109,22 +124,11 @@ export class OverviewPage {
       .then(() => this.events.publish('overview:profileLoaded'))
       .catch((error) => {
         if (error && error.message && error.message === 'BAD_PROFILE') {
-          this.showKeyPairCreationPage();
+          this.navCtrl.push(ProfilePage);
         } else {
           this.showAlert("App could not start, please contact vendor: " + error.message || error);
         }
       });
-  }
-
-  showKeyPairCreationPage() {
-    let modal = this.modalCtrl.create(ProfilePage, undefined, {
-      enableBackdropDismiss: false/*,
-      hardwareBackButtonClose: false*/
-    });
-    modal.onDidDismiss((name) => {
-      this.initializeWithKeyPair(name);
-    });
-    modal.present();
   }
 
   refresh() {
@@ -141,7 +145,7 @@ export class OverviewPage {
           });
         });
     }).catch((error) => {
-        this.showToast(error.message || error);
+      this.showToast(error.message || error);
     });
   }
 
@@ -181,24 +185,11 @@ export class OverviewPage {
   }
   
   showHelpPage() {
-    let modal = this.modalCtrl.create(HelpPage, undefined, {
-      enableBackdropDismiss: false/*,
-      hardwareBackButtonClose: false*/
-    });
-    modal.present();
+    this.navCtrl.push(HelpPage);
   }
 
   showSettingsPage() {
-    let modal = this.modalCtrl.create(ClientSettingsPage, undefined, {
-      enableBackdropDismiss: false/*,
-      hardwareBackButtonClose: false*/
-    });
-    modal.onDidDismiss((dirty) => {
-      if (dirty) {
-        this.refresh();
-      }
-    });
-    modal.present();
+    this.navCtrl.push(ClientSettingsPage);
   }
 
   showAlert(message: string, title?: string) {

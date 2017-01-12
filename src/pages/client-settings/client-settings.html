@@ -2,6 +2,11 @@
 
   <ion-navbar>
     <ion-title>App Settings</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (tap)="home()">
+        <ion-icon name="home" color="secondary"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -22,11 +27,5 @@
   <button ion-button color="light"  block (click)="clearDevices()">
     Clear list of known devices
   </button>
-
-  <p>
-    <button ion-button block (click)="dismiss()">
-      Close
-    </button>
-  </p>
   
 </ion-content>

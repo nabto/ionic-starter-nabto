@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { ProfilePage } from '../profile/profile';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
+
+declare var NabtoError;
 
 @Component({
   templateUrl: 'client-settings.html'
@@ -23,6 +26,7 @@ export class ClientSettingsPage {
               private profileService: ProfileService,
               private alertCtrl: AlertController,
               private modalCtrl: ModalController,
+              private navCtrl: NavController,
               private toastCtrl: ToastController,
               private nabtoService: NabtoService
              ) {}
@@ -33,7 +37,10 @@ export class ClientSettingsPage {
   }
 
   ionViewDidEnter() {
-    console.log("client-settings page entered");
+    this.updateFingerPrint();
+  }
+
+  updateFingerPrint() {
     this.profileService.lookupKeyPairName()
       .then((name) => {
         this.keyName = name;
@@ -45,19 +52,19 @@ export class ClientSettingsPage {
       .catch((error) => {
         console.log("Error getting name/fingerprint: " + JSON.stringify(error));
         this.showToast(error.message);
+        if (error.code == NabtoError.Code.API_OPEN_CERT_OR_PK_FAILED) {
+          this.showProfilePage();
+        }
       });
   }
   
   showToast(message: string) {
     let toast = this.toastCtrl.create({
       message: message,
-      showCloseButton: true
+      showCloseButton: true,
+      duration: 4000
     });
     toast.present();
-  }
-
-  dismiss() {
-    this.viewCtrl.dismiss(this.dirty);
   }
 
   clearProfile() {
@@ -67,14 +74,13 @@ export class ClientSettingsPage {
       this.showProfilePage();
     });
   }
-
+  
   showProfilePage() {
     let modal = this.modalCtrl.create(ProfilePage, undefined, {
-      enableBackdropDismiss: false/*,
-      hardwareBackButtonClose: false*/
+      enableBackdropDismiss: false,
+      /* hardwareBackButtonClose: false */
     });
-    modal.onDidDismiss((name) => {
-    });
+    modal.onDidDismiss(() => this.updateFingerPrint());
     modal.present();
   }
   
@@ -103,6 +109,7 @@ export class ClientSettingsPage {
     alert.present();
   }
 
-
-  
+  home() {
+    this.navCtrl.popToRoot();
+  }
 }

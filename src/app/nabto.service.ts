@@ -126,7 +126,7 @@ export class NabtoService {
         if (!err) {
           resolve(result);
         } else {
-          reject(new Error(err.message));
+          reject(err);
         }
       });
     });
@@ -145,7 +145,7 @@ export class NabtoService {
               resolve();
             } else {
               console.log(`Could not start Nabto: ${err.message}`);
-              reject(new Error(err.message));
+              reject(err);
             }
           });
         } catch (e) {
@@ -333,7 +333,7 @@ export class NabtoService {
               resolve(devices);
             } else {
               console.error("Prepare invoke failed: " + error.message);
-	      reject(new Error("PrepareConnect failed: " + error.message));
+	      reject(error);
 	      return;
 	    }
           });
