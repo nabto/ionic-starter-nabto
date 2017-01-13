@@ -156,15 +156,19 @@ export class OverviewPage {
         this.navCtrl.push(VendorHeatingPage, {
           device: device
         });
-      } else if (device.openForPairing) {
-        this.navCtrl.push(PairingPage, {
-          device: device,
-          shortTitle: "Pair device",
-          longTitle: "Pair local device"
-        });
+      } else {
+        if (device.openForPairing) {
+          this.navCtrl.push(PairingPage, {
+            device: device,
+            shortTitle: "Pair device",
+            longTitle: "Pair local device"
+          });
+        } else {
+          this.showToast("Device not open for pairing - please contact owner (or factory reset if you are the owner)");
+        }
       }
     } else {
-      this.showToast("Device offline");
+      this.showToast("Device not reachable");
     }
   }
 
@@ -174,7 +178,7 @@ export class OverviewPage {
       showCloseButton: true
     };
     if (!stayOnScreen) {
-      options.duration = 2000;
+      options.duration = 3000;
     };
     let toast = this.toastCtrl.create(options);
     toast.present();
