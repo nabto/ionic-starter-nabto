@@ -68,7 +68,7 @@ export class ClientSettingsPage {
   }
 
   clearProfile() {
-    this.clear(`Are you sure you want to remove the currently active keypair? All known devices must be paired again with the new keypair.`, () => {
+    this.clear(`Are you sure you want to remove the currently active keypair? You must factory reset devices that you are owner of to be owner again with the new key.`, () => {
       this.dirty = true;
       this.profileService.clear();
       this.showProfilePage();
