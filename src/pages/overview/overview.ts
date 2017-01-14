@@ -168,14 +168,14 @@ export class OverviewPage {
         }
       }
     } else {
-      this.showToast("Device not reachable");
+      this.showToast(`Device ${device.id} not reachable`);
     }
   }
 
   showToast(message: string, stayOnScreen?: boolean) {
     let options:any = {
       message: message,
-      showCloseButton: true
+      showCloseButton: false
     };
     if (!stayOnScreen) {
       options.duration = 3000;
