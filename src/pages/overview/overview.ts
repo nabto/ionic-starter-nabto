@@ -138,7 +138,6 @@ export class OverviewPage {
       this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
         .then(() => {
           // listview observes this.devices and will be populated as data is received 
-          console.log(`Prepare invoked invoked, invoking ${bookmarks.length} devices`);
           this.devices = this.nabtoService.getPublicInfo(bookmarks);
           this.devices.subscribe((next) => {
             console.log("Got device for overview: " + JSON.stringify(next));

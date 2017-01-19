@@ -320,7 +320,6 @@ export class NabtoService {
   }
 
   private doPrepareInvoke(devices: string[]): Promise<void> {
-    console.log("Prepare invoke for " + JSON.stringify(devices));
     return new Promise((resolve,reject) => {
       this.platform.ready().then(() => {
         nabto.prepareInvoke(devices, (error) => {

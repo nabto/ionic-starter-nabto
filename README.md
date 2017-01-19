@@ -18,9 +18,9 @@ Note the very old version of ionic above, the project will be updated to newest 
 
 ### iOS
 
-1. ionic platform add ios
+1. ionic prepare
 
-2. ionic prepare
+2. echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> platforms/ios/cordova/build.xcconfig
 
 3. ionic build
 
