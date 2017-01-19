@@ -305,7 +305,7 @@ export class NabtoService {
     for (let key in input) {
       if (input.hasOwnProperty(key)) {
         let val = input[key];
-        params.push(`${key}=${val}`);
+        params.push(encodeURI(key) + "=" + encodeURI(val));
       }
     }
     return params.join("&");
@@ -322,23 +322,18 @@ export class NabtoService {
   private doPrepareInvoke(devices: string[]): Promise<void> {
     console.log("Prepare invoke for " + JSON.stringify(devices));
     return new Promise((resolve,reject) => {
-      if (this.platform.is('ios')) {
-        // awaiting AMP-78 fix
-        resolve(devices);
-      } else {
-        this.platform.ready().then(() => {
-          nabto.prepareInvoke(devices, (error) => {
-	    if (!error) {
-              console.log("Prepare invoke succeeded for " + JSON.stringify(devices));
-              resolve(devices);
-            } else {
-              console.error("Prepare invoke failed: " + error.message);
-	      reject(error);
-	      return;
-	    }
-          });
+      this.platform.ready().then(() => {
+        nabto.prepareInvoke(devices, (error) => {
+	  if (!error) {
+            console.log("Prepare invoke succeeded for " + JSON.stringify(devices));
+            resolve(devices);
+          } else {
+            console.error("Prepare invoke failed: " + error.message);
+	    reject(error);
+	    return;
+	  }
         });
-      }
+      });
     });
   }
 
