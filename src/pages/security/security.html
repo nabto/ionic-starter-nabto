@@ -34,7 +34,7 @@
   
   <h2>New User Remote Access</h2>
   <p>When adding new users as guests, allow them to later also access the device remotely (outside your local network). You can later change this for individual guests in the access control list below.</p>
-  <ion-list>
+  <ion-list text-wrap>
     <ion-item>
       <ion-label>New user remote access</ion-label>
       <ion-toggle [disabled]="!(device.openForPairing && device.remoteAccessEnabled)" [(ngModel)]="device.grantGuestRemoteAccess" (ionChange)="update()" (tap)="tapped()" ></ion-toggle>

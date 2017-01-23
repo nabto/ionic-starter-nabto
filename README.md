@@ -1,4 +1,23 @@
-# Ionic Starter for Nabto / AppMyProduct
+# Ionic Starter for Nabto / AppMyProduct - 1.0 BETA
+
+This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](https://www.appmyproduct.com) sample app. It contains everything to build a production ready app to remote control your own product:
+
+* Device management through local discovery and bookmarks for later access
+* RSA fingerprint based pairing of local devices with app for secure remote access
+* Access control and user management
+* Example page for heating control to demonstrate actual device interaction - can be replaced with specific remote control for your IoT scenario
+
+<p align="center">
+<img border="1" height="600" src="images/overview.png">
+<img border="1" height="600" src="images/control.png">
+<img border="1" height="600" src="images/acl.png">
+</p>
+
+The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights).
+
+To try the app, follow the instructions below.
+
+To setup a stub device to interact with (and to use as basis for your own device integration), build and run the [AppMyProduct Heat Control stub](https://github.com/nabto/appmyproduct-device-stub). To enable the device for remote access, this requires an [AppMyProduct account](https://www.appmyproduct.com).
 
 ## Ultra quick start on iOS
 
