@@ -6,11 +6,12 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 * RSA fingerprint based pairing of local devices with app for secure remote access
 * Access control and user management
 * Example page for heating control to demonstrate actual device interaction - can be replaced with specific remote control for your IoT scenario
+* Takes full benefit of the Nabto framework to ensure secure, high performance remote access
 
 <p align="center">
-<img border="1" height="300" src="images/overview.png">
-<img border="1" height="300" src="images/control.png">
-<img border="1" height="300" src="images/acl.png">
+<img border="1" src="images/overview_framed.png">
+<img border="1" src="images/control_framed.png">
+<img border="1" src="images/acl_framed.png">
 </p>
 
 The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights).
