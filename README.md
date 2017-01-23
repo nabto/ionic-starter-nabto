@@ -8,9 +8,9 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 * Example page for heating control to demonstrate actual device interaction - can be replaced with specific remote control for your IoT scenario
 
 <p align="center">
-<img border="1" height="600" src="images/overview.png">
-<img border="1" height="600" src="images/control.png">
-<img border="1" height="600" src="images/acl.png">
+<img border="1" height="300" src="images/overview.png">
+<img border="1" height="300" src="images/control.png">
+<img border="1" height="300" src="images/acl.png">
 </p>
 
 The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights).
