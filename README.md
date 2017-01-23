@@ -1,6 +1,6 @@
-# Ionic Starter for Nabto / AppMyProduct - 1.0 BETA
+# Ionic Starter for Nabto IoT / AppMyProduct - 1.0 BETA
 
-This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](https://www.appmyproduct.com) sample app. It contains everything to build a production ready app to remote control your own product:
+This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](https://www.appmyproduct.com) sample app. It contains everything to build a production ready IoT app to remote control your own product:
 
 * Device management through local discovery and bookmarks for later access
 * RSA fingerprint based pairing of local devices with app for secure remote access
