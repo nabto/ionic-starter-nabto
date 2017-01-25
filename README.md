@@ -4,7 +4,7 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 
 * Device management through local discovery and bookmarks for later access
 * RSA fingerprint based pairing of local devices with app for secure remote access
-* Access control and user management
+* On-device access control and user management (self-contained, no need for any central configuration)
 * Example page for heating control to demonstrate actual device interaction - can be replaced with specific remote control for your IoT scenario
 * Takes full benefit of the Nabto framework to ensure secure, high performance remote access
 
@@ -14,86 +14,120 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 <img border="1" src="images/acl_framed.png">
 </p>
 
-The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights).
+The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights). The app uses the [Nabto Cordova Plugin](https://github.com/nabto/cordova-plugin-nabto) and adds a simpler to use TypeScript and Promise based wrapper (`./src/app/nabto.service.ts`).
 
 To try the app, follow the instructions below.
 
 To setup a stub device to interact with (and to use as basis for your own device integration), build and run the [AppMyProduct Heat Control stub](https://github.com/nabto/appmyproduct-device-stub). To enable the device for remote access, this requires an [AppMyProduct account](https://www.appmyproduct.com).
 
-## Ultra quick start on iOS
+# iOS
 
+## Quick start
+
+On a typical developer workstation, an app can be built with the following steps from this directory:
+
+```console
+sudo ./scripts/ios-install.sh
+./scripts/ios-build.sh
+./scripts/ios-emulate.sh
 ```
-npm install cordova ionic ios-sim -g
-ionic prepare
+
+See more detailed outline below.
+
+
+## Install
+
+1. Node and NPM must be installed (either through your package manager or from [nodejs.org](https://nodejs.org/en/download/)).
+2. Xcode must be installed
+3. install cordova: `sudo npm install cordova -g`
+4. install ionic: `sudo npm install ionic -g`
+5. to enable running on device: `sudo npm install -g ios-deploy --unsafe-perm=true`
+6. to enable running on simulator: `sudo npm install -g ios-sim`
+
+Odd problems during deploy / run can sometimes apparently be remedied by uninstalling `ios-deploy` and `ios-sim` and re-installing.
+
+## Build
+
+Only necessary first time and when changing native plugin configuration:
+
+```console
+ionic prepare ios
+
+# fix linker problem when using Nabto lib
 echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> platforms/ios/cordova/build.xcconfig
-ionic build
-ionic emulate ios --livereload -c -s --debug
+
+ionic build ios
 ```
 
-## Prerequisites:
 
-For Android apps: Android Studio must be installed
-
-For iOS apps: Xcode must be installed
-
-## Installation (all platforms):
-
-1. install cordova: sudo npm install cordova -g
-
-2. install ionic: sudo npm install ionic -g
-
-3. npm install
-
-Note the very old version of ionic above, the project will be updated to newest version once it is verified to work ok (many quirks observed so far with 2.1.9+).
-
-## iOS
-
-### iOS specific prerequisites
-
-1. to enable running on device: sudo npm install -g ios-deploy --unsafe-perm=true
-
-2. to enable running on simulator: sudo npm install -g ios-sim
-
-Odd problems during deploy / run can sometimes apparently be remedied by uninstalling the above and re-installing.
-
-### Building on iOS
-
-Only necessary first time and when changing native plugin configuration.
-
-1. ionic prepare ios
-
-2. fix linker problem when using Nabto lib: `echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> platforms/ios/cordova/build.xcconfig`
-
-3. ionic build ios
-
-### Running on iOS
+## Run
 
 The following requires the device to be connected with USB and screen must be unlocked:
 
-```ionic run ios --livereload -c -s --debug --device```
+```console
+ionic run ios --livereload -c -s --debug --device
+```
 
-Live reload is enabled, allowing you to instantly observe changes in source files.
+or run on in the simulator:
+
+```console
+ionic emulate ios --livereload -c -s --debug
+```
+
+Live reload is enabled, allowing you to instantly observe changes in HTML app source files (`*.ts, *.html. *.scss`). While very handy during development, this also means the app will not work on a device that is disconnected from the workstation or if the ionic server is stopped. So if you have problems with the app hanging after start, remove the `--livereload` parameter.
 
 If an error is observed about developer/provisining profile, open the project in xcode and select a profile:
 
-```open platforms/ios/AMP\ Heat.xcodeproj```
+```console
+open platforms/ios/AMP\ Heat.xcodeproj
+```
 
 Subsequently, the run command above can be used.
 
-### Running on iOS simulator
 
-```ionic emulate ios --livereload -c -s --debug```
+# Android
 
+## Quick start
 
-### Android
+On a typical developer workstation, an app can be built with the following steps from this directory:
 
-1. ionic platform add android
+```console
+sudo ./scripts/android-install.sh
+./scripts/android-build.sh
+./scripts/android-emulate.sh
+```
 
-2. ionic prepare android
+Note that for the last step, an Android emulator image must have been configured with adb.
 
-3. ionic build android
+## Install
 
-4. ionic run android --livereload -c -s --debug --device
+1. Node and NPM must be installed (either through your package manager or from [nodejs.org](https://nodejs.org/en/download/)).
+2. Android Studio must be installed and an emulator device configured 
+3. install cordova: `sudo npm install cordova -g`
+4. install ionic: `sudo npm install ionic -g`
 
-ionic emulate on android requires preparing emulator, notes will follow on this.
+## Build
+
+Only necessary first time and when changing native plugin configuration:
+
+```console
+ionic prepare android
+ionic build android
+```
+
+## Run
+
+The following requires the device to be connected with USB:
+
+```console
+ionic run android --livereload -c -s --debug --device
+```
+
+or run using an already configured emulator:
+
+```console
+ionic emulate android --livereload -c -s --debug
+```
+
+Live reload is enabled, allowing you to instantly observe changes in HTML app source files (`*.ts, *.html. *.scss`). While very handy during development, this also means the app will not work on a device that is disconnected from the workstation or if the ionic server is stopped. So if you have problems with the app hanging after start, remove the `--livereload` parameter.
 
