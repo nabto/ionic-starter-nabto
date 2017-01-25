@@ -478,11 +478,11 @@ export class NabtoService {
               if (!err) {
                 resolve(res.response);
               } else {
-                console.log(`Failed again: An API error occurred: ${JSON.stringify(err)}`);
-                if (err.code == NabtoError.Code.API_CONNECT_TIMEOUT) {
+                console.log(`Failed again: ${JSON.stringify(err)}`);
+                if (err.code == NabtoError.Code.P2P_TIMEOUT) {
                   // work around for NABTO-1330: if ec 1000026 follows after 2000058 it usually is
                   // because of target device has gone offline in between two invocations
-                  err.code = NabtoError.Code.API_RPC_DEVICE_OFFLINE;
+                  err.code = NabtoError.Code.P2P_DEVICE_OFFLINE
                 }
                 reject(err);
               }
