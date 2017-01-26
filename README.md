@@ -159,7 +159,7 @@ longer initial startup time is a good tradeof for shorter subsequent
 build cycles where AOT optimizations are not performed.
 
 With a production build (`ionic run --prod`), the startup time is
-optimized greatly, reducing the initial delay to an insignicant short
+optimized greatly, reducing the initial delay to an insignificant short
 time.
 
 ### Problems generating icons
