@@ -16,6 +16,10 @@ import { HelpPage } from '../pages/help/help';
 import { SecurityPage } from '../pages/security/security';
 import { AclEditPage } from '../pages/acl-edit/acl-edit';
 
+export function provideStorage() {
+ return new Storage(['sqlite'], { name: '__ampdb' });
+}
+
 @NgModule({
   declarations: [
     NabtoIonicApp,
