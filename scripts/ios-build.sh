@@ -5,6 +5,8 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
+ionic platform add ios
+
 ionic prepare ios
 
 # fix linker problem when using Nabto lib
