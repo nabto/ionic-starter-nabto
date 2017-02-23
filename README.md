@@ -106,7 +106,7 @@ Note that for the last step, an Android emulator image must have been configured
 2. Android Studio must be installed and an emulator device configured 
 3. install cordova: `sudo npm install cordova -g`
 4. install ionic: `sudo npm install ionic -g`
-5. add the iOS Cordova platform : `ionic platform add android@6.1.1`
+5. add the Android Cordova platform : `ionic platform add android@6.1.1`
 
 Note that at least version 6.1.1 of cordova-android is necessary as indicated if using Android 7 or newer (otherwise you will see an app signing error).
 
