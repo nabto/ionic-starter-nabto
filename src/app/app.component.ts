@@ -24,10 +24,20 @@ export class NabtoIonicApp {
         OneSignal.startInit("58a88e8b-83f1-429d-8863-8d8180ae83ed", "242279958126");
         OneSignal.inFocusDisplaying(OneSignal.OSInFocusDisplayOption.InAppAlert);
         OneSignal.setSubscription(true);
-        OneSignal.handleNotificationReceived().subscribe(() => {
+        OneSignal.handleNotificationReceived().subscribe((JsonData) => {
           // do something when the notification is received.
+          console.log("ONESIGNAL NOTIFICATION RECEIVED: " + JSON.stringify(JsonData));
+          if(JsonData.shown == false){
+            OneSignal.getIds().then(ids => {
+              var notificationObj = { contents: {en: "Temperature is " + JsonData.payload.additionalData.body.temp + ". Your house might be on fire"},
+                                      app_id: "58a88e8b-83f1-429d-8863-8d8180ae83ed",
+                                      include_player_ids: [ids.userId]};
+              OneSignal.postNotification(notificationObj);
+            });
+          }
         });
         OneSignal.handleNotificationOpened().subscribe(() => {
+          console.log("ONESIGNAL NOTIFICATION OPENED");
           // do something when the notification is opened.
         });
         OneSignal.endInit();    
