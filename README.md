@@ -175,6 +175,18 @@ just says "upload error".
 So check your input .png files if this error is observed: Compression
 should be enabled, interlacing must be disabled.
 
+### Building problems
+make sure you have the latest versions of npm and nodejs:
+```
+apt-get update && apt-get install npm
+npm install npm -g
+curl -sL https://deb.nodesource.com/setup_6.x | bash -
+apt-get install nodejs
+```
+You may need a symbolic link from nodejs to node:
+```
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+```
 
 ## iOS
 
@@ -231,6 +243,19 @@ Use at least Android 6.1.1 when deploying for Android 7+. Meaning that the platf
 
 ```console
 ionic platform add android@6.1.1
+```
+### Android license not accepted
+If you have Android Studio installed, open the sdk manager from Tools->Android->SDK manager and accept licenses as needed. If you only have the Android command line sdk installed, update the SDK manually with:
+```
+android update sdk --no-ui --all --filter build-tools-25.0.1,android-25,extra-android-m2repository
+```
+and accept license agreement when prompted.
+
+### ANDROID_HOME not found
+set the android environment variables manually:
+```
+export ANDROID_HOME=/path/to/android-sdk
+export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 ```
 
 ### Hints for misc errors observed
