@@ -27,6 +27,9 @@ To setup a stub device to interact with (and to use as basis for your own device
 On a typical developer workstation, an app can be built with the following steps from this directory:
 
 ```console
+
+git clone https://github.com/nabto/ionic-starter-nabto.git
+
 sudo ./scripts/ios-install.sh
 ./scripts/ios-build.sh
 ./scripts/ios-emulate.sh
