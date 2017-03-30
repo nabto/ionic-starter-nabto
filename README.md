@@ -20,6 +20,10 @@ To try the app, follow the instructions below.
 
 To setup a stub device to interact with (and to use as basis for your own device integration), build and run the [AppMyProduct Heat Control stub](https://github.com/nabto/appmyproduct-device-stub). To enable the device for remote access, this requires an [AppMyProduct account](https://www.appmyproduct.com).
 
+# Ionic note
+
+Please upgrade to at least Ionic 2.2.2 to use the current version of this starter (or you will see a Ionic Storage related failure).
+
 # iOS
 
 ## Quick start

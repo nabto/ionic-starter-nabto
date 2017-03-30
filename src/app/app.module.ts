@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { IonicStorageModule } from '@ionic/storage';
 import { NabtoIonicApp } from './app.component';
 import { NabtoService } from './nabto.service';
 import { BookmarksService } from './bookmarks.service';
@@ -15,10 +15,6 @@ import { DeviceSettingsPage } from '../pages/device-settings/device-settings';
 import { HelpPage } from '../pages/help/help';
 import { SecurityPage } from '../pages/security/security';
 import { AclEditPage } from '../pages/acl-edit/acl-edit';
-
-export function provideStorage() {
- return new Storage(['sqlite'], { name: '__ampdb' });
-}
 
 @NgModule({
   declarations: [
@@ -35,7 +31,8 @@ export function provideStorage() {
     HelpPage
   ],
   imports: [
-    IonicModule.forRoot(NabtoIonicApp)
+    IonicModule.forRoot(NabtoIonicApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -51,6 +48,6 @@ export function provideStorage() {
     AclEditPage,
     HelpPage
   ],
-  providers: [ProfileService, NabtoService, BookmarksService, Storage]
+  providers: [ProfileService, NabtoService, BookmarksService]
 })
 export class AppModule {}
