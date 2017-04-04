@@ -5,7 +5,7 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
-CDV_PLUGIN_TAG=@2.0.3
+CDV_PLUGIN_TAG=@2.0.4
 CDV_LOCAL_GIT=${DIR}/../../cordova-plugin-nabto
 
 cordova plugin remove cordova-plugin-nabto
