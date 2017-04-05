@@ -1,0 +1,12 @@
+{
+    "ios": {
+        "debug": {
+            "developmentTeam": "E55K8RCV2E"
+        },
+        "release": {
+            "codeSignIdentity": "iPhone Developer",
+            "developmentTeam": "E55K8RCV2E",
+            "packageType": "app-store"
+        }
+    }
+}
