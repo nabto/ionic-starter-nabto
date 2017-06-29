@@ -41,15 +41,15 @@ export class OverviewPage {
   empty: boolean;
   firstView: boolean = true;
   
-  constructor(public navCtrl: NavController,
-              private bookmarksService: BookmarksService,
+  constructor(private bookmarksService: BookmarksService,
               private profileService: ProfileService,
-              private nabtoService: NabtoService,
-	      private platform: Platform,
+              private platform: Platform,
               private modalCtrl: ModalController,
-              public toastCtrl: ToastController,
+              private toastCtrl: ToastController,
               private alertCtrl: AlertController,
-              private events: Events)
+              private events: Events,
+              private navCtrl: NavController,
+              private nabtoService: NabtoService)
   {
   }
 
@@ -71,7 +71,7 @@ export class OverviewPage {
     }
   }
 
-  verifyPlumbing(): Promise<void> {
+  verifyPlumbing(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.nabtoService.checkNabto()
         .then((version) => {

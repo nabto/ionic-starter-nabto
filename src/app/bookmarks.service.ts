@@ -1,6 +1,6 @@
+import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { NabtoDevice } from './device.class';
-import { Storage } from '@ionic/storage';
 
 // uses https://github.com/driftyco/ionic-storage
 

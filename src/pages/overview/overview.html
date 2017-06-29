@@ -29,7 +29,7 @@
 
   <ion-list [hidden]="empty" text-wrap>
     <ion-item *ngFor="let device of devices | async" (tap)="deviceTapped($event, device)">
-      <ion-thumbnail item-left>
+      <ion-thumbnail item-start>
         <img [src]="device.iconUrl">
       </ion-thumbnail>
       <h2>{{device.name}}
@@ -37,20 +37,20 @@
         <ion-icon [hidden]="device.reachable" name="alert" color="red"></ion-icon>
       </h2>
       <p>{{device.product}}</p>
-      <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-right></ion-icon>
+      <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-end></ion-icon>
     </ion-item>
   </ion-list>
   
   <!-- refresh and add buttons -->
   <ion-row>
     <ion-col text-left>
-      <button ion-button icon-left (tap)="refresh()" color="light">
-        <ion-icon name="refresh"></ion-icon>
+      <button ion-button icon-begin (tap)="refresh()" color="light">
+        <ion-icon name="refresh"></ion-icon>&nbsp;
         Refresh
       </button>
     </ion-col>
     <ion-col text-right>
-      <button ion-button icon-right (tap)="addNewDevice()" color="primary">
+      <button ion-button icon-end (tap)="addNewDevice()" color="primary">
         Add new
         <ion-icon name="add"></ion-icon>
       </button>

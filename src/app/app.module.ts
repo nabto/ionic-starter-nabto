@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { NabtoIonicApp } from './app.component';
 import { NabtoService } from './nabto.service';
@@ -15,6 +15,10 @@ import { DeviceSettingsPage } from '../pages/device-settings/device-settings';
 import { HelpPage } from '../pages/help/help';
 import { SecurityPage } from '../pages/security/security';
 import { AclEditPage } from '../pages/acl-edit/acl-edit';
+import { BrowserModule } from '@angular/platform-browser';
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -31,6 +35,8 @@ import { AclEditPage } from '../pages/acl-edit/acl-edit';
     HelpPage
   ],
   imports: [
+    BrowserModule,
+    HttpModule,
     IonicModule.forRoot(NabtoIonicApp),
     IonicStorageModule.forRoot()
   ],
@@ -48,6 +54,14 @@ import { AclEditPage } from '../pages/acl-edit/acl-edit';
     AclEditPage,
     HelpPage
   ],
-  providers: [ProfileService, NabtoService, BookmarksService]
+  providers: [
+    ProfileService,
+    NabtoService,
+    BookmarksService,
+    StatusBar,
+    SplashScreen,
+    Storage,
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
+  ]
 })
 export class AppModule {}
