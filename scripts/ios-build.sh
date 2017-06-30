@@ -13,7 +13,7 @@ ionic cordova platform add ios
 
 # work around for often seen problem when running emulator as of June 2017 (and it must be done in this odd way, even with previous installation using -g):
 # https://stackoverflow.com/questions/42350505/error-cannot-read-property-replace-of-undefined-when-building-ios-cordova
-cd platforms/ios/cordova && npm install ios-sim@latest
+(cd platforms/ios/cordova && npm install ios-sim@latest)
 
 ionic cordova prepare ios
 
