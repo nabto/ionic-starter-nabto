@@ -3,7 +3,7 @@
     <name>AMP Heat</name>
     <description>AppMyProduct remote control example app</description>
     <author email="support@appmyproduct.com" href="https://www.appmyproduct.com/">AppMyProduct Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.1.229:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -87,7 +87,7 @@
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <allow-navigation href="http://192.168.1.113:8100" />
     <allow-navigation href="http://192.168.1.229:8100" />
-    <engine name="android" spec="~6.1.0" />
+    <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-custom-config" spec="^3.1.4" />
     <plugin name="cordova-plugin-console" spec="^1.0.7" />

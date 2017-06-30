@@ -50,22 +50,23 @@ See more detailed outline below.
 4. install ionic: `sudo npm install ionic -g`
 5. to enable running on device: `sudo npm install -g ios-deploy --unsafe-perm=true`
 6. to enable running on simulator: `sudo npm install -g ios-sim`
-7. add the iOS Cordova platform: `ionic platform add ios`
+7. add the iOS Cordova platform: `ionic cordova platform add ios`
 
-Odd problems during deploy / run can sometimes apparently be remedied by uninstalling `ios-deploy` and `ios-sim` and re-installing.
+Odd problems during deploy / run can sometimes apparently be remedied by uninstalling `ios-deploy` and `ios-sim` and re-installing. Specifically as of June 2017, a problem is often seen with a Cordova javascript error when launching the simulator. [The problem can be remedied](https://stackoverflow.com/questions/42350505/error-cannot-read-property-replace-of-undefined-when-building-ios-cordova) by running `npm install ios-sim` in `platforms/ios/cordova` (odd why this makes a difference, but it seems to work).
+
 
 ## Build
 
 Only necessary first time and when changing native plugin configuration:
 
 ```console
-ionic prepare ios
+ionic cordova prepare ios
 
 # fix linker problem when using Nabto lib
 echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >> \
   platforms/ios/cordova/build.xcconfig
 
-ionic build ios
+ionic cordova build ios
 ```
 
 
@@ -74,13 +75,13 @@ ionic build ios
 The following requires the device to be connected with USB and screen must be unlocked:
 
 ```console
-ionic run ios --livereload -c -s --debug --device
+ionic cordova run ios --livereload -c -s --debug --device
 ```
 
 or run on in the simulator:
 
 ```console
-ionic emulate ios --livereload -c -s --debug
+ionic cordova emulate ios --livereload -c -s --debug
 ```
 
 Live reload is enabled, allowing you to instantly observe changes in HTML app source files (`*.ts, *.html. *.scss`). While very handy during development, this also means the app will not work on a device that is disconnected from the workstation or if the ionic server is stopped. So if you have problems with the app hanging after start, remove the `--livereload` parameter.
@@ -113,7 +114,7 @@ Note that for the last step, an Android emulator image must have been configured
 2. Android Studio must be installed and an emulator device configured 
 3. install cordova: `sudo npm install cordova -g`
 4. install ionic: `sudo npm install ionic -g`
-5. add the Android Cordova platform : `ionic platform add android@6.1.1`
+5. add the Android Cordova platform : `ionic platform add android@latest`
 
 Note that at least version 6.1.1 of cordova-android is necessary as indicated if using Android 7 or newer (otherwise you will see an app signing error).
 
@@ -134,7 +135,7 @@ The following requires the device to be connected with USB:
 ionic run android --livereload -c -s --debug --device
 ```
 
-or run using an already configured emulator:
+or run using an already configured emulator (note: the emulator is not very useful as it only supports GSM, meaning that bootstrapping through local device discovery does not work):
 
 ```console
 ionic emulate android --livereload -c -s --debug
@@ -246,7 +247,7 @@ Click the project name in the left pane ("AMP Heat" per default) and the corresp
 
 ### Signing error on Android 7+
 
-Use at least Android 6.1.1 when deploying for Android 7+. Meaning that the platform must be added as follows:
+Use at least Android 6.1.1 when deploying for Android 7+:
 
 ```console
 ionic platform add android@6.1.1
