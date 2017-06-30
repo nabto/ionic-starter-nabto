@@ -7,5 +7,5 @@ if [ "$EUID" != "0" ]; then
     exit 1
 fi
 
-npm install cordova ionic ios-sim -g
+npm install cordova ionic ios-sim@latest -g
 npm install -g ios-deploy --unsafe-perm=true
