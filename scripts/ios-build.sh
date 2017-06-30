@@ -11,10 +11,6 @@ fi
 
 ionic cordova platform add ios
 
-# work around for often seen problem when running emulator as of June 2017:
-# https://stackoverflow.com/questions/42350505/error-cannot-read-property-replace-of-undefined-when-building-ios-cordova
-cd platforms/ios/cordova && npm install ios-sim
-
 ionic cordova prepare ios
 
 # fix linker problem when using Nabto lib
