@@ -5,5 +5,5 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
-ionic run android --livereload -c -s --debug --device
+ionic cordova run android --livereload -c -s --debug --device
 

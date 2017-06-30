@@ -20,9 +20,9 @@ export class AclEditPage {
               private nabtoService: NabtoService,
               private toastCtrl: ToastController,
               private navCtrl: NavController) {
-    this.user = navParams.get('user');
+    this.user = this.navParams.get('user');
     this.hasRemoteAccess = this.user.hasRemoteAccess();
-    this.device = navParams.get('device');
+    this.device = this.navParams.get('device');
     console.log(`Editing acl entry ${JSON.stringify(this.user)} for device ${JSON.stringify(this.device)}`);
   }
 
