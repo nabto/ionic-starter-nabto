@@ -3,7 +3,7 @@
     <name>AMP Heat</name>
     <description>AppMyProduct remote control example app</description>
     <author email="support@appmyproduct.com" href="https://www.appmyproduct.com/">AppMyProduct Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.1.229:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -93,7 +93,7 @@
     <plugin name="cordova-plugin-console" spec="^1.0.7" />
     <plugin name="cordova-plugin-device" spec="^1.1.6" />
     <plugin name="cordova-plugin-device-name" spec="^1.2.1" />
-    <plugin name="cordova-plugin-nabto" spec="^2.0.5" />
+    <plugin name="cordova-plugin-nabto" spec="^2.1.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-statusbar" spec="^2.2.3" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.2" />
