@@ -123,8 +123,8 @@ Note that at least version 6.1.1 of cordova-android is necessary as indicated if
 Only necessary first time and when changing native plugin configuration:
 
 ```console
-ionic prepare android
-ionic build android
+ionic cordova prepare android
+ionic cordova build android
 ```
 
 ## Run
