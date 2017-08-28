@@ -494,11 +494,47 @@ export class NabtoService {
       });
     });
   }
+
+  public openTunnel(host: string, remotePort: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        nabto.tunnelOpenTcp(host, remotePort, (err, tunnel) => {
+          if (!err) {
+            nabto.tunnelState(tunnel, (err, state) => {
+              if (!err) {
+                if (state > 0) {
+                  nabto.tunnelPort(tunnel, (err, port) => {
+                  if (!err) {
+                    return resolve({
+                      localPort: port,
+                      state: state
+                    });
+                  } else {
+                    reject(err);
+                  }
+                });
+                } else {
+                  reject(new Error('Tunnel not in connected state'));
+                }
+              } else {
+                reject(err);
+            }
+            });
+          } else {
+            reject(err);
+          }
+        });
+      } catch (err) {
+        console.log("Caught error: " + err);
+        reject(err);
+      }
+    });
+  }
   
   public checkNabto(): Promise<string> {
     return new Promise((resolve, reject) => {
       this.startup().then(() => {
-        // startup on resolves if nabto is ready and nabtoStartup() succeeds
+        // startup only resolves if nabto is ready and nabtoStartup() succeeds
         nabto.version((err,res) => {
           if (!err) {
             resolve(res);
