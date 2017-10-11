@@ -109,13 +109,13 @@ export class OverviewPage {
         } else {
           console.log('No profile found, creating');
           this.nabtoService.startup()
-            .then(() => this.navCtrl.push(ProfilePage))
+            .then(() => this.navCtrl.push(ProfilePage, { hideBack: true }))
             .catch((err) => console.log(`An error occurred: ${err}`));
         }
       })
       .catch((err) => {
         console.log(`An error occurred: ${err}`);
-        this.navCtrl.push(ProfilePage);
+        this.navCtrl.push(ProfilePage, { hideBack: true });
       });
   }
   
@@ -124,7 +124,7 @@ export class OverviewPage {
       .then(() => this.events.publish('overview:profileLoaded'))
       .catch((error) => {
         if (error && error.message && error.message === 'BAD_PROFILE') {
-          this.navCtrl.push(ProfilePage);
+          this.navCtrl.push(ProfilePage, { hideBack: true });
         } else {
           this.showAlert("App could not start, please contact vendor: " + error.message || error);
         }
