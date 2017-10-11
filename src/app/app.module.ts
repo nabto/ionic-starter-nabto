@@ -60,7 +60,6 @@ import { HttpModule } from '@angular/http';
     BookmarksService,
     StatusBar,
     SplashScreen,
-    Storage,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
