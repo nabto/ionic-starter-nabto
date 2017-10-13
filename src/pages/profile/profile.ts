@@ -1,8 +1,8 @@
-import { ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
-import { ToastController } from 'ionic-angular';
+import { ToastController, Nav, ViewController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 
 declare var cordova;
 declare var NabtoError;
@@ -19,12 +19,36 @@ export class ProfilePage {
   constructor(private viewCtrl: ViewController,
               private profileService: ProfileService,
               public toastCtrl: ToastController,
-              private nabtoService: NabtoService) {
+              private nabtoService: NabtoService,
+              private nav: Nav,
+              private platform: Platform
+             )   
+  {
+    platform.ready().then(() => {
+      this.fixAndroidBackButton();
+    });
   }
 
+  fixAndroidBackButton() {
+    return this.platform.registerBackButtonAction(() => {
+      let view = this.nav.getActive();
+      if (view.component.name == "ProfilePage") {
+        console.log("When the profile creation page is dismissed you must have a valid profile - hence we ignore back");
+      }
+    });
+  }
+    
   ionViewDidLoad() {
     this.operatingSystem = (<any>window).device.platform;
     this.deviceName = cordova.plugins.deviceName.name;
+  }
+
+  ionViewWillEnter() {
+    this.nav.swipeBackEnabled = false;
+  }
+  
+  ionViewWillLeave() {
+    this.nav.swipeBackEnabled = true;
   }
 
   log() {
@@ -66,7 +90,7 @@ export class ProfilePage {
     });
     toast.present();
   }
-  
+
   clear() {
     this.deviceName = "";
   }
