@@ -18,7 +18,7 @@
 
 <ion-content padding>
 
-  <ion-card [hidden]="!empty">
+  <ion-card  *ngIf="(devices | async)?.length === 0">
     <ion-card-header>
       No known devices
     </ion-card-header>

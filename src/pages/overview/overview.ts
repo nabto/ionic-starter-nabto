@@ -139,13 +139,15 @@ export class OverviewPage {
 
   refresh() {
     this.bookmarksService.readBookmarks().then((bookmarks: Bookmark[]) => {
-      this.empty = bookmarks.length == 0;
       console.log("got bookmarks: " + JSON.stringify(bookmarks));
       this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
         .then(() => {
-          // listview observes this.devices and will be populated as data is received 
+          // listview observes this.devices and will be populated as data is received
           this.devices = this.nabtoService.getPublicInfo(bookmarks);
+          alert(this.devices.length);
           this.devices.subscribe((next) => {
+                      alert('foo - got info');
+
             console.log("Got device for overview: " + JSON.stringify(next));
           });
         });

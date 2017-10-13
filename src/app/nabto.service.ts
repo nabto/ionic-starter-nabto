@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
 import { Bookmark, BookmarksService } from '../app/bookmarks.service';
 import { Subject } from 'rxjs/Subject';
+import { Customization } from '../app/customization.class';
 
 declare var nabto;
 declare var NabtoError;
@@ -261,8 +262,10 @@ export class NabtoService {
     for (let bookmark of bookmarks) {
       this.getPublicDetails(bookmark.id)
         .then((device: NabtoDevice) => {
-          devices.push(device);
-          deviceInfoSource.next(devices);
+          if (Customization.deviceTypePattern.test(device.product)) {
+            devices.push(device);
+            deviceInfoSource.next(devices);
+          }
         })
         .catch((error) => {
           // device unavailable, use cached information from bookmark
