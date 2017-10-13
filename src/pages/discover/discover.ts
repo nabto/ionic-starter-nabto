@@ -51,7 +51,13 @@ export class DiscoverPage {
       this.onResume();
     });
   }
-  
+
+  badImage(device: NabtoDevice) {
+    device.product = "Product type unsupported by this app";
+    device.reachable = false;
+    device.iconUrl = "img/unknown.png";
+  }
+
   onResume() {
     // Will only prepare devices if this page is the active view after resume
     if (this.navCtrl.getActive() == this.view) {
@@ -91,6 +97,10 @@ export class DiscoverPage {
   }
   
   itemTapped(event, device) {
+    if (!device.reachable) {
+      this.showToast(device.product);
+      return;
+    }
     if (device.openForPairing) {
       if (device.currentUserIsOwner) {
         this.handleAlreadyPairedDevice(device);
@@ -104,6 +114,10 @@ export class DiscoverPage {
         this.handleClosedDevice();
       }
     }
+  }
+
+  isAccessible(device) {
+    return device.openForPairing || device.currentUserIsOwner;
   }
 
   handleAlreadyPairedDevice(device: NabtoDevice) {

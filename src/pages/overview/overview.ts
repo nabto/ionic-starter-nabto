@@ -53,6 +53,12 @@ export class OverviewPage {
   {
   }
 
+  badImage(device: NabtoDevice) {
+    device.product = "Product type unsupported by this app";
+    device.reachable = false;
+    device.iconUrl = "img/unknown.png";
+  }
+  
   ionViewDidLoad() {
     this.events.subscribe("overview:profileLoaded", () => this.refresh());
     this.verifyPlumbing()
@@ -167,7 +173,7 @@ export class OverviewPage {
         }
       }
     } else {
-      this.showToast(`Device ${device.id} not reachable`);
+      this.showToast(`Device ${device.id} not reachable or is not supported`);
     }
   }
 
