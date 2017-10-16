@@ -3,7 +3,7 @@
     <name>AMP Heat</name>
     <description>AppMyProduct remote control example app</description>
     <author email="support@appmyproduct.com" href="https://www.appmyproduct.com/">AppMyProduct Team</author>
-    <content original-src="index.html" src="http://192.168.1.229:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

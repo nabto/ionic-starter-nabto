@@ -18,7 +18,7 @@
 
 <ion-content padding>
 
-  <ion-card  *ngIf="(devices | async)?.length === 0">
+  <ion-card *ngIf="(devices | async)?.length === 0">
     <ion-card-header>
       No known devices
     </ion-card-header>
@@ -27,7 +27,7 @@
       </ion-card-content>
   </ion-card>
 
-  <ion-list [hidden]="empty" text-wrap>
+  <ion-list text-wrap>
     <ion-item *ngFor="let device of devices | async" (tap)="deviceTapped($event, device)">
       <ion-thumbnail item-start>
         <img [src]="device.iconUrl" (error)="badImage(device)">
@@ -36,7 +36,7 @@
         <ion-icon style="font-size: 16px" [hidden]="!device.reachable" name="checkmark-circle" color="green"></ion-icon>
         <ion-icon style="font-size: 16px" [hidden]="device.reachable" name="alert" color="red"></ion-icon>
       </h2>
-      <p>{{device.product}}</p>
+      <p>{{device.description}}</p>
       <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-end></ion-icon>
     </ion-item>
   </ion-list>

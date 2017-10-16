@@ -16,7 +16,6 @@ import { Subject } from 'rxjs/Subject';
   templateUrl: 'discover.html'
 })
 export class DiscoverPage {
-  empty: boolean;
   busy: boolean;
   longTitle: string;
   shortTitle: string;
@@ -74,7 +73,6 @@ export class DiscoverPage {
     this.busy = true;
     this.nabtoService.discover().then((ids: string[]) => {
       this.busy = false;
-      this.empty = ids.length == 0;
       this.nabtoService.prepareInvoke(ids).then(() => {
         // listview observes this.devices and will be populated as data is received 
         this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)), this.deviceInfoSource);
@@ -83,7 +81,6 @@ export class DiscoverPage {
     }).catch((error) => {
       this.showToast(error.message);
       console.error("Error discovering devices: " + JSON.stringify(error));
-      this.empty = true;
       this.busy = false;
     });
   }
@@ -100,17 +97,17 @@ export class DiscoverPage {
   
   itemTapped(event, device) {
     if (!device.reachable) {
-      this.showToast(device.product);
+      this.showToast(device.description);
       return;
     }
     if (device.openForPairing) {
-      if (device.currentUserIsOwner) {
+      if (device.currentUserIsPaired) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleUnpairedDevice(device);
       }
     } else {
-      if (device.currentUserIsOwner) {
+      if (device.currentUserIsPaired) {
         this.handleAlreadyPairedDevice(device);
       } else {
         this.handleClosedDevice();

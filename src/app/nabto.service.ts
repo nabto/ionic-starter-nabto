@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { DeviceUser, NabtoDevice } from './device.class';
-import { Storage } from '@ionic/storage';
 import { Http, Response } from '@angular/http';
 import { Bookmark, BookmarksService } from '../app/bookmarks.service';
 import { Subject } from 'rxjs/Subject';
 import { Customization } from '../app/customization.class';
+import { Storage } from '@ionic/storage';
 
 declare var nabto;
 declare var NabtoError;
@@ -258,6 +258,10 @@ export class NabtoService {
 
   public getPublicInfo(bookmarks: Bookmark[], deviceInfoSource: Subject<NabtoDevice[]>) {
     let devices: NabtoDevice[] = [];
+    if (bookmarks.length == 0) {
+      deviceInfoSource.next(devices);
+      return;
+    }
     for (let bookmark of bookmarks) {
       this.getPublicDetails(bookmark.id)
         .then((device: NabtoDevice) => {
@@ -267,19 +271,24 @@ export class NabtoService {
             device.setUnsupported();
             devices.push(device);
           }
+          // notify for each completed detail retrieval so a single device that times out does not
+          // block for showing remaining devices (...O(n^2) but the view lists need to observe an
+          // array)
+          deviceInfoSource.next(devices);  
         })
         .catch((error) => {
           // device unavailable, use cached information from bookmark
           let offlineDevice = new NabtoDevice(bookmark.name,
                                               bookmark.id,
-                                              error.message, /* product field has most room for error message */
-                                              bookmark.iconUrl, false, false, false);
+                                              'Unknown', 
+                                              bookmark.iconUrl,
+                                              error.message,
+                                              false, false, false);
           offlineDevice.setOffline();
           devices.push(offlineDevice);
+          deviceInfoSource.next(devices); // see above comment 
         });
     }
-    deviceInfoSource.next(devices);
-    return deviceInfoSource.asObservable();
   }
 
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
@@ -290,11 +299,12 @@ export class NabtoService {
                                                 deviceId,
                                                 details.device_type,
                                                 details.device_icon,
+                                                details.device_type,
                                                 details.is_open_for_pairing,
                                                 details.is_current_user_paired,
                                                 details.is_current_user_owner
                                                );
-          console.log("resolving promise with public info from RPC: " + JSON.stringify(dev));
+          console.log(`resolving promise with public info from RPC for ${deviceId}: ` + JSON.stringify(dev));
           resolve(dev);
         })
         .catch((err) => {

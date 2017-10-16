@@ -11,23 +11,22 @@
 
 <ion-content padding>
 
-  <ion-card [hidden]="!empty">
+  <ion-card *ngIf="(devices | async)?.length === 0">
     <ion-card-header>
-      No devices found
+      No devices found on your network
     </ion-card-header>
     <ion-card-content>
       Make sure you are on the same local area network as the device you try to discover and that the device is powered on. 
     </ion-card-content>
   </ion-card>
 
-  <ion-list [hidden]="empty" text-wrap>
+  <ion-list text-wrap>
     <ion-item *ngFor="let device of devices | async" (tap)="itemTapped($event, device)">
       <ion-thumbnail item-start>
         <img [src]="device.iconUrl" (error)="badImage(device)">
       </ion-thumbnail>
-      <h2>{{device.name}} 
-      </h2>
-      <p>{{device.product}}</p>
+      <h2>{{device.name}}</h2>
+      <p>{{device.description}}</p>
 
       <ion-icon [hidden]="isAccessible(device)" [name]="device.accessIcon()" item-end></ion-icon>
       <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-end></ion-icon>
