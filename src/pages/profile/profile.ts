@@ -7,6 +7,7 @@ import { Platform } from 'ionic-angular';
 declare var cordova;
 declare var NabtoError;
 
+@IonicPage()
 @Component({
   selector: 'page-profile',
   templateUrl: 'profile.html'

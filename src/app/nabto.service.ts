@@ -6,6 +6,7 @@ import { Bookmark, BookmarksService } from '../app/bookmarks.service';
 import { Subject } from 'rxjs/Subject';
 import { Customization } from '../app/customization.class';
 import { Storage } from '@ionic/storage';
+import 'rxjs/add/operator/toPromise';
 
 declare var nabto;
 declare var NabtoError;

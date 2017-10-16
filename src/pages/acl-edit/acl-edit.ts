@@ -5,6 +5,7 @@ import { ToastController } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { DeviceUser, NabtoDevice } from '../../app/device.class';
 
+@IonicPage()
 @Component({
   selector: 'page-acl-edit',
   templateUrl: 'acl-edit.html'

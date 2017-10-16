@@ -4,9 +4,10 @@ import { NavController, NavParams } from 'ionic-angular';
 import { DeviceUser, NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 import { BookmarksService } from '../../app/bookmarks.service';
-import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { ProfileService } from '../../app/profile.service';
+import { Customization } from '../../app/customization.class';
 
+@IonicPage()
 @Component({
   selector: 'page-pairing',
   templateUrl: 'pairing.html'
@@ -70,7 +71,7 @@ export class PairingPage {
   }
 
   showVendorPage() {
-    this.navCtrl.push(VendorHeatingPage, {
+    this.navCtrl.push(Customization.vendorPage, {
       device: this.device
     });
   }

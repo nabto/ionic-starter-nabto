@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import { OverviewPage } from '../pages/overview/overview';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -10,7 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 })
 export class NabtoIonicApp {
 
-  rootPage = OverviewPage;
+  rootPage:any = 'OverviewPage';
 
   constructor(platform: Platform,
               private toastCtrl: ToastController,

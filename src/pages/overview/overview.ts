@@ -6,17 +6,12 @@ import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { Events } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
-import { DiscoverPage } from '../discover/discover';
-import { PairingPage } from '../pairing/pairing';
-import { ProfilePage } from '../profile/profile';
-import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
-import { HelpPage } from '../help/help';
-import { ClientSettingsPage } from '../client-settings/client-settings';
 import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 import { Subject } from 'rxjs/Subject';
+import { Customization } from '../../app/customization.class';
 
 /*
  * Root page with overview of known devices and entry point for adding new devices.
@@ -31,7 +26,7 @@ import { Subject } from 'rxjs/Subject';
  *
  * 3) if there is any problem reading the key
  */
-
+@IonicPage()
 @Component({
   templateUrl: 'overview.html'
 })
@@ -122,13 +117,13 @@ export class OverviewPage {
         } else {
           console.log('No profile found, creating');
           this.nabtoService.startup()
-            .then(() => this.navCtrl.push(ProfilePage, { hideBack: true }))
+            .then(() => this.navCtrl.push('ProfilePage', { hideBack: true }))
             .catch((err) => console.log(`An error occurred: ${err}`));
         }
       })
       .catch((err) => {
         console.log(`An error occurred: ${err}`);
-        this.navCtrl.push(ProfilePage, { hideBack: true });
+        this.navCtrl.push('ProfilePage', { hideBack: true });
       });
   }
   
@@ -137,7 +132,7 @@ export class OverviewPage {
       .then(() => this.events.publish('overview:profileLoaded'))
       .catch((error) => {
         if (error && error.message && error.message === 'BAD_PROFILE') {
-          this.navCtrl.push(ProfilePage, { hideBack: true });
+          this.navCtrl.push('ProfilePage', { hideBack: true });
         } else {
           this.showAlert("App could not start, please contact vendor: " + error.message || error);
         }
@@ -161,12 +156,12 @@ export class OverviewPage {
     console.log(`item tapped: ${JSON.stringify(device)}`);
     if (device.reachable) {
       if (device.currentUserIsPaired) {
-        this.navCtrl.push(VendorHeatingPage, {
+        this.navCtrl.push(Customization.vendorPage, {
           device: device
         });
       } else {
         if (device.openForPairing) {
-          this.navCtrl.push(PairingPage, {
+          this.navCtrl.push('PairingPage', {
             device: device,
             shortTitle: "Pair device",
             longTitle: "Pair local device"
@@ -193,15 +188,15 @@ export class OverviewPage {
   }
   
   addNewDevice() {
-    this.navCtrl.push(DiscoverPage);
+    this.navCtrl.push('DiscoverPage');
   }
   
   showHelpPage() {
-    this.navCtrl.push(HelpPage);
+    this.navCtrl.push('HelpPage');
   }
 
   showSettingsPage() {
-    this.navCtrl.push(ClientSettingsPage);
+    this.navCtrl.push('ClientSettingsPage');
   }
 
   showAlert(message: string, title?: string) {

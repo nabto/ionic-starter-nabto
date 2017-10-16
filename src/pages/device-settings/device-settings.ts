@@ -5,10 +5,10 @@ import { ModalController } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import { SecurityPage } from '../security/security';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 
+@IonicPage()
 @Component({
   templateUrl: 'device-settings.html'
 })
@@ -93,7 +93,7 @@ export class DeviceSettingsPage {
   }
 
   showSecurityPage() {
-    this.navCtrl.push(SecurityPage, {
+    this.navCtrl.push('SecurityPage', {
       device: this.device
     });
   }

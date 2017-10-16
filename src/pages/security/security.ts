@@ -6,8 +6,8 @@ import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { DeviceUser, NabtoDevice } from '../../app/device.class';
-import { AclEditPage } from '../acl-edit/acl-edit';
 
+@IonicPage()
 @Component({
   templateUrl: 'security.html'
 })
@@ -60,7 +60,7 @@ export class SecurityPage {
   }
 
   aclEntryTapped(event, user) {
-    this.navCtrl.push(AclEditPage, { 
+    this.navCtrl.push('AclEditPage', { 
       user: user,
       device: this.device
     });

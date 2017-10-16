@@ -4,13 +4,13 @@ import { AlertController } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
-import { ProfilePage } from '../profile/profile';
 import { BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
 import { ProfileService } from '../../app/profile.service';
 
 declare var NabtoError;
 
+@IonicPage()
 @Component({
   templateUrl: 'client-settings.html'
 })
@@ -76,7 +76,7 @@ export class ClientSettingsPage {
   }
   
   showProfilePage() {
-    let modal = this.modalCtrl.create(ProfilePage, undefined, {
+    let modal = this.modalCtrl.create('ProfilePage', undefined, {
       enableBackdropDismiss: false,
       /* hardwareBackButtonClose: false */
     });

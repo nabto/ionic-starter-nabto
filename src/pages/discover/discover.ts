@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
-import { PairingPage } from '../pairing/pairing';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
-import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
 import { Subject } from 'rxjs/Subject';
+import { Customization } from '../../app/customization.class';
 
+@IonicPage()
 @Component({
   selector: 'page-discover',
   templateUrl: 'discover.html'
@@ -128,13 +128,13 @@ export class DiscoverPage {
     toast.present();
     // if the user has deleted bookmark, add again
     this.bookmarksService.addBookmarkFromDevice(device);
-    this.navCtrl.push(VendorHeatingPage, { // XXX don't depend directly on vendor page here
+    this.navCtrl.push(Customization.vendorPage, { 
       device: device
     });
   }
 
   handleUnpairedDevice(device: NabtoDevice) {
-    this.navCtrl.push(PairingPage, {
+    this.navCtrl.push('PairingPage', {
       device: device,
       shortTitle: "Pair device",
       longTitle: "Pair local device"

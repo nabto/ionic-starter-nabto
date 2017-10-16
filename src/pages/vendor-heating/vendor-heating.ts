@@ -5,10 +5,10 @@ import { LoadingController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
-import { DeviceSettingsPage } from '../device-settings/device-settings';
 
 declare var NabtoError;
 
+@IonicPage()
 @Component({
   selector: 'page-vendor-heating',
   templateUrl: 'vendor-heating.html'
@@ -227,7 +227,7 @@ export class VendorHeatingPage {
   }
 
   showSettingsPage() {
-    this.navCtrl.push(DeviceSettingsPage, {
+    this.navCtrl.push('DeviceSettingsPage', {
       device: this.device
     });
   }
