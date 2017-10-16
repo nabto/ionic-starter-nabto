@@ -98,6 +98,12 @@ export class NabtoDevice {
     }
   }
 
+  setUnsupported() {
+    device.product = "Product type unsupported by this app";
+    device.reachable = false;
+    device.iconUrl = "img/unknown.png";
+  }
+
   setOffline() {
     this.reachable = false;
   }

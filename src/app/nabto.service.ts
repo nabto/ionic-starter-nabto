@@ -256,15 +256,16 @@ export class NabtoService {
     });
   }
 
-  public getPublicInfo(bookmarks: Bookmark[]) {
-    let deviceInfoSource:Subject<NabtoDevice[]> = new Subject<NabtoDevice[]>();
+  public getPublicInfo(bookmarks: Bookmark[], deviceInfoSource: Subject<NabtoDevice[]>) {
     let devices: NabtoDevice[] = [];
     for (let bookmark of bookmarks) {
       this.getPublicDetails(bookmark.id)
         .then((device: NabtoDevice) => {
           if (Customization.deviceTypePattern.test(device.product)) {
             devices.push(device);
-            deviceInfoSource.next(devices);
+          } else {
+            device.setUnsupported();
+            devices.push(device);
           }
         })
         .catch((error) => {
@@ -275,9 +276,9 @@ export class NabtoService {
                                               bookmark.iconUrl, false, false, false);
           offlineDevice.setOffline();
           devices.push(offlineDevice);
-          deviceInfoSource.next(devices);
         });
     }
+    deviceInfoSource.next(devices);
     return deviceInfoSource.asObservable();
   }
 

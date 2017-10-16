@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { PairingPage } from '../pairing/pairing';
@@ -10,6 +9,7 @@ import { NabtoService } from '../../app/nabto.service';
 import { NabtoDevice } from '../../app/device.class';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { VendorHeatingPage } from '../vendor-heating/vendor-heating';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'page-discover',
@@ -23,6 +23,7 @@ export class DiscoverPage {
   view : ViewController;
   
   public devices: Observable<NabtoDevice[]>;
+  public deviceInfoSource: Subject<NabtoDevice[]>;
   private recentIds: string[];
 
   ionViewDidEnter() {
@@ -36,8 +37,7 @@ export class DiscoverPage {
               private alertCtrl: AlertController,
               public platform: Platform,
               private nabtoService: NabtoService,
-              private bookmarksService: BookmarksService,
-              private zone: NgZone
+              private bookmarksService: BookmarksService
              ) {
     this.longTitle = navParams.get('longTitle');
     if (!this.longTitle) {
@@ -49,6 +49,11 @@ export class DiscoverPage {
     }
     document.addEventListener('resume', () => {
       this.onResume();
+    });
+    this.deviceInfoSource = new Subject<NabtoDevice[]>();
+    this.devices = this.deviceInfoSource.asObservable();
+    this.devices.subscribe((next) => {
+      console.log("Got devices for discover: " + JSON.stringify(next));
     });
   }
 
@@ -72,10 +77,7 @@ export class DiscoverPage {
       this.empty = ids.length == 0;
       this.nabtoService.prepareInvoke(ids).then(() => {
         // listview observes this.devices and will be populated as data is received 
-        this.devices = this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)));
-        this.devices.subscribe((next) => {
-          console.log("Got device for discover: " + JSON.stringify(next));
-        });
+        this.nabtoService.getPublicInfo(ids.map((id) => new Bookmark(id)), this.deviceInfoSource);
         this.recentIds = ids;
       });
     }).catch((error) => {

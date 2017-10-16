@@ -16,7 +16,7 @@ import { NabtoDevice } from '../../app/device.class';
 import { ProfileService } from '../../app/profile.service';
 import { Bookmark, BookmarksService } from '../../app/bookmarks.service';
 import { NabtoService } from '../../app/nabto.service';
-
+import { Subject } from 'rxjs/Subject';
 
 /*
  * Root page with overview of known devices and entry point for adding new devices.
@@ -37,7 +37,8 @@ import { NabtoService } from '../../app/nabto.service';
 })
 export class OverviewPage {
 
-  devices: Observable<NabtoDevice[]>;
+  public devices: Observable<NabtoDevice[]>;
+  public deviceInfoSource: Subject<NabtoDevice[]>;
   empty: boolean;
   firstView: boolean = true;
   
@@ -51,6 +52,12 @@ export class OverviewPage {
               private navCtrl: NavController,
               private nabtoService: NabtoService)
   {
+    this.deviceInfoSource = new Subject<NabtoDevice[]>();
+    this.devices = this.deviceInfoSource.asObservable();
+    this.devices.subscribe((next) => {
+      console.log("Got devices for overview: " + JSON.stringify(next));
+    });
+
   }
 
   badImage(device: NabtoDevice) {
@@ -143,13 +150,7 @@ export class OverviewPage {
       this.nabtoService.prepareInvoke(bookmarks.map((bookmark) => bookmark.id))
         .then(() => {
           // listview observes this.devices and will be populated as data is received
-          this.devices = this.nabtoService.getPublicInfo(bookmarks);
-          alert(this.devices.length);
-          this.devices.subscribe((next) => {
-                      alert('foo - got info');
-
-            console.log("Got device for overview: " + JSON.stringify(next));
-          });
+          this.nabtoService.getPublicInfo(bookmarks, this.deviceInfoSource);
         });
     }).catch((error) => {
       this.showToast(error.message || error);
