@@ -9,7 +9,7 @@ if [ ! -d node_modules ]; then
     npm install
 fi
 
-ionic cordova platform add ios
+ionic cordova platform add ios@latest
 
 if [ -e platforms/ios/cordova ]; then
 
