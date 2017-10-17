@@ -6,6 +6,7 @@ import { Bookmark, BookmarksService } from '../app/bookmarks.service';
 import { Subject } from 'rxjs/Subject';
 import { Customization } from '../app/customization.class';
 import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 declare var nabto;
@@ -21,7 +22,8 @@ export class NabtoService {
   constructor (private storage: Storage,
                private http: Http,
                private bookmarksService: BookmarksService,
-               private platform: Platform) {
+               private platform: Platform,
+               private events: Events) {
     this.initialized = false;
     document.addEventListener('pause', () => {
       console.log('nabto.service - pause');
@@ -174,6 +176,7 @@ export class NabtoService {
       this.startup().then(() => { // waits for platform.ready
         // NABTO-1397: redundant startup (but idempotent), introduce plain nabtoOpenSession in Cordova
         nabto.startupAndOpenProfile(certificate, this.pkPassword, (err) => {
+//          this.events.publish('log', 'startupAndOpenProfile done, err = ' + err);
           if (!err) {
             this.initialized = true;
             console.log("successfully initialized nabto service");
@@ -218,10 +221,11 @@ export class NabtoService {
   public shutdown(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.platform.ready().then(() => {
+        this.initialized = false;
         nabto.shutdown((err) => {
+//          this.events.publish('log', 'shut down, err=' + err);
           if (!err) {
             console.log("nabto.shutdown ok");
-            this.initialized = false;
             resolve();
           } else {
             console.log("nabto.shutdown failed");
