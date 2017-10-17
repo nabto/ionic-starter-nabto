@@ -57,6 +57,7 @@ export class DiscoverPage {
   }
 
   badImage(device: NabtoDevice) {
+    console.log("No icon for " + JSON.stringify(device));
     device.setUnknownIcon();
   }
 

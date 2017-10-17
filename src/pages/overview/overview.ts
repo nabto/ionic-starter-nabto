@@ -56,9 +56,8 @@ export class OverviewPage {
   }
 
   badImage(device: NabtoDevice) {
-    device.product = "Product type unsupported by this app";
-    device.reachable = false;
-    device.iconUrl = "img/unknown.png";
+    device.setUnknownIcon();
+    console.log("No icon for " + JSON.stringify(device));
   }
   
   ionViewDidLoad() {
