@@ -43,7 +43,7 @@ export class DeviceUser {
   public niceFingerprint() {
     return this.fingerprint.replace(/(.{2}(?=.))/g,"$1:");
   }
-
+  
   public niceAccessString() {
     if (this.hasRemoteAccess()) {
       return "local & remote access";
@@ -71,7 +71,7 @@ export class NabtoDevice {
   constructor(name: string,
               id: string,
               product: string,
-              iconUrl: string,
+              iconName: string,
               description: string,
               openForPairing: boolean,
               currentUserIsPaired: boolean,
@@ -83,10 +83,10 @@ export class NabtoDevice {
     this.id = id;
     this.product = product;
     this.description = description;
-    if (iconUrl) {
-      this.iconUrl = iconUrl;
+    if (iconName) {
+      this.iconUrl = 'assets/img/' + iconName;
     } else {
-      this.iconUrl = 'img/chip.png';
+      this.iconUrl = 'assets/img/chip.png';
     }
     this.openForPairing = openForPairing;
     this.currentUserIsPaired = currentUserIsPaired;
@@ -104,7 +104,11 @@ export class NabtoDevice {
   setUnsupported() {
     this.description = `${this.product} unsupported by this app`;
     this.reachable = false;
-    this.iconUrl = "img/unknown.png";
+    this.setUnknownIcon();
+  }
+
+  setUnknownIcon() {
+    this.iconUrl = "assets/img/unknown.png";
   }
 
   setDescription(desc: string) {
