@@ -110,17 +110,10 @@ export class NabtoDevice {
     this.interfaceId = details.interface_id;
     this.interfaceVersionMajor = details.interface_version_major;
     this.interfaceVersionMinor = details.interface_version_minor;
-  }
-
-  checkInterfaceInfo() {
-    if (!this.hasInterfaceInfo) {
-      return false;
-    }
     if (Customization.interfaceId === this.interfaceId) {
       if (Customization.interfaceVersionMajor === this.interfaceVersionMajor) {
         if (Customization.interfaceVersionMinor <= this.interfaceVersionMinor) {
           console.log("Device interface supported by this app, good");
-          return true;
         } else {
           this.setUnsupported("Unsupported minor version of interface");
         }

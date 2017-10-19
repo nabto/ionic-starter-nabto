@@ -5,6 +5,17 @@
 
   <!-- general queries -->
 
+  <!-- interface id version info that clients must match -->
+  <query name="get_interface_info.json" id="0">
+    <request>
+    </request>
+    <response format="json">
+      <parameter name="interface_id" type="raw"/>
+      <parameter name="interface_version_major" type="uint16"/>
+      <parameter name="interface_version_minor" type="uint16"/>
+    </response>
+  </query>
+
   <!-- public info for discovery -->
   <query name="get_public_device_info.json" id="10000">
     <request>
@@ -16,17 +27,6 @@
       <parameter name="is_open_for_pairing" type="uint8"/>      
       <parameter name="is_current_user_paired" type="uint8"/>
       <parameter name="is_current_user_owner" type="uint8"/>
-    </response>
-  </query>
-
-  <!-- interface id version info that clients must match -->
-  <query name="get_interface_info.json" id="10001">
-    <request>
-    </request>
-    <response format="json">
-      <parameter name="interface_id" type="raw"/>
-      <parameter name="interface_version_major" type="uint16"/>
-      <parameter name="interface_version_minor" type="uint16"/>
     </response>
   </query>
 
