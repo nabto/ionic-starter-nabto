@@ -98,7 +98,15 @@ export class DiscoverPage {
     if (!device.reachable) {
       this.showToast(device.description);
       return;
+    }    
+    if (device.hasInterfaceInfo) {
+      this.attemptPair(device);
+    } else {
+      this.handleNoInterfaceInfo(() => this.attemptPair(device));
     }
+  }
+
+  attemptPair(device: NabtoDevice) {
     if (device.openForPairing) {
       if (device.currentUserIsPaired) {
         this.handleAlreadyPairedDevice(device);
@@ -112,8 +120,27 @@ export class DiscoverPage {
         this.handleClosedDevice();
       }
     }
+
   }
 
+  handleNoInterfaceInfo(continueHandler: any) {
+    let alert = this.alertCtrl.create({
+      title: 'Firmware upgrade recommended',
+      message: 'This device does not support strict interface checking. It is highly recommended to upgrade the device firmware to support this (contact your vendor). Do you want to continue anyway for now?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Continue',
+          handler: continueHandler
+        }
+      ]
+    });
+    alert.present();
+  }
+  
   isAccessible(device) {
     return device.openForPairing || device.currentUserIsOwner;
   }

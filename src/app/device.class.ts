@@ -1,3 +1,5 @@
+import { Customization } from './customization.class';
+
 let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
 let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
 let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
@@ -68,6 +70,7 @@ export class NabtoDevice {
   public interfaceId: string = "";
   public interfaceVersionMajor = 0;
   public interfaceVersionMinor = 0;
+  public hasInterfaceInfo: boolean = false;
 
   constructor(name: string,
               id: string,
@@ -76,10 +79,7 @@ export class NabtoDevice {
               description: string,
               openForPairing: boolean,
               currentUserIsPaired: boolean,
-              currentUserIsOwner: boolean,
-              interfaceId: string,
-              interfaceVersionMajor: number,
-              interfaceVersionMinor: number
+              currentUserIsOwner: boolean
              )   
   {    
     this.reachable = true;
@@ -95,9 +95,6 @@ export class NabtoDevice {
     this.openForPairing = openForPairing;
     this.currentUserIsPaired = currentUserIsPaired;
     this.currentUserIsOwner = currentUserIsOwner;
-    this.interfaceId = interfaceId;
-    this.interfaceVersionMajor = interfaceVersionMajor;
-    this.interfaceVersionMinor = interfaceVersionMinor;
   }  
 
   accessIcon(): string {
@@ -108,6 +105,33 @@ export class NabtoDevice {
     }
   }
 
+  setInterfaceInfo(details: any) {
+    this.hasInterfaceInfo = true;
+    this.interfaceId = details.interface_id;
+    this.interfaceVersionMajor = details.interface_version_major;
+    this.interfaceVersionMinor = details.interface_version_minor;
+  }
+
+  checkInterfaceInfo() {
+    if (!this.hasInterfaceInfo) {
+      return false;
+    }
+    if (Customization.interfaceId === this.interfaceId) {
+      if (Customization.interfaceVersionMajor === this.interfaceVersionMajor) {
+        if (Customization.interfaceVersionMinor <= this.interfaceVersionMinor) {
+          console.log("Device interface supported by this app, good");
+          return true;
+        } else {
+          this.setUnsupported("Unsupported minor version of interface");
+        }
+      } else {
+        this.setUnsupported("Unsupported major version of interface");
+      }
+    } else {
+      this.setUnsupported("Unsupported interface");
+    }    
+  }
+  
   setUnsupported(msg: string) {
     console.error('Device is unsupported: ' + msg);
     this.description = `Device unsupported by this app: ${msg}`;

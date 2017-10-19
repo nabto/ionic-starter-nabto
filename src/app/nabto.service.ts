@@ -4,7 +4,6 @@ import { DeviceUser, NabtoDevice } from './device.class';
 import { Http, Response } from '@angular/http';
 import { Bookmark, BookmarksService } from '../app/bookmarks.service';
 import { Subject } from 'rxjs/Subject';
-import { Customization } from '../app/customization.class';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
@@ -261,6 +260,25 @@ export class NabtoService {
     });
   }
 
+  private addInterfaceInfo(device: NabtoDevice): Promise<NabtoDevice> {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device.id, "get_interface_info.json")
+        .then((details: any) => {
+          console.log("Got interface info: " + JSON.stringify(details));
+          device.setInterfaceInfo(details);
+          resolve(device);
+        })
+        .catch((error) => {
+          if (error.code == NabtoError.Code.EXC_INV_QUERY_ID) {
+            console.warn(`Device ${device.id} does not support strict interface check`);
+            resolve(device);
+          } else {
+            reject(error);
+          }
+        });
+    });
+  }
+  
   public getPublicInfo(bookmarks: Bookmark[], deviceInfoSource: Subject<NabtoDevice[]>) {
     let devices: NabtoDevice[] = [];
     if (bookmarks.length == 0) {
@@ -269,22 +287,9 @@ export class NabtoService {
     }
     for (let bookmark of bookmarks) {
       this.getPublicDetails(bookmark.id)
+        .then((device: NabtoDevice) => this.addInterfaceInfo(device))
         .then((device: NabtoDevice) => {
-          if (Customization.interfaceId === device.interfaceId) {
-            if (Customization.interfaceVersionMajor === device.interfaceVersionMajor) {
-              if (Customization.interfaceVersionMinor <= device.interfaceVersionMinor) {
-                console.log("Device interface supported by this app, good");
-              } else {
-                device.setUnsupported("Unsupported minor version of interface");
-              }
-            } else {
-              device.setUnsupported("Unsupported major version of interface");
-            }
-          } else {
-            device.setUnsupported("Unsupported interface");
-          }
           devices.push(device);
-          
           // notify for each completed detail retrieval so a single device that times out does not
           // block for showing remaining devices (...O(n^2) but the view lists need to observe an
           // array)
@@ -297,7 +302,7 @@ export class NabtoService {
                                                   'Unknown', 
                                                   bookmark.iconUrl,
                                                   error.message,
-                                                  false, false, false, "", 0, 0);
+                                                  false, false, false);
           if (error.code == NabtoError.Code.P2P_RESPONSE_DECODE_ERROR) {
             unreachableDevice.setUnsupported("Invalid response from device - likely an interface mismatch, please contact vendor");
           }
@@ -307,7 +312,7 @@ export class NabtoService {
         });
     }
   }
-
+  
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(deviceId, "get_public_device_info.json")
@@ -319,10 +324,7 @@ export class NabtoService {
                                                 details.device_type,
                                                 details.is_open_for_pairing,
                                                 details.is_current_user_paired,
-                                                details.is_current_user_owner,
-                                                details.interface_id,
-                                                details.interface_version_major,
-                                                details.interface_version_minor
+                                                details.is_current_user_owner
                                                );
           console.log(`resolving promise with public info from RPC for ${deviceId}: ` + JSON.stringify(dev));
           resolve(dev);
