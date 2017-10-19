@@ -270,12 +270,21 @@ export class NabtoService {
     for (let bookmark of bookmarks) {
       this.getPublicDetails(bookmark.id)
         .then((device: NabtoDevice) => {
-          if (Customization.deviceTypePattern.test(device.product)) {
-            devices.push(device);
+          if (Customization.interfaceId === device.interfaceId) {
+            if (Customization.interfaceVersionMajor === device.interfaceVersionMajor) {
+              if (Customization.interfaceVersionMinor <= device.interfaceVersionMinor) {
+                console.log("Device interface supported by this app, good");
+              } else {
+                device.setUnsupported("Unsupported minor version of interface");
+              }
+            } else {
+              device.setUnsupported("Unsupported major version of interface");
+            }
           } else {
-            device.setUnsupported();
-            devices.push(device);
+            device.setUnsupported("Unsupported interface");
           }
+          devices.push(device);
+          
           // notify for each completed detail retrieval so a single device that times out does not
           // block for showing remaining devices (...O(n^2) but the view lists need to observe an
           // array)
@@ -283,14 +292,17 @@ export class NabtoService {
         })
         .catch((error) => {
           // device unavailable, use cached information from bookmark
-          let offlineDevice = new NabtoDevice(bookmark.name,
-                                              bookmark.id,
-                                              'Unknown', 
-                                              bookmark.iconUrl,
-                                              error.message,
-                                              false, false, false);
-          offlineDevice.setOffline();
-          devices.push(offlineDevice);
+          let unreachableDevice = new NabtoDevice(bookmark.name,
+                                                  bookmark.id,
+                                                  'Unknown', 
+                                                  bookmark.iconUrl,
+                                                  error.message,
+                                                  false, false, false, "", 0, 0);
+          if (error.code == NabtoError.Code.P2P_RESPONSE_DECODE_ERROR) {
+            unreachableDevice.setUnsupported("Invalid response from device - likely an interface mismatch, please contact vendor");
+          }
+          unreachableDevice.setOffline();
+          devices.push(unreachableDevice);
           deviceInfoSource.next(devices); // see above comment 
         });
     }
@@ -307,7 +319,10 @@ export class NabtoService {
                                                 details.device_type,
                                                 details.is_open_for_pairing,
                                                 details.is_current_user_paired,
-                                                details.is_current_user_owner
+                                                details.is_current_user_owner,
+                                                details.interface_id,
+                                                details.interface_version_major,
+                                                details.interface_version_minor
                                                );
           console.log(`resolving promise with public info from RPC for ${deviceId}: ` + JSON.stringify(dev));
           resolve(dev);

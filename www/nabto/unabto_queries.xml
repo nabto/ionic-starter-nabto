@@ -16,6 +16,9 @@
       <parameter name="is_open_for_pairing" type="uint8"/>      
       <parameter name="is_current_user_paired" type="uint8"/>
       <parameter name="is_current_user_owner" type="uint8"/>
+      <parameter name="interface_id" type="raw"/>
+      <parameter name="interface_version_major" type="uint16"/>
+      <parameter name="interface_version_minor" type="uint16"/>
     </response>
   </query>
 

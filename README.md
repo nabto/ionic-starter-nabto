@@ -14,7 +14,9 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 <img border="1" src="images/acl_framed.png">
 </p>
 
-The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights). The app uses the [Nabto Cordova Plugin](https://github.com/nabto/cordova-plugin-nabto) and adds a simpler to use TypeScript and Promise based wrapper (`./src/app/nabto.service.ts`).
+Only a single page in this template app is product specific - the `./src/pages/vendor-heating` page. The remaining app pages are generally applicable for your custom scenario, i.e. to handle pairing, device maintenance, security settings etc. See the section "Customization" below on how to use the app as starting point your specific domain (e.g., to control smart lock or lights).
+
+The app uses the [Nabto Cordova Plugin](https://github.com/nabto/cordova-plugin-nabto) and adds a simpler to use TypeScript and Promise based wrapper (`./src/app/nabto.service.ts`).
 
 To try the app, follow the instructions below.
 
@@ -142,6 +144,15 @@ ionic emulate android --livereload -c -s --debug
 ```
 
 Live reload is enabled, allowing you to instantly observe changes in HTML app source files (`*.ts, *.html. *.scss`). While very handy during development, this also means the app will not work on a device that is disconnected from the workstation or if the ionic server is stopped. So if you have problems with the app hanging after start, remove the `--livereload` parameter.
+
+# Customization
+
+You can use most of the app as-is for your own specific scenario (if the PPKA security model fits your needs, see section 8 in [TEN036 Security in Nabto Solutions](https://www.nabto.com/downloads/docs/TEN036%20Security%20in%20Nabto%20Solutions.pdf) for details).
+
+Product specific customization takes place through `./src/app/customization.class.ts`. It allows you to setup the page the app should navigate to when a device is accessed instead of the default heating app. And also which product types reported by the device 
+
+```
+
 
 # Troubleshooting
 

@@ -65,9 +65,10 @@ export class NabtoDevice {
   public grantGuestRemoteAccess: boolean = false;
   public currentUserIsPaired: boolean = false;
   public currentUserIsOwner: boolean = false;
+  public interfaceId: string = "";
+  public interfaceVersionMajor = 0;
+  public interfaceVersionMinor = 0;
 
-   // iconUrl is absolute or relative to bundle's www folder, e.g. use
-  // img/mydevice.png from device and put image in www/img/mydevice.png
   constructor(name: string,
               id: string,
               product: string,
@@ -76,6 +77,9 @@ export class NabtoDevice {
               openForPairing: boolean,
               currentUserIsPaired: boolean,
               currentUserIsOwner: boolean,
+              interfaceId: string,
+              interfaceVersionMajor: number,
+              interfaceVersionMinor: number
              )   
   {    
     this.reachable = true;
@@ -91,6 +95,9 @@ export class NabtoDevice {
     this.openForPairing = openForPairing;
     this.currentUserIsPaired = currentUserIsPaired;
     this.currentUserIsOwner = currentUserIsOwner;
+    this.interfaceId = interfaceId;
+    this.interfaceVersionMajor = interfaceVersionMajor;
+    this.interfaceVersionMinor = interfaceVersionMinor;
   }  
 
   accessIcon(): string {
@@ -101,8 +108,9 @@ export class NabtoDevice {
     }
   }
 
-  setUnsupported() {
-    this.description = `${this.product} unsupported by this app`;
+  setUnsupported(msg: string) {
+    console.error('Device is unsupported: ' + msg);
+    this.description = `Device unsupported by this app: ${msg}`;
     this.reachable = false;
     this.setUnknownIcon();
   }
