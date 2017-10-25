@@ -5,6 +5,17 @@
 
   <!-- general queries -->
 
+  <!-- interface id version info that clients must match -->
+  <query name="get_interface_info.json" id="0">
+    <request>
+    </request>
+    <response format="json">
+      <parameter name="interface_id" type="raw"/>
+      <parameter name="interface_version_major" type="uint16"/>
+      <parameter name="interface_version_minor" type="uint16"/>
+    </response>
+  </query>
+
   <!-- public info for discovery -->
   <query name="get_public_device_info.json" id="10000">
     <request>

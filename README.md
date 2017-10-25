@@ -14,15 +14,13 @@ This [Ionic](http://ionicframework.com) Starter is the first [AppMyProduct](http
 <img border="1" src="images/acl_framed.png">
 </p>
 
-The product specific customization takes place through `./src/pages/vendor-heating`, use this as the starting point for adapting the app to your specific domain (e.g., to control smart lock or lights). The app uses the [Nabto Cordova Plugin](https://github.com/nabto/cordova-plugin-nabto) and adds a simpler to use TypeScript and Promise based wrapper (`./src/app/nabto.service.ts`).
+Only a single page in this template app is product specific - the `./src/pages/vendor-heating` page. The remaining app pages are generally applicable for your custom scenario, i.e. to handle pairing, device maintenance, security settings etc. See the section "Customization" below on how to use the app as starting point your specific domain (e.g., to control smart lock or lights).
+
+The app uses the [Nabto Cordova Plugin](https://github.com/nabto/cordova-plugin-nabto) and adds a simpler to use TypeScript and Promise based wrapper (`./src/app/nabto.service.ts`).
 
 To try the app, follow the instructions below.
 
 To setup a stub device to interact with (and to use as basis for your own device integration), build and run the [AppMyProduct Heat Control stub](https://github.com/nabto/appmyproduct-device-stub). To enable the device for remote access, this requires an [AppMyProduct account](https://www.appmyproduct.com).
-
-# Ionic note
-
-Please upgrade to at least Ionic 2.2.2 to use the current version of this starter (or you will see a Ionic Storage related failure).
 
 # iOS
 
@@ -30,7 +28,7 @@ Please upgrade to at least Ionic 2.2.2 to use the current version of this starte
 
 On a typical developer workstation, an app can be built with the following steps from this directory:
 
-```console
+```ShellSession
 
 git clone https://github.com/nabto/ionic-starter-nabto.git
 
@@ -49,17 +47,17 @@ See more detailed outline below.
 3. install cordova: `sudo npm install cordova -g`
 4. install ionic: `sudo npm install ionic -g`
 5. to enable running on device: `sudo npm install -g ios-deploy --unsafe-perm=true`
-6. to enable running on simulator: `sudo npm install -g ios-sim`
+6. to enable running on simulator: `sudo npm install -g ios-sim@latest`
 7. add the iOS Cordova platform: `ionic cordova platform add ios`
 
-Odd problems during deploy / run can sometimes apparently be remedied by uninstalling `ios-deploy` and `ios-sim` and re-installing. Specifically as of June 2017, a problem is often seen with a Cordova javascript error when launching the simulator. [The problem can be remedied](https://stackoverflow.com/questions/42350505/error-cannot-read-property-replace-of-undefined-when-building-ios-cordova) by running `npm install ios-sim` in `platforms/ios/cordova` (odd why this makes a difference, but it seems to work).
+Odd problems during deploy / run can sometimes apparently be remedied by uninstalling `ios-deploy` and `ios-sim` and re-installing. Specifically as of June 2017, a problem is often seen with a Cordova javascript error when launching the simulator. [The problem can be remedied](https://stackoverflow.com/questions/42350505/error-cannot-read-property-replace-of-undefined-when-building-ios-cordova) by running `npm install ios-sim@latest` in `platforms/ios/cordova`.
 
 
 ## Build
 
 Only necessary first time and when changing native plugin configuration:
 
-```console
+```ShellSession
 ionic cordova prepare ios
 
 # fix linker problem when using Nabto lib
@@ -74,13 +72,13 @@ ionic cordova build ios
 
 The following requires the device to be connected with USB and screen must be unlocked:
 
-```console
+```ShellSession
 ionic cordova run ios --livereload -c -s --debug --device
 ```
 
 or run on in the simulator:
 
-```console
+```ShellSession
 ionic cordova emulate ios --livereload -c -s --debug
 ```
 
@@ -88,7 +86,7 @@ Live reload is enabled, allowing you to instantly observe changes in HTML app so
 
 The first time the app is attempted to be run, an error is observed about developer/provisining profile - open the project in xcode and select a profile (also see the troubleshooting section):
 
-```console
+```ShellSession
 ./scripts/ios-open-xcode.sh
 ```
 
@@ -100,7 +98,7 @@ Subsequently, the run command above can be used.
 
 On a typical developer workstation, an app can be built with the following steps from this directory:
 
-```console
+```ShellSession
 sudo ./scripts/android-install.sh
 ./scripts/android-build.sh
 ./scripts/android-emulate.sh
@@ -122,7 +120,7 @@ Note that at least version 6.1.1 of cordova-android is necessary as indicated if
 
 Only necessary first time and when changing native plugin configuration:
 
-```console
+```ShellSession
 ionic cordova prepare android
 ionic cordova build android
 ```
@@ -131,17 +129,118 @@ ionic cordova build android
 
 The following requires the device to be connected with USB:
 
-```console
+```ShellSession
 ionic run android --livereload -c -s --debug --device
 ```
 
 or run using an already configured emulator (note: the emulator is not very useful as it only supports GSM, meaning that bootstrapping through local device discovery does not work):
 
-```console
+```ShellSession
 ionic emulate android --livereload -c -s --debug
 ```
 
 Live reload is enabled, allowing you to instantly observe changes in HTML app source files (`*.ts, *.html. *.scss`). While very handy during development, this also means the app will not work on a device that is disconnected from the workstation or if the ionic server is stopped. So if you have problems with the app hanging after start, remove the `--livereload` parameter.
+
+# Customization
+
+You can use most of the app as-is for your own specific scenario (if the PPKA security model fits your needs, see section 8 in [TEN036 Security in Nabto Solutions](https://www.nabto.com/downloads/docs/TEN036%20Security%20in%20Nabto%20Solutions.pdf) for details).
+
+## Setting up your own git repo
+
+To stay uptodate with changes in the starter app, it is recommended to work in a
+[fork](https://help.github.com/articles/fork-a-repo/) of the starter app repo. If you customize the
+app as elaborated in the following sections, you can merge in general changes to the app without
+conflicts:
+
+```ShellSession
+git pull https://github.com/nabto/ionic-starter-nabto.git master
+```
+
+See the [github
+documentation](https://help.github.com/articles/merging-an-upstream-repository-into-your-fork/) for
+further details.
+
+## Basics
+
+The basic theme of the app can be changed through `./src/theme/variables.scss`, see [the Ionic documentation](https://ionicframework.com/docs/theming/theming-your-app/) for details.
+
+Product specific customization takes place through `./src/app/customization.class.ts`. It allows you to setup the page the app should navigate to when a device is accessed instead of the default heating app. It also specifies the Nabto RPC interface that is supported by this app:
+
+```TypeScript
+export class Customization {
+  // name of page to navigate to from overview (the essential page of the app)
+  public static vendorPage: string = 'VendorHeatingPage';
+
+  // supported device interface - only interact with devices that match exactly this
+  public static interfaceId: string = '317aadf2-3137-474b-8ddb-fea437c424f4';
+
+  // supported major version of the device interface - only interact with devices that
+  // match exactly this  
+  public static interfaceVersionMajor: number = 1;
+
+  // supported minor version of the device interface - only interact with devices that
+  // match at least this
+  public static interfaceVersionMinor: number = 0;
+}
+
+```
+
+Replace `vendorPage` with the name of the target page.
+
+The `interfaceId` and `interfaceVersionMajor` must match exactly what is implemented by the
+device. The device must implement at least `interfaceVersionMinor` version of the interface. See
+below for details.
+
+## RPC interface configuration
+
+With the current Nabto RPC implementation, the interface checking is implemented at the application
+level, ie by convention. The app expects the device to implement the following Nabto RPC function:
+
+```XML
+  <!-- interface id version info that clients must match -->
+  <query name="get_interface_info.json" id="0">
+    <request>
+    </request>
+    <response format="json">
+      <parameter name="interface_id" type="raw"/>
+      <parameter name="interface_version_major" type="uint16"/>
+      <parameter name="interface_version_minor" type="uint16"/>
+    </response>
+  </query>  
+```
+
+Implemented for instance as:
+
+```C
+    ...
+    static const char* device_interface_id_ = "317aadf2-3137-474b-8ddb-fea437c424f4";
+    static uint16_t device_interface_version_major_ = 1;
+    static uint16_t device_interface_version_minor_ = 0;
+
+    ...
+    switch (request->queryId) {
+    case 0:
+        // get_interface_info.json
+        if (!write_string(query_response, device_interface_id_)) return AER_REQ_RSP_TOO_LARGE;
+        if (!unabto_query_write_uint16(query_response, device_interface_version_major_)) return AER_REQ_RSP_TOO_LARGE;
+        if (!unabto_query_write_uint16(query_response, device_interface_version_minor_)) return AER_REQ_RSP_TOO_LARGE;
+        return AER_REQ_RESPONSE_READY;
+```        
+
+## Icons and graphics
+
+The device decides the name of the icon to show for the specific device type in the overview and
+discovery screens, served in the `get_public_device_info.json` query by the device. The icon must be bundled with
+the app (in the `src/assets/img` folder).
+
+Base images to use for generation of icons for the app store and on the client device are located in the `resources` project folder:
+
+* icon.png: a 1024x1024 png file
+* splash.png: a 2732x2732 png file - your actual image should fit within a 1200x1200 square in the middle, the image is then center cropped to match the various necessary device dimensions (use [this psd template](https://code.ionicframework.com/resources/splash.psd) to get the dimensions right).
+
+Run `ionic cordova resources` to automatically generate the large amount of individual device specific images and icons based on the above 2 files.
+
+See the [Ionic documentation](https://ionicframework.com/docs/cli/cordova/resources/) on `ionic cordova resources` for further details.
 
 # Troubleshooting
 
@@ -183,8 +282,10 @@ just says "upload error".
 So check your input .png files if this error is observed: Compression
 should be enabled, interlacing must be disabled.
 
-### Building problems
-make sure you have the latest versions of npm and nodejs:
+### Build problems
+
+Make sure you have the latest versions of npm and nodejs - e.g., on linux (as root):
+
 ```
 apt-get update && apt-get install npm
 npm install npm -g
@@ -192,8 +293,9 @@ curl -sL https://deb.nodesource.com/setup_6.x | bash -
 apt-get install nodejs
 ```
 You may need a symbolic link from nodejs to node:
+
 ```
-RUN ln -s /usr/bin/nodejs /usr/bin/node
+ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
 ## iOS
@@ -236,7 +338,7 @@ Before the app can be run, a team must be selected for the project in XCode. If 
 
 To fix, open the XCode project:
 
-```console
+```ShellSession
 ./scripts/ios-open-xcode.sh
 ```
 
@@ -249,7 +351,7 @@ Click the project name in the left pane ("AMP Heat" per default) and the corresp
 
 Use at least Android 6.1.1 when deploying for Android 7+:
 
-```console
+```ShellSession
 ionic platform add android@6.1.1
 ```
 ### Android license not accepted

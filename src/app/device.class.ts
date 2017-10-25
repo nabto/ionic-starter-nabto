@@ -1,3 +1,5 @@
+import { Customization } from './customization.class';
+
 let FP_ACL_PERMISSION_LOCAL_ACCESS          = 0x80000000;
 let FP_ACL_PERMISSION_REMOTE_ACCESS         = 0x40000000;
 let FP_ACL_PERMISSION_ADMIN                 = 0x20000000;
@@ -65,9 +67,11 @@ export class NabtoDevice {
   public grantGuestRemoteAccess: boolean = false;
   public currentUserIsPaired: boolean = false;
   public currentUserIsOwner: boolean = false;
+  public interfaceId: string = "";
+  public interfaceVersionMajor = 0;
+  public interfaceVersionMinor = 0;
+  public hasInterfaceInfo: boolean = false;
 
-   // iconUrl is absolute or relative to bundle's www folder, e.g. use
-  // img/mydevice.png from device and put image in www/img/mydevice.png
   constructor(name: string,
               id: string,
               product: string,
@@ -75,7 +79,7 @@ export class NabtoDevice {
               description: string,
               openForPairing: boolean,
               currentUserIsPaired: boolean,
-              currentUserIsOwner: boolean,
+              currentUserIsOwner: boolean
              )   
   {    
     this.reachable = true;
@@ -101,8 +105,29 @@ export class NabtoDevice {
     }
   }
 
-  setUnsupported() {
-    this.description = `${this.product} unsupported by this app`;
+  setInterfaceInfo(details: any) {
+    this.hasInterfaceInfo = true;
+    this.interfaceId = details.interface_id;
+    this.interfaceVersionMajor = details.interface_version_major;
+    this.interfaceVersionMinor = details.interface_version_minor;
+    if (Customization.interfaceId === this.interfaceId) {
+      if (Customization.interfaceVersionMajor === this.interfaceVersionMajor) {
+        if (Customization.interfaceVersionMinor <= this.interfaceVersionMinor) {
+          console.log("Device interface supported by this app, good");
+        } else {
+          this.setUnsupported("Unsupported minor version of interface");
+        }
+      } else {
+        this.setUnsupported("Unsupported major version of interface");
+      }
+    } else {
+      this.setUnsupported("Unsupported interface");
+    }    
+  }
+  
+  setUnsupported(msg: string) {
+    console.error('Device is unsupported: ' + msg);
+    this.description = `Device unsupported by this app: ${msg}`;
     this.reachable = false;
     this.setUnknownIcon();
   }
