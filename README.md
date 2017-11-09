@@ -225,7 +225,12 @@ Implemented for instance as:
         if (!unabto_query_write_uint16(query_response, device_interface_version_major_)) return AER_REQ_RSP_TOO_LARGE;
         if (!unabto_query_write_uint16(query_response, device_interface_version_minor_)) return AER_REQ_RSP_TOO_LARGE;
         return AER_REQ_RESPONSE_READY;
-```        
+```
+
+As mentioned above, `device_interface_id_` and `device_interface_version_major_` must match exactly
+what is expected by the client to allow the client to invoke the device. The minor version
+`device_interface_version_minor_` must be at least the version expected by the client.
+
 
 ## Icons and graphics
 
