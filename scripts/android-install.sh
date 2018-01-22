@@ -7,4 +7,4 @@ if [ "$EUID" != "0" ]; then
     exit 1
 fi
 
-npm install cordova ionic -g
+npm install -g ionic cordova
