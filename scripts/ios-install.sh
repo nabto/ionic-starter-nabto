@@ -3,8 +3,7 @@
 set -e
 
 if [ "$EUID" != "0" ]; then
-    echo "Please run as root (sudo $0)."
-    exit 1
+    echo "Please run as root if installation fails below with ENOACCESS (sudo $0)."
 fi
 
 # old cordova installed as versions 7+ is observed to have problems installing iOS platform
