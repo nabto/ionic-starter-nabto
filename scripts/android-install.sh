@@ -1,10 +1,7 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 set -e
 
-if [ "$EUID" != "0" ]; then
-    echo "Please run as root (sudo $0)."
-    exit 1
-fi
-
-npm install -g ionic cordova
+. $DIR/common-install.sh

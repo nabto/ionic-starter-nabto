@@ -1,12 +1,10 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 set -e
 
-if [ "$EUID" != "0" ]; then
-    echo "Please run as root if installation fails below with ENOACCESS (sudo $0)."
-fi
+. $DIR/common-install.sh
 
-# old cordova installed as versions 7+ is observed to have problems installing iOS platform
-# (problem similar to the one described here: https://github.com/mapsplugin/cordova-plugin-googlemaps/issues/1435)
-npm install cordova@6.5.0 ionic ios-sim@latest -g
+npm install -g ios-sim@latest
 npm install -g ios-deploy --unsafe-perm=true
