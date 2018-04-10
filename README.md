@@ -251,6 +251,19 @@ See the [Ionic documentation](https://ionicframework.com/docs/cli/cordova/resour
 
 ## General
 
+### App crashes
+
+If you obtain crash reports where you can see Nabto is active during a crash, it is tempting to
+focus all efforts towards debugging some Nabto related aspect of the app. However, due to background
+processing in the Nabto SDK, you will often see traces of Nabto in crash reports - even if Nabto
+does not play a role in causing the crash. So a good first attempt is to disable the Nabto plugin if
+possible and see if this affects the app crash.
+
+If not possible to disable Nabto or if it does not help, try to simplify the app complexity and
+e.g. remove other plugins to the extend possible. Ideally when you need assistance from Nabto
+support, see if you can reproduce your problem with as few as possible modifications to the standard
+Nabto apps and include or reference a repo with such a simple modified app in your error report.
+
 ### Blank screen stuck at app startup
 
 This has been observed if using an app deployed with the
