@@ -260,7 +260,7 @@ does not play a role in causing the crash. So a good first attempt is to disable
 possible and see if this affects the app crash.
 
 If not possible to disable Nabto or if it does not help, try to simplify the app complexity and
-e.g. remove other plugins to the extend possible. Ideally when you need assistance from Nabto
+e.g. remove other plugins to the extent possible. Ideally when you need assistance from Nabto
 support, see if you can reproduce your problem with as few as possible modifications to the standard
 Nabto apps and include or reference a repo with such a simple modified app in your error report.
 
