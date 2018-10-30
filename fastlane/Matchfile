@@ -1,0 +1,4 @@
+git_url ENV["MATCH_GIT_URL"]
+type "appstore"
+app_identifier [ENV["APP_IDENTIFIER"]]
+username ENV["FASTLANE_USER"]

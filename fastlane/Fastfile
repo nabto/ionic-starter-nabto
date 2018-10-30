@@ -1,0 +1,82 @@
+# based on https://gist.github.com/joshdholtz/b4ff6480fe6c682da92cbf6713346aca
+
+platform :ios do
+
+  lane :cordova_build do
+    # Create distribution cert
+    cert
+    
+    # Create/fetch provisioning profile
+    profile_uuid = sigh
+    
+    # Delete iOS platform
+    FileUtils.rm_rf('../platforms/ios')
+    
+    # Add iOS platform
+    sh "(cd .. && ionic cordova platform add ios)"
+    
+    # Creating build.json folder to be used for release signing
+    # This will get placed in our platforms/ios directory
+    build_json = {
+      "ios": {
+        "release": {
+          "buildFlag": [
+            # cordova does not support xcode10 as of October 2018
+            "-UseModernBuildSystem=0"
+          ],
+          "codeSignIdentity": "iPhone Distribution",
+          "provisioningProfile": "#{profile_uuid}",
+          "packageType": "app-store",
+          "developmentTeam": ENV["FASTLANE_TEAM_ID"]
+        }
+      }
+    }
+
+    # Writing build.json to platforms/ios directory
+    out_file = File.new("../platforms/ios/build.json", "w")
+    out_file.puts(JSON.generate(build_json))
+    out_file.close
+    
+    # Build iOS release IPA
+    sh "(cd .. && ionic cordova build ios --device --prod --release --buildConfig=./platforms/ios/build.json)"
+    
+    # Get IPA path
+    ipa_path = Dir.glob(File.join(Dir.pwd, "../platforms/ios/build/device/*.ipa")).first
+    ipa_path = File.absolute_path ipa_path
+    UI.success "Successfully built IPA: #{ipa_path}"
+  end
+
+  lane :build do
+    sync_code_signing(type: "appstore")    # see code signing guide for more information
+    cordova_build
+    increment_build_number_in_plist( # https://github.com/SiarheiFedartsou/fastlane-plugin-versioning/blob/master/README.md
+      build_number: ci_build_number,
+      xcodeproj: ENV["GYM_PROJECT"],
+    )
+    increment_version_number_in_plist(
+      version_number: ENV["APP_VERSION"],
+      xcodeproj: ENV["GYM_PROJECT"],
+    )
+    # cordova-build generates plist with info from config.xml, xcode-build project again with above
+    # patched plist to get correct numbers
+    build_app
+  end
+
+  lane :version do
+    store_version = get_app_store_version_number(bundle_id: ENV["APP_IDENTIFIER"])
+    testflight_buildnum = 0 #latest_testflight_build_number(version: store_version)
+    plist_version = get_version_number_from_plist(xcodeproj: ENV["GYM_PROJECT"])
+    UI.success "Store version: #{store_version}, testflight buildnum: #{testflight_buildnum}, plist version: #{plist_version}"
+  end
+  
+  lane :beta do
+    build
+    upload_to_testflight
+  end
+
+  lane :release do
+    build
+    upload_to_app_store
+  end
+
+end

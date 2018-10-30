@@ -1,0 +1,2 @@
+scheme ENV["GYM_SCHEME"]
+output_directory "./"
