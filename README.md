@@ -92,6 +92,8 @@ The first time the app is attempted to be run, an error is observed about develo
 
 Subsequently, the run command above can be used.
 
+Note! If using Xcode 10, see the troubleshooting guide below if build or run fails.
+
 # Android
 
 ## Quick start
@@ -317,6 +319,18 @@ ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
 ## iOS
+
+### Xcode 10 build problems
+
+If using Xcode 10, there is currently a problem with Ionic/Cordova so try using the legacy build
+option if the instructions above and/or the scripts in the `scripts` folder fails:
+
+```
+cordova run ios --buildFlag='-UseModernBuildSystem=0' --target iPad-Air-2
+```
+
+Note that Cordova is invoked directly with this command to pass in the build flag option, unknown how this is done using the Ionic cli.
+
 
 ### Linker error
 
