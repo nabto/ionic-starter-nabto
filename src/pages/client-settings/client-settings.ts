@@ -47,7 +47,7 @@ export class ClientSettingsPage {
         return this.nabtoService.getFingerprint(name);
       })
       .then((fingerprint) => {
-        this.fingerprint = fingerprint.replace(/(.{2}(?=.))/g,"$1:");
+        this.fingerprint = fingerprint.replace(/(.{2}(?=.{2}))/g,"$1:");
       })
       .catch((error) => {
         console.log("Error getting name/fingerprint: " + JSON.stringify(error));
@@ -57,7 +57,7 @@ export class ClientSettingsPage {
         }
       });
   }
-  
+
   showToast(message: string) {
     let toast = this.toastCtrl.create({
       message: message,
@@ -74,7 +74,7 @@ export class ClientSettingsPage {
       this.showProfilePage();
     });
   }
-  
+
   showProfilePage() {
     let modal = this.modalCtrl.create('ProfilePage', undefined, {
       enableBackdropDismiss: false,
@@ -83,7 +83,7 @@ export class ClientSettingsPage {
     modal.onDidDismiss(() => this.updateFingerPrint());
     modal.present();
   }
-  
+
   clearDevices() {
     this.clear('Do you want to clear list of known devices?', () => {
       this.dirty = true;
@@ -91,7 +91,7 @@ export class ClientSettingsPage {
     });
   }
 
-  clear(message: string, handler: () => void) {    
+  clear(message: string, handler: () => void) {
     let alert = this.alertCtrl.create({
       title: 'Confirm',
       message: message,
