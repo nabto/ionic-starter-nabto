@@ -3,7 +3,7 @@
     <name>AMPHeat</name>
     <description>AppMyProduct remote control example app</description>
     <author email="support@appmyproduct.com" href="https://www.appmyproduct.com/">AppMyProduct Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://172.16.0.6:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -83,7 +83,6 @@
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <preference name="deployment-target" value="11.0" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
@@ -104,6 +103,7 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-ionic-webview" spec="~1.1.16" />
+    <allow-navigation href="http://172.16.0.6:8100" sessionid="e57201bf" />
     <engine name="android" spec="^7.1.2" />
-    <engine name="ios" spec="4.5.5" />
+    <engine name="ios" spec="5.0.1" />
 </widget>
