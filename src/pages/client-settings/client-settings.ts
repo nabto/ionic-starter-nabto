@@ -67,9 +67,11 @@ export class ClientSettingsPage {
     toast.present();
   }
 
-  copyFingerprint() {
-    cordova.plugins.clipboard.copy(this.fingerprint);
-    this.showToast(`Copied fingerprint to clipboard`);
+  share() {
+    this.navCtrl.push('ShowFpQrPage', {
+      'name': this.keyName,
+      'fp': this.fingerprint
+    });
   }
 
   clearProfile() {
