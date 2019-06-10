@@ -67,6 +67,11 @@ export class ClientSettingsPage {
     toast.present();
   }
 
+  copyFingerprint() {
+    cordova.plugins.clipboard.copy(this.fingerprint);
+    this.showToast(`Copied fingerprint to clipboard`);
+  }
+
   clearProfile() {
     this.clear(`Are you sure you want to remove the currently active keypair? You must factory reset devices that you are owner of to be owner again with the new key.`, () => {
       this.dirty = true;

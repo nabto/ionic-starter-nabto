@@ -18,14 +18,19 @@
   <pre>
     {{fingerprint}}
   </pre>
-  
+
+  <button ion-button color="light"  block (click)="copyFingerprint()">
+    Copy fingerprint to clipboard
+  </button>
+
   <button ion-button color="light"  block (click)="clearProfile()">
     Re-create keypair for this {{operatingSystem}} device
   </button>
+
 
   <h2>Known devices</h2>
   <button ion-button color="light"  block (click)="clearDevices()">
     Clear list of known devices
   </button>
-  
+
 </ion-content>
