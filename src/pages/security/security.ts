@@ -116,7 +116,7 @@ export class SecurityPage {
   }
 
   addToAcl() {
-    this.navCtrl.push('AclAddPage');
+    this.navCtrl.push('AclAddPage', { "device": this.device });
   }
 
 }

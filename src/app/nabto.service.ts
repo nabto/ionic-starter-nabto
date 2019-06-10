@@ -17,7 +17,7 @@ export class NabtoService {
   private pkPassword: string = "empty"; // see comment on createKeyPair() below
   private lastUser: string;
   private initialized: boolean;
-  
+
   constructor (private storage: Storage,
                private http: Http,
                private bookmarksService: BookmarksService,
@@ -65,7 +65,7 @@ export class NabtoService {
     }
   }
 
-  
+
   //
   // NOTE: Keypair is stored directly on the filesystem with dummy
   // encryption (common password) - if necessary, encrypt with either
@@ -105,7 +105,7 @@ export class NabtoService {
       nabto.createKeyPair(username, this.pkPassword, (error) => {
         if (!error) {
           console.log("nabto.createKeyPair succeeded");
-          this.storage.set('username', username);    
+          this.storage.set('username', username);
           resolve(username)
         } else {
           console.log(`nabto.createKeyPair failed: ${error} (code=${error.code}, inner=${error.inner})`);
@@ -114,7 +114,7 @@ export class NabtoService {
       });
     });
   }
-  
+
   public getFingerprint(username: string): Promise<string> {
     if (this.initialized) {
       return this.doGetFingerprint(username);
@@ -122,7 +122,7 @@ export class NabtoService {
       return this.startupAndOpenProfile().then(() => this.doGetFingerprint(username));
     }
   }
-  
+
   private doGetFingerprint(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
       nabto.getFingerprint(username, (err, result) => {
@@ -134,7 +134,7 @@ export class NabtoService {
       });
     });
   }
-  
+
   public startup(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.platform.ready().then(() => {
@@ -158,7 +158,7 @@ export class NabtoService {
       }).catch((err) => console.error(`platform.ready fail: ${err}`));
     });
   }
-  
+
   public startupAndOpenProfile(certificate?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (certificate) {
@@ -186,7 +186,7 @@ export class NabtoService {
             } else {
               console.log(`Could not start Nabto and open profile "${certificate}": ${err.message}`);
               reject(new Error(err.message));
-            } 
+            }
           }
         });
       });
@@ -199,6 +199,7 @@ export class NabtoService {
       this.http.get("nabto/unabto_queries.xml")
         .toPromise()
         .then((res: Response) => {
+          console.log("Got unabto_queries.xml, setting as default");
           nabto.rpcSetDefaultInterface(res.text(), (err: any) => {
             if (!err) {
               console.log("nabto started and interface set ok!")
@@ -211,7 +212,7 @@ export class NabtoService {
           });
         })
         .catch((err) => {
-          console.log(err);
+          console.log("Error invoking rpcSetDefaultInterface: " + err);
           reject(new Error("Could not load device interface definition: " + err));
         });
     });
@@ -278,7 +279,7 @@ export class NabtoService {
         });
     });
   }
-  
+
   public getPublicInfo(bookmarks: Bookmark[], deviceInfoSource: Subject<NabtoDevice[]>) {
     let devices: NabtoDevice[] = [];
     if (bookmarks.length == 0) {
@@ -293,13 +294,13 @@ export class NabtoService {
           // notify for each completed detail retrieval so a single device that times out does not
           // block for showing remaining devices (...O(n^2) but the view lists need to observe an
           // array)
-          deviceInfoSource.next(devices);  
+          deviceInfoSource.next(devices);
         })
         .catch((error) => {
           // device unavailable, use cached information from bookmark
           let unreachableDevice = new NabtoDevice(bookmark.name,
                                                   bookmark.id,
-                                                  'Unknown', 
+                                                  'Unknown',
                                                   bookmark.iconUrl,
                                                   error.message,
                                                   false, false, false);
@@ -308,11 +309,11 @@ export class NabtoService {
           }
           unreachableDevice.setOffline();
           devices.push(unreachableDevice);
-          deviceInfoSource.next(devices); // see above comment 
+          deviceInfoSource.next(devices); // see above comment
         });
     }
   }
-  
+
   private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(deviceId, "get_public_device_info.json")
@@ -471,6 +472,20 @@ export class NabtoService {
     });
   }
 
+  public addUser(device: NabtoDevice, user: DeviceUser): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.invokeRpc(device.id, "add_user.json", {
+        "fingerprint": user.fingerprint,
+        "name": user.name
+      })
+        .then((response: any) => {
+          console.log("Added user, response: " + JSON.stringify(response));
+          resolve(response.status);
+        })
+        .catch(reject);
+    });
+  }
+
   public removeUser(device: NabtoDevice, user: DeviceUser): Promise<number> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(device.id, "remove_user.json", {
@@ -597,9 +612,5 @@ export class NabtoService {
       });
     });
   }
-  
+
 }
-
-
-
-

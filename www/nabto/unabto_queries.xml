@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<unabto_queries 
+<unabto_queries
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://www.nabto.com/unabto/query_model.xsd">
 
@@ -24,7 +24,7 @@
       <parameter name="device_name" type="raw"/>
       <parameter name="device_type" type="raw"/>
       <parameter name="device_icon" type="raw"/>
-      <parameter name="is_open_for_pairing" type="uint8"/>      
+      <parameter name="is_open_for_pairing" type="uint8"/>
       <parameter name="is_current_user_paired" type="uint8"/>
       <parameter name="is_current_user_owner" type="uint8"/>
     </response>
@@ -62,7 +62,7 @@
     #define FP_ACL_PERMISSION_LOCAL_ACCESS                              0x80000000ul
     #define FP_ACL_PERMISSION_REMOTE_ACCESS                             0x40000000ul
     #define FP_ACL_PERMISSION_ADMIN                                     0x20000000ul
-    
+
     #define FP_ACL_SYSTEM_PERMISSION_NONE                               0x00000000ul
     #define FP_ACL_SYSTEM_PERMISSION_ALL                                0xfffffffful
     #define FP_ACL_SYSTEM_PERMISSION_LOCAL_ACCESS                       0x80000000ul
@@ -74,8 +74,8 @@
   <!-- get all users that have access to device -->
   <query name="get_users.json" id="11000">
     <request>
-      <parameter name="count" type="uint8"/> 
-      <parameter name="start" type="uint32"/> 
+      <parameter name="count" type="uint8"/>
+      <parameter name="start" type="uint32"/>
     </request>
     <response format="json">
       <list name="users">
@@ -98,7 +98,7 @@
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
-  
+
   <!-- get current user -->
   <query name="get_current_user.json" id="11020">
     <request>
@@ -110,14 +110,14 @@
       <parameter name="permissions" type="uint32"/>
     </response>
   </query>
-  
+
   <!-- get system security settings -->
   <query name="get_system_security_settings.json" id="11030">
     <request>
     </request>
     <response format="json">
-      <parameter name="status" type="uint8"/> 
-      <parameter name="permissions" type="uint32"/> 
+      <parameter name="status" type="uint8"/>
+      <parameter name="permissions" type="uint32"/>
       <parameter name="default_user_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
@@ -125,12 +125,12 @@
   <!-- set system security settings -->
   <query name="set_system_security_settings.json" id="11040">
     <request>
-      <parameter name="permissions" type="uint32"/> 
+      <parameter name="permissions" type="uint32"/>
       <parameter name="default_user_permissions_after_pairing" type="uint32"/>
     </request>
     <response format="json">
-      <parameter name="status" type="uint8"/> 
-      <parameter name="permissions" type="uint32"/> 
+      <parameter name="status" type="uint8"/>
+      <parameter name="permissions" type="uint32"/>
       <parameter name="default_user_permissions_after_pairing" type="uint32"/>
     </response>
   </query>
@@ -139,7 +139,7 @@
   <query name="set_user_permissions.json" id="11050">
     <request>
       <parameter name="fingerprint" type="raw" representation="hex"/>
-      <parameter name="permissions" type="uint32"/> 
+      <parameter name="permissions" type="uint32"/>
     </request>
     <response format="json">
       <parameter name="status" type="uint8"/>
@@ -163,6 +163,20 @@
     </response>
   </query>
 
+  <!-- add user -->
+  <query name="add_user.json" id="11065">
+    <request>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="name" type="raw"/>
+    </request>
+    <response format="json">
+      <parameter name="status" type="uint8"/>
+      <parameter name="fingerprint" type="raw" representation="hex"/>
+      <parameter name="name" type="raw"/>
+      <parameter name="permissions" type="uint32"/>
+    </response>
+  </query>
+
   <!-- remove user -->
   <query name="remove_user.json" id="11070">
     <request>
@@ -174,7 +188,7 @@
   </query>
 
 
-  
+
   <!-- heatpump demo queries -->
 
   <!-- get all state details -->
@@ -220,4 +234,3 @@
   </query>
 
 </unabto_queries>
-

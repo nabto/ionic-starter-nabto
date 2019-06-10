@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { NabtoService } from '../../app/nabto.service';
+import { DeviceUser, NabtoDevice } from '../../app/device.class';
 
 @IonicPage()
 @Component({
@@ -8,17 +10,16 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 })
 export class AclAddPage {
 
-  qrInput: string = null;
-  createdCode = null;
-  scannedCode = null;
-
+  device: NabtoDevice;
   fingerprint: string;
   name: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private toastCtrl: ToastController,
+              private nabtoService: NabtoService,
               private barcodeScanner: BarcodeScanner) {
+    this.device = navParams.get('device');
   }
 
   ionViewDidEnter() {
@@ -38,8 +39,22 @@ export class AclAddPage {
   }
 
   add() {
-    this.showToast("TODO - add name=${this.name}, fp=${this.fingerprint}");
-  }
+    // TODO: unprettify if pretty
+    var user = new DeviceUser({ "fingerprint": this.fingerprint,
+                                "name": this.name });
+    this.nabtoService.addUser(this.device, user)
+      .then((status: number) => {
+        if (status == 0) {
+          this.navCtrl.pop();
+        } else {
+          this.showToast("Could not add user, status is " + status);
+        }
+      })
+      .catch(error => {
+        console.error(error.message);
+        this.showToast("Could not add user: " + error.message);
+      });
+    }
 
   scan() {
     this.barcodeScanner.scan().then(barcodeResult => {
@@ -48,9 +63,10 @@ export class AclAddPage {
       try {
         json = JSON.parse(barcodeResult.text);
         if (!json.hasOwnProperty('f')) {
+          json = null;
           this.showToast("Missing fingerprint in QR code");
-        }
-        if (!json.hasOwnProperty('n')) {
+        } else if (!json.hasOwnProperty('n')) {
+          json = null;
           this.showToast("Missing device name in QR code");
         }
       } catch (e) {
@@ -61,17 +77,6 @@ export class AclAddPage {
         this.fingerprint = json.f;
       }
     });
-    /*
-    var cb = (name, fingerprint) => {
-      return new Promise((resolve, reject) => {
-        this.name = name;
-        this.fingerprint = fingerprint;
-        resolve();
-      });
-    }
-    this.navCtrl.push('ScanQrPage', {
-      cb: cb
-    });*/
   }
 
   clear() {
