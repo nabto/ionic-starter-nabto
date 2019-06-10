@@ -15,7 +15,7 @@ export class SecurityPage {
 
   addLocalUsers: boolean;
   hasUnhandledTap: boolean;
-  
+
   public device: NabtoDevice;
   public acl: Observable<DeviceUser[]>;
   private aclSrc = [];
@@ -60,12 +60,12 @@ export class SecurityPage {
   }
 
   aclEntryTapped(event, user) {
-    this.navCtrl.push('AclEditPage', { 
+    this.navCtrl.push('AclEditPage', {
       user: user,
       device: this.device
     });
   }
-  
+
   update() {
     if (!this.hasUnhandledTap) {
       // only invoke device if a user tapped the user interface
@@ -110,9 +110,13 @@ export class SecurityPage {
     });
     alert.present();
   }
-  
+
   home() {
     this.navCtrl.popToRoot();
   }
-  
+
+  addToAcl() {
+    this.navCtrl.push('AclAddPage');
+  }
+
 }

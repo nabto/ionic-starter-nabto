@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Add to ACL</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (tap)="home()">
+        <ion-icon name="home" color="secondary"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <p>Enter information about the client to add or scan a QR code on a phone or tablet.</p>
+
+  <ion-list>
+
+  <ion-item>
+    <ion-label stacked>Name</ion-label>
+    <ion-input required type="text" [(ngModel)]="name" name="name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label stacked>Public key fingerprint</ion-label>
+    <ion-input required type="text" [(ngModel)]="fingerprint" name="fingerprint"></ion-input>
+  </ion-item>
+
+</ion-list>
+
+<button color="light" ion-button type="submit" block (click)="scan()">
+  Scan QR
+</button>
+
+<button color="light" ion-button block (click)="clear()">
+  Clear
+</button>
+
+<button ion-button type="submit" block (click)="add()">
+  Add
+</button>
+
+</ion-content>

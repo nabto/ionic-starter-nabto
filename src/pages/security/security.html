@@ -31,7 +31,7 @@
       <ion-toggle [(ngModel)]="device.openForPairing" (tap)="tapped()" (ionChange)="update()"></ion-toggle>
     </ion-item>
   </ion-list>
-  
+
   <h2>New User Remote Access</h2>
   <p>When adding new users as guests, allow them to later also access the device remotely (outside your local network). You can later change this for individual guests in the access control list below.</p>
   <ion-list text-wrap>
@@ -50,4 +50,10 @@
       <p>RSA fingerprint: {{user.niceFingerprint()}}</p>
     </button>
   </ion-list>
+
+  <button ion-button color="light"  block (click)="addToAcl()">
+    Manually add to access control list
+  </button>
+
+
 </ion-content>
