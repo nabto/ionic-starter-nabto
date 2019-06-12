@@ -46,7 +46,7 @@ lane :cordova_build do
   out_file.close
   
   # Build iOS release IPA
-  sh "(cd .. && ionic cordova build ios --device --prod --release --buildConfig=./platforms/ios/build.json)"
+  sh "(cd .. && ionic cordova build ios --device --release --buildConfig=./platforms/ios/build.json)"
   
   # Get IPA path
   ipa_path = Dir.glob(File.join(Dir.pwd, "../platforms/ios/build/device/*.ipa")).first
