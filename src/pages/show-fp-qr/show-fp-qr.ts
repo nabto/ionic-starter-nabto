@@ -28,6 +28,7 @@ export class ShowFpQrPage {
       "f": this.fingerprint,
       "n": this.name
     });
+    console.log("Input for QR code: [" + this.qrInput + "]");
   }
 
   showToast(message: string) {

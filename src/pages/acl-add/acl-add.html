@@ -37,7 +37,7 @@
   Clear
 </button>
 
-<button ion-button type="submit" block (click)="add()">
+<button ion-button type="submit" block (click)="add()" [disabled]="fingerprint.length == 0 || name.length == 0">
   Add
 </button>
 
