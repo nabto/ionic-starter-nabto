@@ -106,7 +106,10 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-ionic-webview" spec="~1.1.16" />
-    <plugin name="phonegap-plugin-barcodescanner" spec="8.0.1" />
+    <allow-navigation href="http://192.168.1.102:8100" sessionid="9a8f0c2e" />
     <engine name="android" spec="^7.1.2" />
     <engine name="ios" spec="5.0.1" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="6.0.8">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="Scan QR code to add user to device access control list" />
+    </plugin>
 </widget>
