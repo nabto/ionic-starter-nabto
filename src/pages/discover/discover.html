@@ -11,12 +11,16 @@
 
 <ion-content padding>
 
-  <ion-card *ngIf="(devices | async)?.length === 0">
+  <div align="center" [hidden]="!busy">
+    <img src="assets/img/spinner.gif"/>
+  </div>
+
+  <ion-card *ngIf="!busy && ((devices | async)?.length === 0)">
     <ion-card-header>
       No devices found on your network
     </ion-card-header>
     <ion-card-content>
-      Make sure you are on the same local area network as the device you try to discover and that the device is powered on. 
+      Make sure you are on the same local area network as the device you try to discover and that the device is powered on.
     </ion-card-content>
   </ion-card>
 
@@ -37,11 +41,11 @@
     <ion-icon name="refresh"></ion-icon>
     Refresh
     &nbsp;
-    <ion-spinner [hidden]="!busy"></ion-spinner>
   </button>
-  
+
+  <button icon-start block ion-button (tap)="refresh()" color="light" (tap)="addManually()">
+    Add manually
+  </button>
+
+
 </ion-content>
-
-
-
-

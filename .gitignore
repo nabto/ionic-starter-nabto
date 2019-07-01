@@ -46,5 +46,5 @@ fastlane/screenshots
 # scan temporary files
 fastlane/test_output
 
-resources/ios/
-resources/android/
+#resources/ios/
+#resources/android/

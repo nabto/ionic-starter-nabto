@@ -8,6 +8,8 @@ import { ToastController } from 'ionic-angular';
 import { NabtoDevice } from '../../app/device.class';
 import { NabtoService } from '../../app/nabto.service';
 
+declare var cordova:any;
+
 @IonicPage()
 @Component({
   templateUrl: 'device-settings.html'
@@ -17,6 +19,8 @@ export class DeviceSettingsPage {
   public device: NabtoDevice;
   public securityMessage: string;
   private firstView: boolean = true;
+  private hideQr: boolean = true;
+  private qrInput: string = null;
 
   constructor(public viewCtrl: ViewController,
               private alertCtrl: AlertController,
@@ -45,6 +49,11 @@ export class DeviceSettingsPage {
       // after load)
       this.firstView = false;
     }
+    this.qrInput = JSON.stringify({
+      "i": this.device.id,
+      "n": this.device.name
+    });
+    console.log("Input for QR code: [" + this.qrInput + "]");
   }
 
   readDeviceSecuritySettings() {
@@ -62,18 +71,26 @@ export class DeviceSettingsPage {
       this.securityMessage = "This device is closed for pairing, change this to grant new guests access.";
     }
   }
-  
+
   handleError(message: string) {
-    var opts = <any>{
+    this.showToast(message);
+  }
+
+  showToast(message: string) {
+    let toast = this.toastCtrl.create({
       message: message,
       showCloseButton: true,
-      closeButtonText: 'Ok',
-      duration: 3000
-    };
-    let toast = this.toastCtrl.create(opts);
+      duration: 2000
+    });
     toast.present();
   }
-  
+
+  copyDeviceId() {
+    cordova.plugins.clipboard.copy(this.device.id);
+    this.showToast(`Device id copied to clipboard`);
+  }
+
+
   saveProperties() {
     this.nabtoService.setSystemInfo(this.device)
       .then(() => {
@@ -87,7 +104,7 @@ export class DeviceSettingsPage {
         this.handleError(error.message);
       });
   }
-  
+
   dismiss() {
     this.viewCtrl.dismiss(this.device);
   }
@@ -99,9 +116,16 @@ export class DeviceSettingsPage {
   }
 
   home() {
+    this.navCtrl.setRoot('OverviewPage');
     this.navCtrl.popToRoot();
   }
 
-    
-}
+  toggleQr() {
+    this.hideQr = !this.hideQr;
+  }
 
+  hideOrShow() {
+    return this.hideQr ? "Show" : "Hide";
+  }
+
+}

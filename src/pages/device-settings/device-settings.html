@@ -13,7 +13,7 @@
   <div [hidden]="device.currentUserIsOwner">
     Only the owner of this device can change settings, you currently only have guest permissions. If you actually are the owner, you must perform a factory reset of the device.
   </div>
-  
+
   <h2>Properties</h2>
   <ion-list>
     <ion-item>
@@ -24,6 +24,22 @@
 
   <h2>Device id</h2>
   <p>{{device.id}}</p>
+  <div [hidden]="hideQr" align="center">
+      <ngx-qrcode [qrc-value]="qrInput"></ngx-qrcode>
+  </div>
+
+  <ion-row>
+    <ion-col text-left>
+      <button ion-button icon-begin (tap)="copyDeviceId()" color="light">
+        Copy
+      </button>
+    </ion-col>
+    <ion-col text-right>
+      <button ion-button icon-end (tap)="toggleQr()" color="light">
+        {{hideOrShow()}} QR
+      </button>
+    </ion-col>
+  </ion-row>
 
   <h2>Security</h2>
   <p>
