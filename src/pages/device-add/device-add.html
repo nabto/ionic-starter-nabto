@@ -3,8 +3,8 @@
   <ion-navbar>
     <ion-title>Manually Add Device</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (tap)="home()">
-        <ion-icon name="home" color="secondary"></ion-icon>
+      <button ion-button icon-only (tap)="cancel()">
+        Cancel
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -12,9 +12,6 @@
 </ion-header>
 
 <ion-content padding>
-
-  <p>Enter device ID or scan a QR code:</p>
-
   <ion-list>
 
   <ion-item>
@@ -25,20 +22,20 @@
   </ion-list>
 
 <button color="light" ion-button type="submit" block (click)="scan()">
-  Scan QR
+  Scan QR with device ID
 </button>
 
 <button color="light" ion-button block (click)="clear()">
-  Clear
+  Clear device ID
 </button>
 
 <button ion-button type="submit" block (click)="add()" [disabled]="deviceId.length == 0">
-  Add
+  Add device ID
 </button>
 
 <ion-card>
   <ion-card-header>
-    Important notice
+    Access Control
   </ion-card-header>
   <ion-card-content>
     Your public key fingerprint must be added to the device's Access Control List before you can access the device. The device owner can add this - share your public key fingerprint here:

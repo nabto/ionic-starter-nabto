@@ -41,16 +41,14 @@ export class ClientSettingsPage {
   }
 
   updateFingerPrint() {
-    this.profileService.lookupKeyPairName()
-      .then((name) => {
-        this.keyName = name;
-        return this.nabtoService.getFingerprint(name);
-      })
-      .then((fingerprint) => {
-        this.fingerprint = fingerprint.replace(/(.{2}(?=.{2}))/g,"$1:");
+    this.profileService.getFingerprintAndName()
+      .then((result) => {
+        console.log("Got profile result for client settings: " + JSON.stringify(result));
+        this.keyName = result.keyName;
+        this.fingerprint = result.fingerprint;
       })
       .catch((error) => {
-        console.log("Error getting name/fingerprint: " + JSON.stringify(error));
+        console.log("Error getting name/fingerprint: " + JSON.stringify(error, Object.getOwnPropertyNames(error)));
         this.showToast(error.message);
         if (error.code == NabtoError.Code.API_OPEN_CERT_OR_PK_FAILED) {
           this.showProfilePage();
@@ -68,10 +66,7 @@ export class ClientSettingsPage {
   }
 
   share() {
-    this.navCtrl.push('ShowFpQrPage', {
-      'name': this.keyName,
-      'fp': this.fingerprint
-    });
+    this.navCtrl.push('ShowFpQrPage');
   }
 
   clearProfile() {

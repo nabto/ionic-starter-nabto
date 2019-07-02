@@ -25,6 +25,7 @@ export class DiscoverPage {
   public devices: Observable<NabtoDevice[]>;
   public deviceInfoSource: Subject<NabtoDevice[]>;
   private recentIds: string[];
+  private manuallyAddedDevices: string[] = [];
 
   ionViewDidEnter() {
     this.view = this.navCtrl.getActive();
@@ -72,16 +73,11 @@ export class DiscoverPage {
 
   refresh() {
     this.busy = true;
+    if (this.manuallyAddedDevices.length > 0) {
+      this.prepareDevices(this.manuallyAddedDevices);
+    }
     this.nabtoService.discover().then((ids: string[]) => {
-      var all: string[];
-      if (this.recentIds && this.recentIds.length > 0) {
-        all = ids.concat(this.recentIds);
-      } else {
-        all = ids;
-      }
-      let unique: string[] = Array.from(new Set(all));
-      console.log(`Refreshing ${unique.length} device(s): ` + JSON.stringify(unique));
-      this.prepareDevices(unique);
+      this.prepareDevices(ids);
     }).catch((error) => {
       this.showToast(error.message);
       console.error("Error discovering devices: " + JSON.stringify(error));
@@ -205,7 +201,10 @@ export class DiscoverPage {
       enableBackdropDismiss: false
     });
     modal.onDidDismiss((deviceId) => {
-      this.prepareDevices([deviceId]);
+      if (deviceId) {
+        this.manuallyAddedDevices.push(deviceId);
+        this.prepareDevices([deviceId]);
+      }
     });
     modal.present();
   }

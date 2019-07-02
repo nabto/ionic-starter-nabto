@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { ProfileService } from '../../app/profile.service';
 
 declare var cordova:any;
 
@@ -18,17 +19,30 @@ export class ShowFpQrPage {
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              private profileService: ProfileService,
               private toastCtrl: ToastController) {
-    this.fingerprint = navParams.get('fp');
-    this.name = navParams.get('name');
+  }
+
+  updateFingerPrint() {
+    return this.profileService.getFingerprintAndName()
+      .then((result) => {
+        this.name = result.keyName;
+        this.fingerprint = result.fingerprint;
+      })
+      .catch((error) => {
+        console.log("Error getting name/fingerprint: " + JSON.stringify(error));
+        this.showToast(error.message);
+      });
   }
 
   ionViewDidEnter() {
-    this.qrInput = JSON.stringify({
-      "f": this.fingerprint,
-      "n": this.name
+    this.updateFingerPrint().then(() => {
+      this.qrInput = JSON.stringify({
+        "f": this.fingerprint,
+        "n": this.name
+      });
+      console.log("Input for QR code: [" + this.qrInput + "]");
     });
-    console.log("Input for QR code: [" + this.qrInput + "]");
   }
 
   showToast(message: string) {

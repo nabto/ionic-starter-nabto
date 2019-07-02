@@ -32,11 +32,6 @@ export class DeviceAddPage {
     toast.present();
   }
 
-  home() {
-    this.navCtrl.setRoot('OverviewPage');
-    this.navCtrl.popToRoot();
-  }
-
   add() {
     this.viewCtrl.dismiss(this.deviceId);
   }
@@ -66,5 +61,13 @@ export class DeviceAddPage {
 
   clear() {
     this.deviceId = "";
+  }
+
+  shareFingerprint() {
+    this.navCtrl.push('ShowFpQrPage');
+  }
+
+  cancel() {
+    this.viewCtrl.dismiss();
   }
 }

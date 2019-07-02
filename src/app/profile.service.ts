@@ -8,11 +8,11 @@ import { Storage } from '@ionic/storage';
 export class ProfileService {
 
   private key: string = 'keypairName';
-  
+
   constructor (private nabtoService: NabtoService,
                private storage: Storage) {
   }
-  
+
   createKeyPair(name: string): Promise<string> {
     return this.nabtoService.createKeyPair(name);
   }
@@ -28,6 +28,23 @@ export class ProfileService {
   clear() {
     this.storage.remove(this.key);
   }
-  
-}
 
+  getFingerprintAndName(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var result = {};
+      this.lookupKeyPairName()
+        .then((name) => {
+          result.keyName = name;
+          return this.nabtoService.getFingerprint(name);
+        })
+        .then((fingerprint) => {
+          result.fingerprint = fingerprint.replace(/(.{2}(?=.{2}))/g,"$1:");
+          resolve(result);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+}
