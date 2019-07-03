@@ -31,7 +31,7 @@ export class ProfileService {
 
   getFingerprintAndName(): Promise<any> {
     return new Promise((resolve, reject) => {
-      var result = {};
+      var result: any = {};
       this.lookupKeyPairName()
         .then((name) => {
           result.keyName = name;
