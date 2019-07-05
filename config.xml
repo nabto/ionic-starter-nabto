@@ -112,5 +112,5 @@
     <plugin name="cordova-plugin-nabto" spec="2.5.1" />
     <allow-navigation href="http://192.168.1.10:8100" sessionid="17088f1e" />
     <engine name="android" spec="7.1.4" />
-    <engine name="ios" spec="4.5.5" />
+    <engine name="ios" spec="latest" />
 </widget>
