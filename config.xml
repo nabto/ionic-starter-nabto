@@ -109,8 +109,8 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="6.0.8">
         <variable name="CAMERA_USAGE_DESCRIPTION" value="Scan QR code to add user to device access control list" />
     </plugin>
-    <plugin name="cordova-plugin-nabto" spec="2.5.1" />
     <allow-navigation href="http://192.168.1.10:8100" sessionid="17088f1e" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="5.0.1" />
+    <plugin name="cordova-plugin-nabto" spec="2.6.1" />
 </widget>
