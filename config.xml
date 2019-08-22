@@ -80,7 +80,7 @@
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="android-minSdkVersion" value="16" />
+    <preference name="android-minSdkVersion" value="19" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
@@ -106,11 +106,11 @@
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-ionic-webview" spec="~1.1.16" />
     <allow-navigation href="http://192.168.1.102:8100" sessionid="9a8f0c2e" />
-    <plugin name="phonegap-plugin-barcodescanner" spec="6.0.8">
-        <variable name="CAMERA_USAGE_DESCRIPTION" value="Scan QR code to add user to device access control list" />
-    </plugin>
     <allow-navigation href="http://192.168.1.10:8100" sessionid="17088f1e" />
-    <engine name="android" spec="7.1.4" />
-    <engine name="ios" spec="5.0.1" />
     <plugin name="cordova-plugin-nabto" spec="2.6.1" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="8.1.0">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
+    <engine name="ios" spec="5.0.1" />
+    <engine name="android" spec="8.0.0" />
 </widget>
