@@ -55,3 +55,20 @@ platform :ios do
   end
 
 end
+
+platform :android do
+  lane :beta do
+    build_sign
+    supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'], track: 'beta')
+  end
+
+  lane :build_sign do
+    cordova(
+      platform: 'android',
+      keystore_path: './fastlane/android.keystore',
+      keystore_alias: ENV['ANDROID_KEYSTORE_ALIAS'],
+      keystore_password: ENV['ANDROID_KEYSTORE_PASSWORD']
+    )
+  end
+
+end
