@@ -111,7 +111,7 @@ Note that for the last step, an Android emulator image must have been configured
 ## Install
 
 1. Node and NPM must be installed (either through your package manager or from [nodejs.org](https://nodejs.org/en/download/)).
-2. Android Studio must be installed and an emulator device configured 
+2. Android Studio must be installed and an emulator device configured
 3. install cordova: `sudo npm install cordova -g`
 4. install ionic: `sudo npm install ionic -g`
 5. add the Android Cordova platform : `ionic platform add android@latest`
@@ -177,7 +177,7 @@ export class Customization {
   public static interfaceId: string = '317aadf2-3137-474b-8ddb-fea437c424f4';
 
   // supported major version of the device interface - only interact with devices that
-  // match exactly this  
+  // match exactly this
   public static interfaceVersionMajor: number = 1;
 
   // supported minor version of the device interface - only interact with devices that
@@ -208,7 +208,7 @@ level, ie by convention. The app expects the device to implement the following N
       <parameter name="interface_version_major" type="uint16"/>
       <parameter name="interface_version_minor" type="uint16"/>
     </response>
-  </query>  
+  </query>
 ```
 
 Implemented for instance as:
@@ -252,6 +252,23 @@ See the [Ionic documentation](https://ionicframework.com/docs/cli/cordova/resour
 # Troubleshooting
 
 ## General
+
+### Provisioning errors on iOS
+
+Often you will get errors like the following:
+
+<pre>
+Error 0xe8008015: A valid provisioning profile for this executable was not found.
+</pre>
+
+One way to minimize trouble in this regard is to manage certificates using [Fastlane](https://fastlane.tools/), we have added templates to make this reasonably simple.
+
+But even with Fastlane you may occasionally run into head scratching oddities where you google and find a few hundred hints like "try this version of this combined with that version of that" or "it worked for me to downgrade to version x.y.z and manually change this XML file blahblah". In addition to throwing a dead cat across your shoulder at next full moon, we have noticed that simply re-installing the iOS cordova platform often fixes the oddest problems:
+
+<pre>
+$ cordova platform rm ios
+$ cordova platform add ios@latest
+</pre>
 
 ### App crashes
 
@@ -363,7 +380,7 @@ echo 'OTHER_LDFLAGS = -force_load $(BUILT_PRODUCTS_DIR)/libCordova.a -lstdc++' >
 The first time you attempt to run the app, you will see the following error:
 
 ```
-Error: Error code 65 for command: xcodebuild with args: ..." ... " Signing for "AMP Heat" requires a development team. Select a development team in the project editor" 
+Error: Error code 65 for command: xcodebuild with args: ..." ... " Signing for "AMP Heat" requires a development team. Select a development team in the project editor"
 ```
 
 Before the app can be run, a team must be selected for the project in XCode. If you are new to iOS app development, please see section "iOS Devices" in the [Ionic deployment docs](https://ionicframework.com/docs/v2/setup/deploying) for further instructions.
