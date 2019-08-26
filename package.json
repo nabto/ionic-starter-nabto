@@ -22,12 +22,13 @@
     "@ionic-native/status-bar": "4.3.0",
     "@ionic/storage": "2.0.1",
     "cordova-android": "^8.0.0",
+    "cordova-clipboard": "^1.3.0",
     "cordova-custom-config": "^3.3.0",
     "cordova-ios": "^5.0.1",
     "cordova-plugin-console": "^1.1.0",
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-device-name": "^1.3.5",
-    "cordova-plugin-ionic-webview": "^1.2.1",
+    "cordova-plugin-ionic-webview": "^4.1.1",
     "cordova-plugin-nabto": "^2.6.2",
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "^2.4.3",
@@ -72,8 +73,8 @@
       "cordova-plugin-nabto": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
