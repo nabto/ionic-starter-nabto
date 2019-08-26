@@ -5,21 +5,6 @@ platform :ios do
 
   desc "Build debug version and install on connected device"
   lane :install do
-    build_debug
-    install_only
-  end
-
-  desc "Build release version and upload to testflight"
-  lane :beta do
-    build_release
-    update_generated_project
-    testflight(
-      ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'],
-    )
-  end
-
-
-  lane :build_debug do
     match(
       type: "development",
     )
@@ -30,10 +15,16 @@ platform :ios do
       release: false,
       type: 'development'
     )
+    install_on_device(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
   end
 
-  lane :install_only do
-    install_on_device(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
+  desc "Build release version and upload to testflight"
+  lane :beta do
+    build_release
+    update_generated_project
+    testflight(
+      ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'],
+    )
   end
 
   lane :build_release do
