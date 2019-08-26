@@ -37,7 +37,7 @@ sudo ./scripts/ios-install.sh
 ./scripts/ios-emulate.sh
 ```
 
-See more detailed outline below.
+See more detailed outline below. Also, we have added [Fastlane](https://fastlane.tools/) support so an alternative quick start is to do adaptation in `fastlane/Fastfile` and simply run `fastlane install`.
 
 
 ## Install
