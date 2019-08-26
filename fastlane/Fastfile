@@ -9,7 +9,7 @@ platform :ios do
       type: "development",
     )
     provProfile = ENV["sigh_#{ENV['APP_IDENTIFIER']}_development"];
-    cordova(
+    ionic(
       platform: 'ios',
       provisioning_profile: provProfile,
       release: false,
@@ -32,7 +32,7 @@ platform :ios do
       type: 'appstore',
     )
     provProfile = ENV["sigh_#{ENV['APP_IDENTIFIER']}_appstore"];
-    cordova(
+    ionic(
       platform: 'ios',
       provisioning_profile: provProfile,
       build_number: latest_testflight_build_number + 1,
@@ -54,7 +54,7 @@ platform :android do
   end
 
   lane :build_sign do
-    cordova(
+    ionic(
       platform: 'android',
       keystore_path: './fastlane/android.keystore',
       keystore_alias: ENV['ANDROID_KEYSTORE_ALIAS'],
