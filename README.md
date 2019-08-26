@@ -258,7 +258,7 @@ See the [Ionic documentation](https://ionicframework.com/docs/cli/cordova/resour
 Often you will get errors like the following:
 
 <pre>
-Error 0xe8008015: A valid provisioning profile for this executable was not found.
+Error Domain=IDEProvisioningErrorDomain Code=9 ""AMPHeat.app" requires a provisioning profile." UserInfo={NSLocalizedDescription="AMPHeat.app" requires a provisioning profile., NSLocalizedRecoverySuggestion=Add a profile to the "provisioningProfiles" dictionary in your Export Options property list.}
 </pre>
 
 One way to minimize trouble in this regard is to manage certificates using [Fastlane](https://fastlane.tools/), we have added templates to make this reasonably simple.
