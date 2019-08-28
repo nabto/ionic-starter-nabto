@@ -106,7 +106,7 @@ export class AclAddPage {
         this.name = json.n;
         this.fingerprint = json.f;
       }
-    });
+    }).catch((error) => this.showToast(error));
   }
 
   clear() {

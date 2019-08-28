@@ -314,7 +314,7 @@ export class NabtoService {
     }
   }
 
-  private getPublicDetails(deviceId: string): Promise<NabtoDevice> {
+  public getPublicDetails(deviceId: string): Promise<NabtoDevice> {
     return new Promise((resolve, reject) => {
       this.invokeRpc(deviceId, "get_public_device_info.json")
         .then((details:any) => {

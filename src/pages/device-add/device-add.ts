@@ -84,7 +84,7 @@ export class DeviceAddPage {
       if (json != null) {
         this.deviceId = json.i;
       }
-    });
+    }).catch((error) => this.showToast(error));
   }
 
   clear() {
