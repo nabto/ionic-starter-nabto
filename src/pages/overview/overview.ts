@@ -15,13 +15,13 @@ import { Customization } from '../../app/customization.class';
 
 /*
  * Root page with overview of known devices and entry point for adding new devices.
- * 
+ *
  * For any Nabto operations to work, a user profile must be
  * present. The profile creation page is hence shown in the following
  * cases:
  *
  * 1) first app launch
- * 
+ *
  * 2) after re-creation of key
  *
  * 3) if there is any problem reading the key
@@ -36,7 +36,7 @@ export class OverviewPage {
   public deviceInfoSource: Subject<NabtoDevice[]>;
   empty: boolean;
   firstView: boolean = true;
-  
+
   constructor(private bookmarksService: BookmarksService,
               private profileService: ProfileService,
               private platform: Platform,
@@ -59,14 +59,14 @@ export class OverviewPage {
     device.setUnknownIcon();
     console.log("No icon for " + JSON.stringify(device));
   }
-  
+
   ionViewDidLoad() {
     this.events.subscribe("overview:profileLoaded", () => this.refresh());
     this.verifyPlumbing()
       .then(() => this.initialize())
       .catch((err) => console.error("App could not start: " + err.message || err));
   }
-  
+
   ionViewDidEnter() {
     if (!this.firstView) {
       this.refresh();
@@ -91,7 +91,7 @@ export class OverviewPage {
             console.log("err.message===[NA...]? " + err.message === 'NABTO_NOT_AVAILABLE' ? "yes" : "no");
           } else {
             console.log("err.message is undefined");
-          }                                          
+          }
           if (err && err.message && err.message === 'NABTO_NOT_AVAILABLE') {
             this.showToast("Installation problem: Nabto SDK not available, please contact vendor", true);
           } else {
@@ -125,7 +125,7 @@ export class OverviewPage {
         this.navCtrl.push('ProfilePage', { hideBack: true });
       });
   }
-  
+
   initializeWithKeyPair(name: string) {
     this.nabtoService.startupAndOpenProfile(name)
       .then(() => this.events.publish('overview:profileLoaded'))
@@ -185,11 +185,11 @@ export class OverviewPage {
     let toast = this.toastCtrl.create(options);
     toast.present();
   }
-  
-  addNewDevice() {
+
+  addDiscover() {
     this.navCtrl.push('DiscoverPage');
   }
-  
+
   showHelpPage() {
     this.navCtrl.push('HelpPage');
   }
@@ -206,6 +206,19 @@ export class OverviewPage {
       buttons: [{ text: 'Ok' }]
     });
     alert.present();
+  }
+
+  addManually() {
+    let modal = this.modalCtrl.create('DeviceAddPage', undefined, {
+      enableBackdropDismiss: false
+    });
+    modal.onDidDismiss((device) => {
+      if (device) {
+        this.bookmarksService.addBookmarkFromDevice(device);
+        this.deviceInfoSource.next([device]);
+      }
+    });
+    modal.present();
   }
 
 }

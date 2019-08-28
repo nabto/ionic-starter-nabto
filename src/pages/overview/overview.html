@@ -40,21 +40,16 @@
       <ion-icon [hidden]="!device.reachable" name="arrow-forward" item-end></ion-icon>
     </ion-item>
   </ion-list>
-  
-  <!-- refresh and add buttons -->
-  <ion-row>
-    <ion-col text-left>
-      <button ion-button icon-begin (tap)="refresh()" color="light">
-        <ion-icon name="refresh"></ion-icon>&nbsp;
-        Refresh
-      </button>
-    </ion-col>
-    <ion-col text-right>
-      <button ion-button icon-end (tap)="addNewDevice()" color="primary">
-        Add new
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-col>
-  </ion-row>
 
+  <!-- refresh and add buttons -->
+  <button block ion-button (tap)="addDiscover()" color="primary">
+    Discover and auto pair with device
+  </button>
+  <button block ion-button (tap)="addManually()" color="light">
+    Manually pair with device
+  </button>
+  <button block ion-button icon-begin (tap)="refresh()" color="light">
+    <ion-icon name="refresh"></ion-icon>&nbsp;
+    Refresh
+  </button>
 </ion-content>

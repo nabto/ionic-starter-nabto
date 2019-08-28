@@ -4,6 +4,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { NabtoService } from '../../app/nabto.service';
 import { DeviceUser, NabtoDevice } from '../../app/device.class';
 
+declare var NabtoError;
+
 @IonicPage()
 @Component({
   templateUrl: 'device-add.html',
@@ -11,6 +13,7 @@ import { DeviceUser, NabtoDevice } from '../../app/device.class';
 export class DeviceAddPage {
 
   deviceId: string = "";
+  busy: boolean;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -27,13 +30,38 @@ export class DeviceAddPage {
     let toast = this.toastCtrl.create({
       message: message,
       showCloseButton: true,
-      duration: 2000
+      duration: 5000
     });
     toast.present();
   }
 
+  showError(error: any) {
+    this.busy = false;
+    if (error.message) {
+      this.showToast("An error occurred when accessing device: " + error.message);
+    } else {
+      this.showToast("An error occurred when accessing device");
+    }
+  }
+
   add() {
-    this.viewCtrl.dismiss(this.deviceId);
+    this.busy = true;
+    this.nabtoService.prepareInvoke([this.deviceId]).then(() => {
+      this.nabtoService.getPublicDetails(this.deviceId).then((device: NabtoDevice) => {
+        this.busy = false;
+        this.viewCtrl.dismiss(device);
+      }).catch((error) => {
+        if (error && error.code && (error.code == NabtoError.Code.P2P_ACCESS_DENIED_CONNECT ||
+                                    error.code == NabtoError.Code.EXC_NO_ACCESS)) {
+          this.busy = false;
+          this.showToast("Access denied - the device owner must add your public key fingerprint to the device access control list. Use the share button on this page to share your fingerprint with owner.");
+        } else {
+          this.showError(error);
+        }
+      });
+    }).catch((error) => {
+      this.showError(error);
+    });
   }
 
   scan() {

@@ -25,7 +25,6 @@ export class DiscoverPage {
   public devices: Observable<NabtoDevice[]>;
   public deviceInfoSource: Subject<NabtoDevice[]>;
   private recentIds: string[];
-  private manuallyAddedDevices: string[] = [];
 
   ionViewDidEnter() {
     this.view = this.navCtrl.getActive();
@@ -73,9 +72,6 @@ export class DiscoverPage {
 
   refresh() {
     this.busy = true;
-    if (this.manuallyAddedDevices.length > 0) {
-      this.prepareDevices(this.manuallyAddedDevices);
-    }
     this.nabtoService.discover().then((ids: string[]) => {
       this.prepareDevices(ids);
     }).catch((error) => {
@@ -194,19 +190,6 @@ export class DiscoverPage {
   home() {
     this.navCtrl.setRoot('OverviewPage');
     this.navCtrl.popToRoot();
-  }
-
-  addManually() {
-    let modal = this.modalCtrl.create('DeviceAddPage', undefined, {
-      enableBackdropDismiss: false
-    });
-    modal.onDidDismiss((deviceId) => {
-      if (deviceId) {
-        this.manuallyAddedDevices.push(deviceId);
-        this.prepareDevices([deviceId]);
-      }
-    });
-    modal.present();
   }
 
 }

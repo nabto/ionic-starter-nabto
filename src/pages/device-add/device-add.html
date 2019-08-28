@@ -13,37 +13,38 @@
 
 <ion-content padding>
   <ion-list>
-
   <ion-item>
     <ion-label stacked>Device ID</ion-label>
     <ion-input placeholder="myserial.mydomain.net" required type="text" [(ngModel)]="deviceId" name="deviceId"></ion-input>
   </ion-item>
-
   </ion-list>
 
-<button color="light" ion-button type="submit" block (click)="scan()">
-  Scan QR with device ID
-</button>
+  <div align="center" [hidden]="!busy">
+    <img src="assets/img/spinner.gif"/>
+  </div>
 
-<button color="light" ion-button block (click)="clear()">
-  Clear device ID
-</button>
+  <button color="light" ion-button type="submit" block (click)="scan()">
+    Scan QR with device ID
+  </button>
 
-<button ion-button type="submit" block (click)="add()" [disabled]="deviceId.length == 0">
-  Add device ID
-</button>
+  <button color="light" ion-button block (click)="clear()">
+    Clear device ID
+  </button>
 
-<ion-card>
-  <ion-card-header>
-    Access Control
-  </ion-card-header>
-  <ion-card-content>
-    Your public key fingerprint must be added to the device's Access Control List before you can access the device. The device owner can add this - share your public key fingerprint here:
-    <button color="light" ion-button block (click)="shareFingerprint()">
-      Share public key fingerprint
-    </button>
-  </ion-card-content>
-</ion-card>
+  <button ion-button type="submit" block (click)="add()" [disabled]="deviceId.length == 0">
+    Add device ID
+  </button>
 
+  <ion-card>
+    <ion-card-header>
+      Access Control
+    </ion-card-header>
+    <ion-card-content>
+      Your public key fingerprint must be added to the device's Access Control List before you can access the device. The device owner can add this - share your public key fingerprint here:
+      <button color="light" ion-button block (click)="shareFingerprint()">
+        Share public key fingerprint
+      </button>
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
