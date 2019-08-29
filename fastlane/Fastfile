@@ -21,7 +21,6 @@ platform :ios do
   desc "Build release version and upload to testflight"
   lane :beta do
     build_release
-    update_generated_project
     testflight(
       ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'],
     )
@@ -39,10 +38,6 @@ platform :ios do
       release: true,
       type: 'appstore'
     )
-  end
-
-  lane :update_generated_project do
-    set_info_plist_value(path: 'platforms/ios/' + ENV['APP_NAME'] + '/' + ENV['APP_NAME'] + '-Info.plist', key: "NSCameraUsageDescription", value: "This app requires camera access to function properly.")
   end
 
 end
