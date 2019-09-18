@@ -61,6 +61,10 @@ export class VendorHeatingPage {
     }
   }
 
+  ionViewDidLeave() {
+    this.busyEnd();
+  }
+
   refresh() {
     this.busyBegin();
     this.nabtoService.invokeRpc(this.device.id, "heatpump_get_full_state.json").
